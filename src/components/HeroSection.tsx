@@ -79,9 +79,9 @@ export default function HeroSection() {
         <motion.div initial={{ opacity: 0, y: 40, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.8, delay: 0.9 }} className="glass rounded-2xl p-4 md:p-6 max-w-4xl mx-auto floating">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <SearchField icon={<Search size={18} />} label="Destination" placeholder="Where to?" />
-            <SearchField icon={<Calendar size={18} />} label="Travel Dates" placeholder="Select dates" />
-            <SearchField icon={<Users size={18} />} label="Travelers" placeholder="2 Adults" />
-            <SearchField icon={<Wallet size={18} />} label="Budget" placeholder="₹50K - ₹1L" />
+            <SearchField icon={<Calendar size={18} />} label="Travel Dates" placeholder="Select dates" type="date" />
+            <SearchField icon={<Users size={18} />} label="Travelers" placeholder="2 Adults" type="select" options={["1 Adult", "2 Adults", "3 Adults", "4+ Adults", "Family"]} />
+            <SearchField icon={<Wallet size={18} />} label="Budget" placeholder="₹50K - ₹1L" type="select" options={["Under ₹50K", "₹50K - ₹1L", "₹1L - ₹2L", "₹2L+"]} />
           </div>
           <div className="mt-4 flex justify-center">
             <MagneticButton>
@@ -118,13 +118,22 @@ export default function HeroSection() {
   );
 }
 
-function SearchField({ icon, label, placeholder }: { icon: React.ReactNode; label: string; placeholder: string }) {
+function SearchField({ icon, label, placeholder, type = "text", options }: { icon: React.ReactNode; label: string; placeholder: string; type?: string; options?: string[] }) {
   return (
-    <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 hover:border-cyan/30 transition-all duration-300 group cursor-pointer">
+    <div className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 hover:border-cyan/30 focus-within:border-cyan/50 focus-within:bg-white/10 transition-all duration-300 group cursor-text text-left">
       <div className="text-cyan/60 group-hover:text-cyan transition-colors">{icon}</div>
       <div className="flex-1 min-w-0">
-        <p className="text-[10px] text-text-muted uppercase tracking-[0.15em] font-semibold mb-0.5" style={{ fontFamily: "var(--font-headline)" }}>{label}</p>
-        <p className="text-text-secondary text-sm truncate">{placeholder}</p>
+        <label className="block text-[10px] text-text-muted uppercase tracking-[0.15em] font-semibold mb-0.5" style={{ fontFamily: "var(--font-headline)" }}>{label}</label>
+        {type === "select" && options ? (
+          <select className="w-full bg-transparent text-text-secondary text-sm focus:outline-none focus:text-white cursor-pointer appearance-none">
+            <option value="" disabled selected className="bg-abyss text-text-muted">{placeholder}</option>
+            {options.map(opt => <option key={opt} value={opt} className="bg-abyss text-white">{opt}</option>)}
+          </select>
+        ) : type === "date" ? (
+          <input type="date" className="w-full bg-transparent text-text-secondary text-sm focus:outline-none focus:text-white cursor-pointer" />
+        ) : (
+          <input type="text" placeholder={placeholder} className="w-full bg-transparent text-text-secondary text-sm focus:outline-none focus:text-white placeholder:text-text-secondary/70" />
+        )}
       </div>
     </div>
   );

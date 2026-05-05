@@ -14,10 +14,11 @@ const destinations = [
 ];
 
 const packages = [
-  { name: "5N Dubai Package", price: "₹81,500", highlights: ["5-Star Hotel", "Return Flights", "Desert Safari", "City Tour", "All Meals"], image: "/dubai.png" },
-  { name: "7N Thailand Explorer", price: "₹62,000", highlights: ["Beach Resort", "Return Flights", "Island Hopping", "Temple Tour", "Breakfast"], image: "/thailand.png" },
-  { name: "7N Singapore + Malaysia", price: "₹1,15,000", highlights: ["4-Star Hotels", "Return Flights", "Cruise Included", "City Tours", "Half Board"], image: "/singapore.png" },
-  { name: "5N Bali Bliss", price: "₹45,000", highlights: ["Private Villa", "Return Flights", "Spa Package", "Rice Terrace Tour", "Breakfast"], image: "/bali.png" },
+  { name: "4N Thailand", price: "₹45,000", highlights: ["4-Star Hotel", "Sightseeing", "Transfers", "Breakfast", "Activities"], image: "/thailand.png" },
+  { name: "4N Thai Ex-Blr", price: "₹52,000", highlights: ["Flights Included", "4-Star Hotel", "Transfers", "Breakfast", "City Tour"], image: "/thailand.png" },
+  { name: "5N Dubai", price: "₹81,500", highlights: ["5-Star Hotel", "Return Flights", "Desert Safari", "City Tour", "All Meals"], image: "/dubai.png" },
+  { name: "6N Bali", price: "₹55,000", highlights: ["Private Villa", "Spa Package", "Rice Terrace", "Breakfast", "Transfers"], image: "/bali.png" },
+  { name: "7N Singapore Cruise Malaysia", price: "₹1,15,000", highlights: ["4-Star Hotels", "Cruise Included", "City Tours", "Transfers", "Half Board"], image: "/singapore.png" },
 ];
 
 export default function DestinationsSection() {
@@ -47,17 +48,23 @@ export default function DestinationsSection() {
           <p className="text-text-secondary text-lg max-w-xl mx-auto">Destinations that defy gravity and exceed expectations</p>
         </motion.div>
 
-        {/* Carousel Controls */}
-        <div className="flex justify-end gap-3 mb-6">
-          <button onClick={() => scroll("left")} className="p-3 glass rounded-xl hover:border-cyan/30 transition-all cursor-pointer"><ChevronLeft className="text-cyan" size={20} /></button>
-          <button onClick={() => scroll("right")} className="p-3 glass rounded-xl hover:border-cyan/30 transition-all cursor-pointer"><ChevronRight className="text-cyan" size={20} /></button>
-        </div>
+        {/* Carousel removed from here */}
 
         {/* Destination Cards Carousel */}
-        <div ref={scrollContainerRef} className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: "none" }}>
-          {destinations.map((dest, i) => (
-            <DestinationCard key={dest.name} destination={dest} index={i} isInView={isInView} />
-          ))}
+        <div className="relative group">
+          {/* Carousel Controls */}
+          <button onClick={() => scroll("left")} className="absolute -left-5 top-1/2 -translate-y-1/2 z-20 p-4 glass-strong rounded-full border border-white/10 hover:border-cyan/30 hover:bg-white/10 transition-all cursor-pointer opacity-0 group-hover:opacity-100 hidden md:block backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+            <ChevronLeft className="text-cyan" size={24} />
+          </button>
+          <button onClick={() => scroll("right")} className="absolute -right-5 top-1/2 -translate-y-1/2 z-20 p-4 glass-strong rounded-full border border-white/10 hover:border-cyan/30 hover:bg-white/10 transition-all cursor-pointer opacity-0 group-hover:opacity-100 hidden md:block backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+            <ChevronRight className="text-cyan" size={24} />
+          </button>
+
+          <div ref={scrollContainerRef} className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: "none" }}>
+            {destinations.map((dest, i) => (
+              <DestinationCard key={dest.name} destination={dest} index={i} isInView={isInView} />
+            ))}
+          </div>
         </div>
       </div>
 

@@ -77,23 +77,47 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-bold tracking-[0.15em] uppercase text-text-muted mb-6" style={{ fontFamily: "var(--font-headline)" }}>Get In Touch</h4>
             <ul className="space-y-4">
-              <li>
-                <a href="https://wa.me/918867767171" className="flex items-center gap-3 text-text-secondary hover:text-green-400 transition-colors text-sm group">
-                  <div className="p-2 glass rounded-lg group-hover:border-green-400/30 transition-all">
-                    <Phone size={14} className="text-green-400" />
-                  </div>
-                  +91 88677 67171
-                </a>
+              <li className="flex items-start gap-3 text-text-secondary text-sm">
+                <div className="p-2 glass rounded-lg mt-1 border border-white/5">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                </div>
+                <div>
+                  <span className="block font-semibold text-text-primary mb-1">Store Location</span>
+                  Indira Nagar, HAL, Bangalore
+                </div>
               </li>
-              <li>
-                <a href="mailto:connect@letstrip.co.in" className="flex items-center gap-3 text-text-secondary hover:text-cyan transition-colors text-sm group">
-                  <div className="p-2 glass rounded-lg group-hover:border-cyan/30 transition-all">
-                    <Mail size={14} className="text-cyan" />
-                  </div>
-                  connect@letstrip.co.in
-                </a>
+              <li className="flex items-start gap-3 text-text-secondary text-sm">
+                <div className="p-2 glass rounded-lg mt-1 border border-green-400/20">
+                  <Phone size={14} className="text-green-400" />
+                </div>
+                <div>
+                  <span className="block font-semibold text-text-primary mb-1">Phone Number</span>
+                  <a href="https://wa.me/918867767171" className="hover:text-green-400 transition-colors">+91 88677 67171</a>
+                </div>
+              </li>
+              <li className="flex items-start gap-3 text-text-secondary text-sm">
+                <div className="p-2 glass rounded-lg mt-1 border border-orange/20">
+                  <Phone size={14} className="text-orange" />
+                </div>
+                <div>
+                  <span className="block font-semibold text-text-primary mb-1">Product Expert</span>
+                  <a href="https://wa.me/918867767474" className="hover:text-orange transition-colors">+91 88677 67474</a>
+                </div>
+              </li>
+              <li className="flex items-start gap-3 text-text-secondary text-sm">
+                <div className="p-2 glass rounded-lg mt-1 border border-cyan/20">
+                  <Mail size={14} className="text-cyan" />
+                </div>
+                <div>
+                  <span className="block font-semibold text-text-primary mb-1">Email us</span>
+                  <a href="mailto:connect@letstrip.co.in" className="hover:text-cyan transition-colors">connect@letstrip.co.in</a>
+                </div>
               </li>
             </ul>
+            <div className="mt-6 text-xs text-text-muted">
+              Mondays - Sundays<br />
+              10am to 8pm
+            </div>
           </div>
         </div>
 

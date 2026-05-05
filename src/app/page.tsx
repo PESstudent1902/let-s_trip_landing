@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import DestinationsSection from "@/components/DestinationsSection";
+import WhyChooseUsSection from "@/components/WhyChooseUsSection";
 import ConciergeSection from "@/components/ConciergeSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import Footer from "@/components/Footer";
@@ -11,6 +12,7 @@ export default function Home() {
       <Navbar />
       <HeroSection />
       <DestinationsSection />
+      <WhyChooseUsSection />
       <ConciergeSection />
       <TestimonialsSection />
       <Footer />
