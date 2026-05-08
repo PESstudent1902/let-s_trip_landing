@@ -5,7 +5,8 @@ import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import { MagneticButton } from "./Navbar";
 import { ArrowRight, ChevronLeft, ChevronRight, Plane, Hotel, UtensilsCrossed } from "lucide-react";
-import { getDestinations, getPackages, type Destination, type Package } from "@/lib/packageStore";
+import { type Destination, type Package } from "@/lib/packageStore";
+import { fetchDestinations, fetchPackages } from "@/app/actions";
 
 export default function DestinationsSection() {
   const ref = useRef<HTMLDivElement>(null);
@@ -16,8 +17,13 @@ export default function DestinationsSection() {
   const [packages, setPackages] = useState<Package[]>([]);
 
   useEffect(() => {
-    setDestinations(getDestinations());
-    setPackages(getPackages());
+    const loadData = async () => {
+      const dests = await fetchDestinations();
+      const pkgs = await fetchPackages();
+      setDestinations(dests);
+      setPackages(pkgs);
+    };
+    loadData();
   }, []);
 
   const scroll = (dir: "left" | "right") => {

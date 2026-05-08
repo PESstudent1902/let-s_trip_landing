@@ -5,18 +5,20 @@ import {
   verifyAdminPassword,
   isAdminAuthenticated,
   logoutAdmin,
-  getDestinations,
-  getPackages,
-  addDestination,
-  updateDestination,
-  removeDestination,
-  addPackage,
-  updatePackage,
-  removePackage,
   AVAILABLE_IMAGES,
   type Destination,
   type Package,
 } from "@/lib/packageStore";
+import {
+  fetchDestinations,
+  fetchPackages,
+  saveDestination,
+  updateDestination,
+  deleteDestinationAction,
+  savePackage,
+  updatePackage,
+  deletePackageAction,
+} from "@/app/actions";
 import { LogOut, Plus, Pencil, Trash2, X, MapPin, Briefcase, Lock, Eye, EyeOff, Check, AlertTriangle } from "lucide-react";
 
 type Tab = "destinations" | "packages";
@@ -209,9 +211,11 @@ export default function AdminPage() {
   const [pkgModal, setPkgModal] = useState<{ mode: ModalMode; item?: Package } | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<{ type: "dest" | "pkg"; id: string; name: string } | null>(null);
 
-  const refreshData = useCallback(() => {
-    setDestinations(getDestinations());
-    setPackages(getPackages());
+  const refreshData = useCallback(async () => {
+    const dests = await fetchDestinations();
+    const pkgs = await fetchPackages();
+    setDestinations(dests);
+    setPackages(pkgs);
   }, []);
 
   useEffect(() => {
@@ -223,44 +227,50 @@ export default function AdminPage() {
   const showToast = (message: string, type: "success" | "error") => setToast({ message, type });
 
   // ─── Destination Handlers ───
-  const handleSaveDest = (data: Omit<Destination, "id">) => {
+  const handleSaveDest = async (data: Omit<Destination, "id">) => {
     if (destModal?.mode === "edit" && destModal.item) {
-      updateDestination(destModal.item.id, data);
-      showToast(`"${data.name}" updated successfully!`, "success");
+      const res = await updateDestination({ ...data, id: destModal.item.id });
+      if (res.success) showToast(`"${data.name}" updated successfully!`, "success");
+      else showToast(res.error || "Failed", "error");
     } else {
-      addDestination(data);
-      showToast(`"${data.name}" added successfully!`, "success");
+      const res = await saveDestination({ ...data, id: crypto.randomUUID() });
+      if (res.success) showToast(`"${data.name}" added successfully!`, "success");
+      else showToast(res.error || "Failed", "error");
     }
     setDestModal(null);
     refreshData();
   };
 
-  const handleDeleteDest = () => {
+  const handleDeleteDest = async () => {
     if (confirmDelete && confirmDelete.type === "dest") {
-      removeDestination(confirmDelete.id);
-      showToast(`"${confirmDelete.name}" deleted.`, "success");
+      const res = await deleteDestinationAction(confirmDelete.id);
+      if (res.success) showToast(`"${confirmDelete.name}" deleted.`, "success");
+      else showToast(res.error || "Failed", "error");
       setConfirmDelete(null);
       refreshData();
     }
   };
 
   // ─── Package Handlers ───
-  const handleSavePkg = (data: Omit<Package, "id">) => {
+  const handleSavePkg = async (data: Omit<Package, "id">) => {
     if (pkgModal?.mode === "edit" && pkgModal.item) {
-      updatePackage(pkgModal.item.id, data);
-      showToast(`"${data.name}" updated successfully!`, "success");
+      const res = await updatePackage({ ...data, id: pkgModal.item.id });
+      if (res.success) showToast(`"${data.name}" updated successfully!`, "success");
+      else showToast(res.error || "Failed", "error");
     } else {
-      addPackage(data);
-      showToast(`"${data.name}" added successfully!`, "success");
+      const res = await savePackage({ ...data, id: crypto.randomUUID() });
+      if (res.success) showToast(`"${data.name}" added successfully!`, "success");
+      else showToast(res.error || "Failed", "error");
     }
     setPkgModal(null);
     refreshData();
   };
 
-  const handleDeletePkg = () => {
+  const handleDeletePkg = async () => {
     if (confirmDelete && confirmDelete.type === "pkg") {
-      removePackage(confirmDelete.id);
-      showToast(`"${confirmDelete.name}" deleted.`, "success");
+      const res = await deletePackageAction(confirmDelete.id);
+      if (res.success) showToast(`"${confirmDelete.name}" deleted.`, "success");
+      else showToast(res.error || "Failed", "error");
       setConfirmDelete(null);
       refreshData();
     }
