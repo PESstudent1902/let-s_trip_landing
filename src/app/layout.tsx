@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Manrope } from "next/font/google";
+import { Space_Grotesk, Manrope, Kaushan_Script, Caveat } from "next/font/google";
 import "./globals.css";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 
@@ -13,6 +13,18 @@ const manrope = Manrope({
   variable: "--font-body",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
+});
+
+const kaushanScript = Kaushan_Script({
+  variable: "--font-brush",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+const caveat = Caveat({
+  variable: "--font-handwritten",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -37,7 +49,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${manrope.variable} antialiased`}
+      className={`${spaceGrotesk.variable} ${manrope.variable} ${kaushanScript.variable} ${caveat.variable} antialiased`}
     >
       <body className="min-h-screen">
         <SmoothScrollProvider>{children}</SmoothScrollProvider>

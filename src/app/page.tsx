@@ -5,6 +5,7 @@ import WhyChooseUsSection from "@/components/WhyChooseUsSection";
 import ConciergeSection from "@/components/ConciergeSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import Footer from "@/components/Footer";
+import MobileWhatsAppCTA from "@/components/MobileWhatsAppCTA";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <ConciergeSection />
       <TestimonialsSection />
       <Footer />
+      <MobileWhatsAppCTA />
     </main>
   );
 }

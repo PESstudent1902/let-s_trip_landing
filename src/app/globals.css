@@ -21,6 +21,8 @@
   --color-violet-glow: rgba(123, 97, 255, 0.3);
   
   --color-gold: #FED639;
+  --color-warm: #FF9F6A;
+  --color-sunset: #FF7B54;
   
   --color-text-primary: #DCE4E5;
   --color-text-secondary: #B9CACB;
@@ -33,6 +35,8 @@
   /* === Typography === */
   --font-headline: 'Space Grotesk', sans-serif;
   --font-body: 'Manrope', sans-serif;
+  --font-brush: 'Kaushan Script', cursive;
+  --font-handwritten: 'Caveat', cursive;
   
   /* === Spacing === */
   --spacing-section: 120px;
@@ -49,6 +53,8 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
@@ -60,8 +66,14 @@
   }
 
   ::selection {
-    background: var(--color-cyan);
-    color: var(--color-abyss);
+    background: var(--color-orange);
+    color: white;
+  }
+
+  a, button, input, select, textarea {
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+    transition-duration: 0.3s;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
 }
 
@@ -130,6 +142,45 @@
   .pulse-glow {
     animation: pulseGlow 3s ease-in-out infinite;
   }
+
+  .gpu-accelerated {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Adventure-style animated underline link */
+  .adventure-link {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+  }
+  .adventure-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-orange), var(--color-warm));
+    border-radius: 2px;
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .adventure-link:hover::after {
+    width: 100%;
+  }
+
+  /* Organic shape masks */
+  .organic-blob {
+    border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+  }
 }
 
 /* === Animations === */
@@ -156,6 +207,53 @@
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(60px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes wanderArrow {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(8px); }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+/* Wave separator */
+.wave-separator {
+  position: relative;
+  overflow: hidden;
+}
+.wave-separator::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -5%;
+  width: 110%;
+  height: 60px;
+  background: var(--color-abyss);
+  border-radius: 100% 100% 0 0;
+}
+
+/* === Reduced Motion === */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
 }
 
 /* === Scrollbar Styling === */
@@ -191,4 +289,10 @@ html.lenis, html.lenis body {
 
 .lenis.lenis-stopped {
   overflow: hidden;
+}
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
