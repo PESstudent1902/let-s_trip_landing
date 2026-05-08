@@ -4,14 +4,11 @@ import { Redis } from '@upstash/redis';
 import { revalidatePath } from 'next/cache';
 import { DEFAULT_DESTINATIONS, DEFAULT_PACKAGES, type Destination, type Package } from '@/lib/packageStore';
 
-// Initialize Redis if environment variables are present
-// (Vercel automatically injects KV_REST_API_URL and KV_REST_API_TOKEN when you add the Upstash Redis integration)
-const redis = (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN)
-  ? new Redis({
-      url: process.env.KV_REST_API_URL,
-      token: process.env.KV_REST_API_TOKEN,
-    })
-  : null;
+// Initialize Redis (Hardcoded connection per user request to bypass Vercel env var setup)
+const redis = new Redis({
+  url: "https://game-husky-119092.upstash.io",
+  token: "gQAAAAAAAdE0AAIgcDI4NjA3NTk5MTJjMGQ0NWU5OWQ0ZDEyMDZkZWMxYWM0NA",
+});
 
 // --- Destinations ---
 
