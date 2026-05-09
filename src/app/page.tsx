@@ -6,8 +6,6 @@ import ConciergeSection from "@/components/ConciergeSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import Footer from "@/components/Footer";
 import MobileWhatsAppCTA from "@/components/MobileWhatsAppCTA";
-import TravelChatbot from "@/components/TravelChatbot";
-
 export default function Home() {
   return (
     <main className="relative">
@@ -19,7 +17,6 @@ export default function Home() {
       <TestimonialsSection />
       <Footer />
       <MobileWhatsAppCTA />
-      <TravelChatbot />
     </main>
   );
 }
