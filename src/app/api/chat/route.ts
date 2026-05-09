@@ -13,6 +13,9 @@ type ChatMessage = {
   content: string;
 };
 
+// Keep prompt size bounded to control token usage/cost while still covering core offers.
+const MAX_PACKAGES_IN_PROMPT = 40;
+
 function getRedisClient(): Redis | null {
   const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -71,7 +74,7 @@ function findBestPackage(message: string, packages: Package[], destinations: Des
   let filtered = matchedDestination ? packages.filter((pkg) => pkg.destinationId === matchedDestination.id) : packages;
   if (filtered.length === 0) filtered = packages;
 
-  const budgetMatch = text.match(/(\d[\d,]*)/);
+  const budgetMatch = text.match(/(?:₹|rs\.?|inr|budget|price|cost|under|within)\s*:?\s*(\d[\d,]*)/i);
   if (budgetMatch) {
     const budget = Number(budgetMatch[1].replace(/,/g, ""));
     if (Number.isFinite(budget)) {
@@ -105,7 +108,7 @@ function buildFallbackReply(message: string, destinations: Destination[], packag
 function createSystemPrompt(destinations: Destination[], packages: Package[], best: Package | null): string {
   const destinationSummary = destinations.map((d) => `- ${d.name}: ${d.description} | Typical ${d.duration} from ${d.price}`).join("\n");
   const packageSummary = packages
-    .slice(0, 40)
+    .slice(0, MAX_PACKAGES_IN_PROMPT)
     .map((pkg) => {
       const destination = destinations.find((d) => d.id === pkg.destinationId)?.name || pkg.destinationId;
       return `- ${pkg.name} | Destination: ${destination} | Price: ${pkg.price} | Highlights: ${pkg.highlights.join(", ")}`;
@@ -168,7 +171,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         model,
         temperature: 0.3,
-        max_tokens: 500,
+        max_tokens: 900,
         messages: [
           { role: "system", content: createSystemPrompt(destinations, packages, best) },
           ...messages.slice(-8),

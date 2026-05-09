@@ -4,11 +4,13 @@ import { useState } from "react";
 import { MessageCircle, Send, X } from "lucide-react";
 
 type ChatMessage = {
+  id: string;
   role: "user" | "assistant";
   content: string;
 };
 
 const STARTER_MESSAGE: ChatMessage = {
+  id: "starter",
   role: "assistant",
   content: "Hi! I’m your LetsTrip travel assistant. Tell me your destination, budget, and duration, and I’ll suggest the best package.",
 };
@@ -23,7 +25,7 @@ export default function TravelChatbot() {
     const content = input.trim();
     if (!content || loading) return;
 
-    const nextMessages = [...messages, { role: "user" as const, content }];
+    const nextMessages = [...messages, { id: crypto.randomUUID(), role: "user" as const, content }];
     setMessages(nextMessages);
     setInput("");
     setLoading(true);
@@ -37,11 +39,11 @@ export default function TravelChatbot() {
 
       const data = (await res.json()) as { reply?: string };
       const reply = data.reply || "I can help with travel packages, destinations, and itinerary planning.";
-      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: reply }]);
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "I’m having trouble right now. Please try again for travel package suggestions." },
+        { id: crypto.randomUUID(), role: "assistant", content: "I’m having trouble right now. Please try again for travel package suggestions." },
       ]);
     } finally {
       setLoading(false);
@@ -63,8 +65,8 @@ export default function TravelChatbot() {
           </div>
 
           <div className="flex-1 overflow-y-auto p-3 space-y-3">
-            {messages.map((message, index) => (
-              <div key={`${message.role}-${index}`} className={`max-w-[90%] px-3 py-2 rounded-xl text-sm whitespace-pre-wrap ${message.role === "user" ? "ml-auto bg-cyan/20 text-white" : "bg-white/8 text-gray-100 border border-white/10"}`}>
+            {messages.map((message) => (
+              <div key={message.id} className={`max-w-[90%] px-3 py-2 rounded-xl text-sm whitespace-pre-wrap ${message.role === "user" ? "ml-auto bg-cyan/20 text-white" : "bg-white/8 text-gray-100 border border-white/10"}`}>
                 {message.content}
               </div>
             ))}

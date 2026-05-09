@@ -44,6 +44,8 @@ export const DEFAULT_PACKAGES: Package[] = [
   { id: "pkg-eu-8n", destinationId: "europe", name: "8N Europe Explorer", price: "₹1,68,000", highlights: ["Schengen Support", "Intercity Transfers", "Guided City Walks", "4-Star Hotels", "Breakfast"], image: "/hero-bg.png" },
 ];
 
+export const GENERAL_DESTINATION_ID = "general";
+
 export function slugifyDestinationName(name: string): string {
   return name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
@@ -55,7 +57,7 @@ export function inferDestinationIdFromPackage(pkg: Pick<Package, "name" | "image
   const byImage = destinations.find((d) => d.image === pkg.image);
   if (byImage) return byImage.id;
 
-  return destinations[0]?.id || "general";
+  return destinations[0]?.id || GENERAL_DESTINATION_ID;
 }
 
 // === Admin Auth ===

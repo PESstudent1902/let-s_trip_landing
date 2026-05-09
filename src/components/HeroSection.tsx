@@ -9,11 +9,27 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * Generates a deterministic low-discrepancy sequence value.
+ * Used for stable particle placement without render-time randomness.
+ */
+function halton(index: number, base: number): number {
+  let result = 0;
+  let f = 1 / base;
+  let i = index;
+  while (i > 0) {
+    result += f * (i % base);
+    i = Math.floor(i / base);
+    f /= base;
+  }
+  return result;
+}
+
 const PARTICLES = Array.from({ length: 15 }, (_, i) => ({
-  width: `${2 + (i % 5)}px`,
-  height: `${2 + ((i * 3) % 5)}px`,
-  left: `${(i * 17) % 100}%`,
-  top: `${(i * 29) % 100}%`,
+  width: `${2 + Math.floor(halton(i + 1, 2) * 5)}px`,
+  height: `${2 + Math.floor(halton(i + 1, 3) * 5)}px`,
+  left: `${Math.round(halton(i + 1, 5) * 100)}%`,
+  top: `${Math.round(halton(i + 1, 7) * 100)}%`,
 }));
 
 export default function HeroSection() {

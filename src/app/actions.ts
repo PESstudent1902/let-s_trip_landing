@@ -92,7 +92,8 @@ export async function deleteDestinationAction(id: string): Promise<{ success: bo
     const updated = existing.filter((d) => d.id !== id);
     await redis.set(DESTINATIONS_KEY, updated);
 
-    const packages = await fetchPackages();
+    const rawPackages = await redis.get<Package[]>(PACKAGES_KEY);
+    const packages = normalizePackages(rawPackages || [], existing);
     const filteredPackages = packages.filter((pkg) => pkg.destinationId !== id);
     await redis.set(PACKAGES_KEY, filteredPackages);
 

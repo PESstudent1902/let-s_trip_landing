@@ -78,10 +78,10 @@ export default function DestinationsSection() {
         </div>
 
         <div className="relative group mb-16 md:mb-24">
-          <button onClick={() => scroll("left")} className="absolute -left-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 glass-strong rounded-full border border-white/10 hover:border-cyan/30 items-center justify-center transition-all cursor-pointer opacity-0 group-hover:opacity-100 hidden md:flex">
+          <button onClick={() => scroll("left")} className="absolute -left-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 glass-strong rounded-full border border-white/10 hover:border-cyan/30 flex items-center justify-center transition-all cursor-pointer opacity-0 group-hover:opacity-100 hidden md:flex">
             <ChevronLeft className="text-cyan" size={22} />
           </button>
-          <button onClick={() => scroll("right")} className="absolute -right-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 glass-strong rounded-full border border-white/10 hover:border-cyan/30 items-center justify-center transition-all cursor-pointer opacity-0 group-hover:opacity-100 hidden md:flex">
+          <button onClick={() => scroll("right")} className="absolute -right-5 top-1/2 -translate-y-1/2 z-20 w-12 h-12 glass-strong rounded-full border border-white/10 hover:border-cyan/30 flex items-center justify-center transition-all cursor-pointer opacity-0 group-hover:opacity-100 hidden md:flex">
             <ChevronRight className="text-cyan" size={22} />
           </button>
 
@@ -114,7 +114,7 @@ export default function DestinationsSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {visiblePackages.map((pkg, i) => (
-            <PackageCard key={pkg.id} pkg={pkg} destinationName={destinationMap.get(pkg.destinationId)} index={i} isInView={isInView} />
+            <PackageCard key={pkg.id} pkg={pkg} destinationName={destinationMap.get(pkg.destinationId) || "General package"} index={i} isInView={isInView} />
           ))}
         </div>
       </div>
@@ -220,7 +220,7 @@ function PackageCard({ pkg, destinationName, index, isInView }: { pkg: Package; 
               <h3 className="text-xl sm:text-2xl mb-1" style={{ fontFamily: "var(--font-brush)" }}>{pkg.name}</h3>
               <p className="text-cyan text-xl sm:text-2xl text-glow-cyan" style={{ fontFamily: "var(--font-brush)" }}>{pkg.price}</p>
               <p className="text-text-muted text-xs" style={{ fontFamily: "var(--font-handwritten)" }}>
-                {destinationName ? `${destinationName} package` : "per person"}
+                {destinationName} · per person
               </p>
             </div>
           </div>

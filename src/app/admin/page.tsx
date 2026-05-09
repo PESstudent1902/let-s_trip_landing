@@ -257,7 +257,7 @@ function SelectField({ label, value, onChange, options }: { label: string; value
 }
 
 export default function AdminPage() {
-  const [authenticated, setAuthenticated] = useState<boolean>(() => isAdminAuthenticated());
+  const [authenticated, setAuthenticated] = useState(false);
   const [tab, setTab] = useState<Tab>("destinations");
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [packages, setPackages] = useState<Package[]>([]);
@@ -272,6 +272,13 @@ export default function AdminPage() {
     const [dests, pkgs] = await Promise.all([fetchDestinations(), fetchPackages()]);
     setDestinations(dests);
     setPackages(pkgs);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAuthenticated(isAdminAuthenticated());
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -303,7 +310,15 @@ export default function AdminPage() {
       if (res.success) showToast(`"${data.name}" updated successfully!`, "success");
       else showToast(res.error || "Failed", "error");
     } else {
-      const id = slugifyDestinationName(data.name) || crypto.randomUUID();
+      const id = slugifyDestinationName(data.name);
+      if (!id) {
+        showToast("Destination name must contain letters or numbers.", "error");
+        return;
+      }
+      if (destinations.some((destination) => destination.id === id)) {
+        showToast("A destination with this name already exists.", "error");
+        return;
+      }
       const res = await saveDestination({ ...data, id });
       if (res.success) showToast(`"${data.name}" added successfully!`, "success");
       else showToast(res.error || "Failed", "error");
@@ -417,10 +432,13 @@ export default function AdminPage() {
             <div className="flex flex-col gap-3 mb-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-bold" style={{ fontFamily: "var(--font-headline)" }}>Manage Packages</h2>
-                <button onClick={() => setPkgModal({ mode: "add" })} disabled={!destinations.length} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 text-white text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed">
+                <button onClick={() => setPkgModal({ mode: "add" })} disabled={!destinations.length} aria-label={!destinations.length ? "Add a destination first to create packages" : "Add package"} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 text-white text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed">
                   <Plus size={16} /> Add Package
                 </button>
               </div>
+              {!destinations.length && (
+                <p className="text-xs text-amber-300/80">Add at least one destination before creating packages.</p>
+              )}
 
               <div className="flex flex-wrap gap-2">
                 <button onClick={() => setPackageDestinationFilter("all")} className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${packageDestinationFilter === "all" ? "bg-cyan-500/20 border-cyan-400/40 text-cyan-300" : "bg-white/5 border-white/10 text-gray-300 hover:text-white"}`}>
