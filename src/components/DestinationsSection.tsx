@@ -143,7 +143,7 @@ export default function DestinationsSection() {
             <span className="text-orange text-glow-orange">Packages</span>
           </h2>
           <p className="text-text-secondary text-base md:text-lg" style={{ fontFamily: "var(--font-handwritten)" }}>
-            {selectedDestinationId === "all"
+            {selectedDestinationId === null
               ? "All-inclusive experiences at unbeatable value"
               : `Showing packages for ${destinationMap.get(selectedDestinationId) || "selected destination"}`}
           </p>
