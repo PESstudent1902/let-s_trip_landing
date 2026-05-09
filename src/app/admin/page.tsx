@@ -455,7 +455,7 @@ export default function AdminPage() {
                         <div>
                           <h3 className="font-bold text-white text-sm" style={{ fontFamily: "var(--font-headline)" }}>{p.name}</h3>
                           <p className="text-cyan-400 font-bold mt-0.5">{p.price}</p>
-                          <p className="text-gray-500 text-[11px]">{destinationMap.get(p.destinationId) || "General"}</p>
+                          <p className="text-gray-500 text-[11px]">{p.destinationId ? destinationMap.get(p.destinationId) : "General"}</p>
                         </div>
                         <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button onClick={() => setPkgModal({ mode: "edit", item: p })} className="p-1.5 rounded-lg bg-white/5 text-gray-400 hover:bg-cyan-500/20 hover:text-cyan-400 transition-colors"><Pencil size={14} /></button>
