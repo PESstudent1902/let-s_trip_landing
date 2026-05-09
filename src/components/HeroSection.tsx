@@ -9,6 +9,13 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const PARTICLES = Array.from({ length: 15 }, (_, i) => ({
+  width: `${2 + (i % 5)}px`,
+  height: `${2 + ((i * 3) % 5)}px`,
+  left: `${(i * 17) % 100}%`,
+  top: `${(i * 29) % 100}%`,
+}));
+
 export default function HeroSection() {
   const heroRef = useRef<HTMLDivElement>(null);
   const parallaxRef = useRef<HTMLDivElement>(null);
@@ -76,8 +83,8 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-r from-abyss/50 via-transparent to-abyss/50" />
       </div>
 
-      {[...Array(15)].map((_, i) => (
-        <div key={i} className="hero-particle absolute rounded-full bg-cyan/20" style={{ width: `${Math.random() * 4 + 2}px`, height: `${Math.random() * 4 + 2}px`, left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`, filter: "blur(1px)" }} />
+      {PARTICLES.map((particle, i) => (
+        <div key={i} className="hero-particle absolute rounded-full bg-cyan/20" style={{ ...particle, filter: "blur(1px)" }} />
       ))}
 
       <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16 text-center pt-28 pb-20 md:pb-32">
