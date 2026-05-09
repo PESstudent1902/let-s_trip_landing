@@ -22,6 +22,7 @@ export interface Package {
   price: string;
   highlights: string[];
   image: string;
+  destinationId?: string;
 }
 
 // === Default Data (matches current hardcoded values exactly) ===
@@ -34,11 +35,11 @@ export const DEFAULT_DESTINATIONS: Destination[] = [
 ];
 
 export const DEFAULT_PACKAGES: Package[] = [
-  { id: "pkg-1", name: "4N Thailand", price: "₹45,000", highlights: ["4-Star Hotel", "Sightseeing", "Transfers", "Breakfast", "Activities"], image: "/thailand.png" },
-  { id: "pkg-2", name: "4N Thai Ex-Blr", price: "₹52,000", highlights: ["Flights Included", "4-Star Hotel", "Transfers", "Breakfast", "City Tour"], image: "/thailand.png" },
-  { id: "pkg-3", name: "5N Dubai", price: "₹81,500", highlights: ["5-Star Hotel", "Return Flights", "Desert Safari", "City Tour", "All Meals"], image: "/dubai.png" },
-  { id: "pkg-4", name: "6N Bali", price: "₹55,000", highlights: ["Private Villa", "Spa Package", "Rice Terrace", "Breakfast", "Transfers"], image: "/bali.png" },
-  { id: "pkg-5", name: "7N Singapore Cruise Malaysia", price: "₹1,15,000", highlights: ["4-Star Hotels", "Cruise Included", "City Tours", "Transfers", "Half Board"], image: "/singapore.png" },
+  { id: "pkg-1", name: "4N Thailand", price: "₹45,000", highlights: ["4-Star Hotel", "Sightseeing", "Transfers", "Breakfast", "Activities"], image: "/thailand.png", destinationId: "dest-1" },
+  { id: "pkg-2", name: "4N Thai Ex-Blr", price: "₹52,000", highlights: ["Flights Included", "4-Star Hotel", "Transfers", "Breakfast", "City Tour"], image: "/thailand.png", destinationId: "dest-1" },
+  { id: "pkg-3", name: "5N Dubai", price: "₹81,500", highlights: ["5-Star Hotel", "Return Flights", "Desert Safari", "City Tour", "All Meals"], image: "/dubai.png", destinationId: "dest-2" },
+  { id: "pkg-4", name: "6N Bali", price: "₹55,000", highlights: ["Private Villa", "Spa Package", "Rice Terrace", "Breakfast", "Transfers"], image: "/bali.png", destinationId: "dest-4" },
+  { id: "pkg-5", name: "7N Singapore Cruise Malaysia", price: "₹1,15,000", highlights: ["4-Star Hotels", "Cruise Included", "City Tours", "Transfers", "Half Board"], image: "/singapore.png", destinationId: "dest-3" },
 ];
 
 const STORAGE_KEYS = {

@@ -146,15 +146,16 @@ function DestinationModal({ mode, initial, onSave, onClose }: { mode: ModalMode;
 }
 
 // ─── Package Form Modal ───
-function PackageModal({ mode, initial, onSave, onClose }: { mode: ModalMode; initial?: Package; onSave: (p: Omit<Package, "id">) => void; onClose: () => void }) {
+function PackageModal({ mode, initial, destinations, onSave, onClose }: { mode: ModalMode; initial?: Package; destinations: Destination[]; onSave: (p: Omit<Package, "id">) => void; onClose: () => void }) {
   const [name, setName] = useState(initial?.name || "");
   const [image, setImage] = useState(initial?.image || AVAILABLE_IMAGES[0].value);
   const [price, setPrice] = useState(initial?.price || "");
   const [highlights, setHighlights] = useState(initial?.highlights.join(", ") || "");
+  const [destinationId, setDestinationId] = useState(initial?.destinationId || destinations[0]?.id || "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ name, image, price, highlights: highlights.split(",").map((h) => h.trim()).filter(Boolean) });
+    onSave({ name, image, price, highlights: highlights.split(",").map((h) => h.trim()).filter(Boolean), destinationId });
   };
 
   return (
@@ -166,6 +167,12 @@ function PackageModal({ mode, initial, onSave, onClose }: { mode: ModalMode; ini
         </div>
         <div className="space-y-4">
           <Field label="Package Name" value={name} onChange={setName} placeholder="e.g. 5N Dubai" required />
+          <div>
+            <label className="block text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1.5">Destination</label>
+            <select value={destinationId} onChange={(e) => setDestinationId(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-400/50 transition-all appearance-none" required>
+              {destinations.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
+            </select>
+          </div>
           <div>
             <label className="block text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1.5">Image</label>
             <select value={image} onChange={(e) => setImage(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-400/50 transition-all appearance-none">
@@ -202,6 +209,7 @@ export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [checking, setChecking] = useState(true);
   const [tab, setTab] = useState<Tab>("destinations");
+  const [selectedDestFilter, setSelectedDestFilter] = useState<string>("all");
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [packages, setPackages] = useState<Package[]>([]);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
@@ -285,7 +293,7 @@ export default function AdminPage() {
     <div className="min-h-screen text-white" style={{ background: "linear-gradient(180deg, #050B1F 0%, #0A1628 100%)", fontFamily: "var(--font-body)" }}>
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       {destModal && <DestinationModal mode={destModal.mode} initial={destModal.item} onSave={handleSaveDest} onClose={() => setDestModal(null)} />}
-      {pkgModal && <PackageModal mode={pkgModal.mode} initial={pkgModal.item} onSave={handleSavePkg} onClose={() => setPkgModal(null)} />}
+      {pkgModal && <PackageModal mode={pkgModal.mode} initial={pkgModal.item} destinations={destinations} onSave={handleSavePkg} onClose={() => setPkgModal(null)} />}
       {confirmDelete && <ConfirmDialog message={`This will permanently delete "${confirmDelete.name}". This action cannot be undone.`} onConfirm={confirmDelete.type === "dest" ? handleDeleteDest : handleDeletePkg} onCancel={() => setConfirmDelete(null)} />}
 
       {/* Header */}
@@ -355,8 +363,16 @@ export default function AdminPage() {
                 <Plus size={16} /> Add Package
               </button>
             </div>
+
+            <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
+              <button onClick={() => setSelectedDestFilter("all")} className={`px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors ${selectedDestFilter === "all" ? "bg-cyan-500 text-white" : "bg-white/5 text-gray-400 hover:bg-white/10"}`}>All Packages</button>
+              {destinations.map(d => (
+                <button key={d.id} onClick={() => setSelectedDestFilter(d.id)} className={`px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors ${selectedDestFilter === d.id ? "bg-cyan-500 text-white" : "bg-white/5 text-gray-400 hover:bg-white/10"}`}>{d.name}</button>
+              ))}
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {packages.map((p) => (
+              {packages.filter(p => selectedDestFilter === "all" || p.destinationId === selectedDestFilter).map((p) => (
                 <div key={p.id} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all group">
                   <div className="flex gap-4">
                     <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-gray-800">

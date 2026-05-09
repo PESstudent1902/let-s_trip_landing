@@ -41,6 +41,8 @@ export const metadata: Metadata = {
   },
 };
 
+import Chatbot from "@/components/Chatbot";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -53,6 +55,7 @@ export default function RootLayout({
     >
       <body className="min-h-screen">
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <Chatbot />
       </body>
     </html>
   );

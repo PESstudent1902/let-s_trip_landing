@@ -15,6 +15,7 @@ export default function DestinationsSection() {
 
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [packages, setPackages] = useState<Package[]>([]);
+  const [selectedDestinationId, setSelectedDestinationId] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -71,6 +72,42 @@ export default function DestinationsSection() {
         </div>
       </div>
 
+      {/* Holiday Packages Filter UI */}
+      <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16 mt-20 md:mt-32">
+        <motion.div initial={{ opacity: 0, y: 40 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }} className="mb-10">
+           <h2 className="text-3xl sm:text-4xl md:text-5xl mb-12 text-center" style={{ fontFamily: "var(--font-brush)" }}>
+            <span className="text-white">Holiday </span>
+            <span className="text-cyan text-glow-cyan">Packages</span>
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-y-12 gap-x-4 md:gap-x-6 pt-4">
+            {/* "All" button */}
+            <div 
+              onClick={() => setSelectedDestinationId(null)}
+              className={`relative pt-8 px-4 pb-4 rounded-xl cursor-pointer transition-all duration-300 ${selectedDestinationId === null ? 'bg-white text-[#0A1628] shadow-[0_10px_30px_rgba(0,0,0,0.5)] scale-105' : 'bg-white/90 text-gray-800 hover:bg-white shadow-lg'} text-center flex flex-col items-center justify-center`}
+            >
+              <div className={`absolute -top-7 w-14 h-14 rounded-full flex items-center justify-center border-4 border-[#0A1628] ${selectedDestinationId === null ? 'bg-orange text-white' : 'bg-white text-gray-800 shadow-sm'}`}>
+                <Plane size={24} />
+              </div>
+              <span className="font-bold text-sm tracking-wide mt-1">All Packages</span>
+            </div>
+            
+            {/* Destination buttons */}
+            {destinations.map((dest) => (
+              <div 
+                key={dest.id}
+                onClick={() => setSelectedDestinationId(dest.id)}
+                className={`relative pt-8 px-4 pb-4 rounded-xl cursor-pointer transition-all duration-300 ${selectedDestinationId === dest.id ? 'bg-white text-[#0A1628] shadow-[0_10px_30px_rgba(0,0,0,0.5)] scale-105' : 'bg-white/90 text-gray-800 hover:bg-white shadow-lg'} text-center flex flex-col items-center justify-center`}
+              >
+                <div className={`absolute -top-7 w-14 h-14 rounded-full overflow-hidden border-4 border-[#0A1628] bg-white shadow-sm flex items-center justify-center`}>
+                  <Image src={dest.image} alt={dest.name} fill className="object-cover" />
+                </div>
+                <span className="font-bold text-sm tracking-wide mt-1">{dest.name}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
       {/* Packages */}
       <div id="packages" className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16 mt-20 md:mt-32">
         <motion.div initial={{ opacity: 0, y: 40 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }} className="text-center mb-10 md:mb-16">
@@ -82,7 +119,9 @@ export default function DestinationsSection() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          {packages.map((pkg, i) => (
+          {packages
+            .filter((pkg) => selectedDestinationId === null || pkg.destinationId === selectedDestinationId)
+            .map((pkg, i) => (
             <PackageCard key={pkg.id} pkg={pkg} index={i} isInView={isInView} />
           ))}
         </div>
