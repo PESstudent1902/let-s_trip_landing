@@ -12,13 +12,22 @@ export interface Destination {
   description: string;
 }
 
+export type ItineraryDay = {
+  day: number;
+  title: string;
+  details: string[];
+};
+
 export interface Package {
   id: string;
   name: string;
   price: string;
-  highlights: string[];
+  highlights: string[]; // kept for backwards compatibility; used as inclusions/benefits in UI
   image: string;
   destinationId?: string;
+  durationNights?: number;
+  tags?: string[];
+  itinerary?: ItineraryDay[];
 }
 
 export const DEFAULT_DESTINATIONS: Destination[] = [
@@ -33,11 +42,87 @@ export const DEFAULT_DESTINATIONS: Destination[] = [
 ];
 
 export const DEFAULT_PACKAGES: Package[] = [
-  { id: "pkg-1", name: "4N Thailand", price: "₹45,000", highlights: ["4-Star Hotel", "Sightseeing", "Transfers", "Breakfast", "Activities"], image: "/thailand.png", destinationId: "dest-1" },
-  { id: "pkg-2", name: "4N Thai Ex-Blr", price: "₹52,000", highlights: ["Flights Included", "4-Star Hotel", "Transfers", "Breakfast", "City Tour"], image: "/thailand.png", destinationId: "dest-1" },
-  { id: "pkg-3", name: "5N Dubai", price: "₹81,500", highlights: ["5-Star Hotel", "Return Flights", "Desert Safari", "City Tour", "All Meals"], image: "/dubai.png", destinationId: "dest-2" },
-  { id: "pkg-4", name: "6N Bali", price: "₹55,000", highlights: ["Private Villa", "Spa Package", "Rice Terrace", "Breakfast", "Transfers"], image: "/bali.png", destinationId: "dest-4" },
-  { id: "pkg-5", name: "7N Singapore Cruise Malaysia", price: "₹1,15,000", highlights: ["4-Star Hotels", "Cruise Included", "City Tours", "Transfers", "Half Board"], image: "/singapore.png", destinationId: "dest-3" },
+  {
+    id: "pkg-1",
+    name: "4N Thailand",
+    price: "₹45,000",
+    durationNights: 4,
+    highlights: ["4-Star Hotel", "Sightseeing", "Transfers", "Breakfast", "Activities"],
+    image: "/thailand.png",
+    destinationId: "thailand",
+    itinerary: [
+      { day: 1, title: "Arrival & Check-in", details: ["Airport pickup", "Hotel check-in", "Evening at leisure"] },
+      { day: 2, title: "City Highlights", details: ["Guided sightseeing", "Local markets", "Optional activities"] },
+      { day: 3, title: "Island/Day Trip", details: ["Full-day excursion", "Transfers included"] },
+      { day: 4, title: "Departure", details: ["Breakfast", "Checkout", "Drop to airport"] },
+    ],
+  },
+  {
+    id: "pkg-2",
+    name: "4N Thai Ex-Blr",
+    price: "₹52,000",
+    durationNights: 4,
+    highlights: ["Flights Included", "4-Star Hotel", "Transfers", "Breakfast", "City Tour"],
+    image: "/thailand.png",
+    destinationId: "thailand",
+    itinerary: [
+      { day: 1, title: "Fly & Arrive", details: ["Flights (as per schedule)", "Pickup & check-in"] },
+      { day: 2, title: "Guided City Tour", details: ["Top attractions", "Evening free time"] },
+      { day: 3, title: "Leisure / Add-ons", details: ["Optional experiences", "Relaxation"] },
+      { day: 4, title: "Return", details: ["Checkout", "Airport transfer", "Fly back"] },
+    ],
+  },
+  {
+    id: "pkg-3",
+    name: "5N Dubai",
+    price: "₹81,500",
+    durationNights: 5,
+    highlights: ["5-Star Hotel", "Return Flights", "Desert Safari", "City Tour", "All Meals"],
+    image: "/dubai.png",
+    destinationId: "dubai",
+    itinerary: [
+      { day: 1, title: "Arrival & Marina Evening", details: ["Airport pickup", "Check-in", "Dhow cruise (optional)"] },
+      { day: 2, title: "Dubai City Tour", details: ["Landmarks & souks", "Photo stops", "Evening free"] },
+      { day: 3, title: "Desert Safari", details: ["Dune bashing", "BBQ dinner", "Cultural shows"] },
+      { day: 4, title: "Leisure Day", details: ["Shopping / theme parks (optional)"] },
+      { day: 5, title: "Departure", details: ["Checkout", "Airport transfer"] },
+    ],
+  },
+  {
+    id: "pkg-4",
+    name: "6N Bali",
+    price: "₹55,000",
+    durationNights: 6,
+    highlights: ["Private Villa", "Spa Package", "Rice Terrace", "Breakfast", "Transfers"],
+    image: "/bali.png",
+    destinationId: "bali",
+    itinerary: [
+      { day: 1, title: "Arrival & Villa Check-in", details: ["Pickup", "Settle in", "Leisure"] },
+      { day: 2, title: "Ubud & Rice Terraces", details: ["Scenic stops", "Local experiences"] },
+      { day: 3, title: "Spa & Relaxation", details: ["Spa session", "Free time"] },
+      { day: 4, title: "Beach Day", details: ["Coastline exploration", "Optional water sports"] },
+      { day: 5, title: "Temple Visit", details: ["Iconic temples", "Sunset viewpoint"] },
+      { day: 6, title: "Departure", details: ["Checkout", "Drop"] },
+    ],
+  },
+  {
+    id: "pkg-5",
+    name: "7N Singapore Cruise Malaysia",
+    price: "₹1,15,000",
+    durationNights: 7,
+    highlights: ["4-Star Hotels", "Cruise Included", "City Tours", "Transfers", "Half Board"],
+    image: "/singapore.png",
+    destinationId: "singapore",
+    itinerary: [
+      { day: 1, title: "Arrival Singapore", details: ["Airport pickup", "Check-in", "Evening walk"] },
+      { day: 2, title: "Singapore City Tour", details: ["Must-see highlights", "Leisure time"] },
+      { day: 3, title: "Embark Cruise", details: ["Transfer to port", "Cruise check-in"] },
+      { day: 4, title: "Cruise Day", details: ["On-board activities", "Meals as per plan"] },
+      { day: 5, title: "Malaysia Stop", details: ["Shore excursion (optional)"] },
+      { day: 6, title: "Disembark & Free Day", details: ["Back to city", "Shopping / attractions"] },
+      { day: 7, title: "Departure", details: ["Checkout", "Airport drop"] },
+    ],
+  },
 ];
 
 export const GENERAL_DESTINATION_ID = "general";

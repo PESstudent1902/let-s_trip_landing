@@ -17,7 +17,7 @@ Open `http://localhost:3000`.
 
 ## Environment variables
 
-Create `.env.local`:
+Create `.env.local` (you can start from `.env.example`):
 
 ```bash
 # Vercel KV / Upstash Redis
@@ -29,8 +29,9 @@ KV_REST_API_TOKEN=
 
 # OpenRouter chatbot
 OPENROUTER_API_KEY=
-OPENROUTER_MODEL=google/gemma-4-26b-a4b
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+# Model is configured server-side (Gemma 4 26B A4B IT)
+# google/gemma-4-26b-a4b-it
 
 # Optional WhatsApp webhook settings (existing endpoint)
 WHATSAPP_VERIFY_TOKEN=
@@ -57,6 +58,7 @@ WHATSAPP_PHONE_NUMBER_ID=
 1. Push to GitHub
 2. Import repository in Vercel
 3. Add the environment variables above
+   - Add a **Vercel KV** database and connect it to this project so `KV_REST_API_URL` / `KV_REST_API_TOKEN` are present
 4. Deploy
 
 ## Scripts

@@ -165,15 +165,57 @@ function PackageModal({ mode, initial, destinations, onSave, onClose }: { mode: 
   const [price, setPrice] = useState(initial?.price || "");
   const [highlights, setHighlights] = useState(initial?.highlights.join(", ") || "");
   const [destinationId, setDestinationId] = useState(initial?.destinationId || destinations[0]?.id || "");
+  const [durationNights, setDurationNights] = useState<string>(typeof initial?.durationNights === "number" ? String(initial.durationNights) : "");
+  const [tags, setTags] = useState(initial?.tags?.join(", ") || "");
+  const [itineraryJson, setItineraryJson] = useState(
+    JSON.stringify(
+      initial?.itinerary?.length
+        ? initial.itinerary
+        : [
+            { day: 1, title: "Arrival & Check-in", details: ["Pickup", "Hotel check-in", "Leisure time"] },
+            { day: 2, title: "Sightseeing", details: ["Guided tour", "Optional activities"] },
+          ],
+      null,
+      2
+    )
+  );
+  const [itineraryError, setItineraryError] = useState<string>("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ name, image, price, highlights: highlights.split(",").map((h) => h.trim()).filter(Boolean), destinationId });
+    setItineraryError("");
+    let itinerary: Package["itinerary"] | undefined;
+    try {
+      const parsed = JSON.parse(itineraryJson) as unknown;
+      if (Array.isArray(parsed)) itinerary = parsed as Package["itinerary"];
+      else throw new Error("Itinerary must be an array");
+    } catch (err) {
+      setItineraryError(err instanceof Error ? err.message : "Invalid itinerary JSON");
+      return;
+    }
+
+    const nights =
+      durationNights.trim() === ""
+        ? undefined
+        : Number.isFinite(Number(durationNights))
+          ? Number(durationNights)
+          : undefined;
+
+    onSave({
+      name,
+      image,
+      price,
+      highlights: highlights.split(",").map((h) => h.trim()).filter(Boolean),
+      destinationId,
+      durationNights: nights,
+      tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
+      itinerary,
+    });
   };
 
   return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 overflow-y-auto py-8">
-      <form onSubmit={handleSubmit} className="w-full max-w-lg p-6 rounded-2xl bg-[#192122] border border-white/10">
+    <div className="fixed inset-0 z-[80] flex items-start sm:items-center justify-center bg-black/60 backdrop-blur-sm px-4 overflow-y-auto py-6">
+      <form onSubmit={handleSubmit} className="w-full max-w-lg p-5 sm:p-6 rounded-2xl bg-[#192122] border border-white/10 my-auto max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-white font-bold text-lg">{mode === "add" ? "➕ Add Package" : "✏️ Edit Package"}</h3>
           <button type="button" onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 text-gray-400 transition-colors"><X size={20} /></button>
@@ -187,6 +229,10 @@ function PackageModal({ mode, initial, destinations, onSave, onClose }: { mode: 
               {destinations.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
             </select>
           </div>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Nights (optional)" value={durationNights} onChange={setDurationNights} placeholder="e.g. 5" />
+            <Field label="Tags (optional, comma-separated)" value={tags} onChange={setTags} placeholder="e.g. Family, Luxury" />
+          </div>
           <div>
             <label className="block text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1.5">Image</label>
             <select value={image} onChange={(e) => setImage(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-400/50 transition-all appearance-none">
@@ -195,6 +241,19 @@ function PackageModal({ mode, initial, destinations, onSave, onClose }: { mode: 
           </div>
           <Field label="Price" value={price} onChange={setPrice} placeholder="e.g. ₹81,500" required />
           <Field label="Highlights (comma-separated)" value={highlights} onChange={setHighlights} placeholder="e.g. 5-Star Hotel, Return Flights" required />
+          <div>
+            <label className="block text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1.5">Itinerary (JSON)</label>
+            <textarea
+              value={itineraryJson}
+              onChange={(e) => setItineraryJson(e.target.value)}
+              rows={10}
+              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-gray-500 focus:outline-none focus:border-cyan-400/50 focus:bg-white/10 transition-all font-mono text-xs"
+            />
+            {itineraryError && <p className="text-red-400 text-xs mt-2">{itineraryError}</p>}
+            <p className="text-gray-500 text-[11px] mt-2">
+              Format: <span className="text-gray-400">[{`{ day: 1, title: \"...\", details: [\"...\", \"...\"] }`}]</span>
+            </p>
+          </div>
         </div>
 
         <div className="flex gap-3 mt-6">
@@ -242,7 +301,7 @@ function SelectField({ label, value, onChange, options }: { label: string; value
 export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [tab, setTab] = useState<Tab>("destinations");
-  const [selectedDestFilter, setSelectedDestFilter] = useState<string>("all");
+
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [packages, setPackages] = useState<Package[]>([]);
   const [packageDestinationFilter, setPackageDestinationFilter] = useState<string>("all");
@@ -436,15 +495,8 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-hide" style={{ scrollbarWidth: "none" }}>
-              <button onClick={() => setSelectedDestFilter("all")} className={`px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors ${selectedDestFilter === "all" ? "bg-cyan-500 text-white" : "bg-white/5 text-gray-400 hover:bg-white/10"}`}>All Packages</button>
-              {destinations.map(d => (
-                <button key={d.id} onClick={() => setSelectedDestFilter(d.id)} className={`px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-colors ${selectedDestFilter === d.id ? "bg-cyan-500 text-white" : "bg-white/5 text-gray-400 hover:bg-white/10"}`}>{d.name}</button>
-              ))}
-            </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {packages.filter(p => selectedDestFilter === "all" || p.destinationId === selectedDestFilter).map((p) => (
+              {filteredPackages.map((p) => (
                 <div key={p.id} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all group">
                   <div className="flex gap-4">
                     <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-gray-800">
