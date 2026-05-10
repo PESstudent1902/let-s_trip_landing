@@ -221,7 +221,7 @@ function PackageCard({
       transition={{ duration: 0.6, delay: 0.2 + index * 0.08, ease: [0.22, 1, 0.36, 1] }}
       className="glass rounded-3xl overflow-hidden group hover:border-cyan/15 transition-all duration-500 md:min-w-[420px] md:max-w-[480px] snap-start flex-shrink-0"
     >
-      <div className="flex flex-col sm:flex-row">
+      <div className="flex flex-col sm:flex-row h-full">
         <div className="relative h-44 sm:h-auto sm:w-44 md:w-48 flex-shrink-0">
           <Image src={pkg.image} alt={pkg.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
           <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-transparent to-abyss/80" />
