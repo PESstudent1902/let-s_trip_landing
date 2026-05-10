@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { MagneticButton } from "./Navbar";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, MapPin, Briefcase, ChevronDown } from "lucide-react";
 import Image from "next/image";
+import { fetchDestinations, fetchPackages } from "@/app/actions";
+import { Destination, Package } from "@/lib/packageStore";
+import { openItinerary } from "./ItineraryManager";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -35,7 +38,44 @@ const PARTICLES = Array.from({ length: 15 }, (_, i) => ({
 export default function HeroSection() {
   const heroRef = useRef<HTMLDivElement>(null);
   const parallaxRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
+
+  const [destinations, setDestinations] = useState<Destination[]>([]);
+  const [packages, setPackages] = useState<Package[]>([]);
+  const [selectedDestId, setSelectedDestId] = useState<string>("");
+  const [selectedPkgId, setSelectedPkgId] = useState<string>("");
+
+  useEffect(() => {
+    Promise.all([fetchDestinations(), fetchPackages()]).then(([dests, pkgs]) => {
+      setDestinations(dests);
+      setPackages(pkgs);
+    });
+  }, []);
+
+  const handleSearch = () => {
+    let pkgToOpen: Package | undefined;
+    
+    if (selectedPkgId) {
+      pkgToOpen = packages.find(p => p.id === selectedPkgId);
+    } else if (selectedDestId) {
+      // If only destination is selected, show the first package of that destination, or scroll to destinations
+      pkgToOpen = packages.find(p => p.destinationId === selectedDestId);
+      if (!pkgToOpen) {
+        document.getElementById("packages")?.scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+    }
+    
+    if (pkgToOpen) {
+      const destName = destinations.find(d => d.id === pkgToOpen?.destinationId)?.name;
+      openItinerary(pkgToOpen, destName);
+    } else {
+      document.getElementById("packages")?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const filteredPackages = selectedDestId 
+    ? packages.filter(p => p.destinationId === selectedDestId) 
+    : packages;
 
   useEffect(() => {
     if (!parallaxRef.current || !heroRef.current) return;
@@ -73,23 +113,7 @@ export default function HeroSection() {
     return () => ctx.revert();
   }, []);
 
-  useEffect(() => {
-    if (!statsRef.current) return;
-    const ctx = gsap.context(() => {
-      gsap.from(".stat-item", {
-        y: 30,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.12,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: statsRef.current,
-          start: "top 90%",
-        },
-      });
-    }, statsRef);
-    return () => ctx.revert();
-  }, []);
+
 
   return (
     <section ref={heroRef} id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -127,20 +151,55 @@ export default function HeroSection() {
           Curated luxury travel experiences designed to make every moment extraordinary. From Bali sunsets to Dubai skylines.
         </motion.p>
 
-        {/* CTA — organic flowing text, not a rectangular button */}
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}>
-          <MagneticButton>
-            <a href="#destinations" className="group inline-flex flex-col items-center gap-1 cursor-pointer">
-              <span className="text-2xl md:text-3xl text-orange hover:text-warm transition-colors" style={{ fontFamily: "var(--font-brush)" }}>
-                Discover Your Orbit
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="h-[1px] w-8 bg-gradient-to-r from-transparent to-orange group-hover:w-16 transition-all duration-500" />
-                <motion.span animate={{ x: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} className="text-orange text-xl">✦</motion.span>
-                <span className="h-[1px] w-8 bg-gradient-to-l from-transparent to-orange group-hover:w-16 transition-all duration-500" />
-              </span>
-            </a>
-          </MagneticButton>
+        {/* Search Bar — ClearTrip Style */}
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.9, ease: [0.22, 1, 0.36, 1] }} className="max-w-4xl mx-auto">
+          <div className="glass-strong p-3 md:p-4 rounded-3xl flex flex-col md:flex-row gap-3 shadow-2xl border border-white/20">
+            
+            <div className="flex-1 flex items-center bg-white/5 hover:bg-white/10 transition-colors rounded-2xl px-4 py-3 border border-white/10 group cursor-pointer relative">
+              <MapPin className="text-cyan mr-3 group-hover:scale-110 transition-transform" size={24} />
+              <div className="flex-1 text-left">
+                <p className="text-[10px] text-text-muted uppercase tracking-widest font-semibold mb-0.5">Where to?</p>
+                <select 
+                  className="w-full bg-transparent text-white font-bold text-lg md:text-xl appearance-none outline-none cursor-pointer" 
+                  value={selectedDestId}
+                  onChange={(e) => { setSelectedDestId(e.target.value); setSelectedPkgId(""); }}
+                  style={{ fontFamily: "var(--font-headline)" }}
+                >
+                  <option value="" className="bg-abyss text-white">Any Destination</option>
+                  {destinations.map(d => (
+                    <option key={d.id} value={d.id} className="bg-abyss text-white">{d.name}</option>
+                  ))}
+                </select>
+              </div>
+              <ChevronDown className="text-white/50 pointer-events-none absolute right-4" size={20} />
+            </div>
+
+            <div className="flex-1 flex items-center bg-white/5 hover:bg-white/10 transition-colors rounded-2xl px-4 py-3 border border-white/10 group cursor-pointer relative">
+              <Briefcase className="text-violet-400 mr-3 group-hover:scale-110 transition-transform" size={24} />
+              <div className="flex-1 text-left">
+                <p className="text-[10px] text-text-muted uppercase tracking-widest font-semibold mb-0.5">Which Package?</p>
+                <select 
+                  className="w-full bg-transparent text-white font-bold text-lg md:text-xl appearance-none outline-none cursor-pointer" 
+                  value={selectedPkgId}
+                  onChange={(e) => setSelectedPkgId(e.target.value)}
+                  style={{ fontFamily: "var(--font-headline)" }}
+                  disabled={filteredPackages.length === 0}
+                >
+                  <option value="" className="bg-abyss text-white">Any Package</option>
+                  {filteredPackages.map(p => (
+                    <option key={p.id} value={p.id} className="bg-abyss text-white">{p.name}</option>
+                  ))}
+                </select>
+              </div>
+              <ChevronDown className="text-white/50 pointer-events-none absolute right-4" size={20} />
+            </div>
+
+            <button onClick={handleSearch} className="md:w-auto w-full px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan to-violet hover:opacity-90 transition-opacity flex items-center justify-center gap-2 group">
+              <Search className="text-white group-hover:scale-110 transition-transform" size={20} />
+              <span className="text-white font-bold tracking-wide" style={{ fontFamily: "var(--font-headline)" }}>Explore</span>
+            </button>
+            
+          </div>
         </motion.div>
 
         {/* Scroll indicator */}
@@ -154,19 +213,6 @@ export default function HeroSection() {
         </motion.div>
       </div>
 
-      {/* Stats bar */}
-      <motion.div ref={statsRef} initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 1.2, ease: [0.22, 1, 0.36, 1] }} className="absolute bottom-0 left-0 right-0 glass-strong border-t border-glass-border">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16 py-4 md:py-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {[{ v: "15K+", l: "Happy Travelers" }, { v: "200+", l: "Destinations" }, { v: "98%", l: "Satisfaction" }, { v: "24/7", l: "Support" }].map((s) => (
-              <div key={s.l} className="stat-item text-center">
-                <p className="text-xl md:text-3xl font-bold text-cyan text-glow-cyan" style={{ fontFamily: "var(--font-brush)" }}>{s.v}</p>
-                <p className="text-text-muted text-[10px] md:text-xs mt-1" style={{ fontFamily: "var(--font-handwritten)" }}>{s.l}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.div>
     </section>
   );
 }

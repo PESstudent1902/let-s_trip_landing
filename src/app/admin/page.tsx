@@ -117,10 +117,11 @@ function DestinationModal({ mode, initial, onSave, onClose }: { mode: ModalMode;
   const [price, setPrice] = useState(initial?.price || "");
   const [tags, setTags] = useState(initial?.tags.join(", ") || "");
   const [description, setDescription] = useState(initial?.description || "");
+  const [bestTimeToVisit, setBestTimeToVisit] = useState(initial?.bestTimeToVisit || "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ name, image, duration, price, tags: tags.split(",").map((t) => t.trim()).filter(Boolean), description });
+    onSave({ name, image, duration, price, tags: tags.split(",").map((t) => t.trim()).filter(Boolean), description, bestTimeToVisit });
   };
 
   return (
@@ -133,17 +134,13 @@ function DestinationModal({ mode, initial, onSave, onClose }: { mode: ModalMode;
 
         <div className="space-y-4">
           <Field label="Destination Name" value={name} onChange={setName} placeholder="e.g. Thailand" required />
-          <SelectField
-            label="Image"
-            value={image}
-            onChange={setImage}
-            options={AVAILABLE_IMAGES.map((img) => ({ value: img.value, label: img.label }))}
-          />
+          <ImageField label="Image" value={image} onChange={setImage} />
           <div className="grid grid-cols-2 gap-4">
             <Field label="Duration" value={duration} onChange={setDuration} placeholder="e.g. 7N" required />
             <Field label="Price" value={price} onChange={setPrice} placeholder="e.g. ₹62,000" required />
           </div>
           <Field label="Tags (comma-separated)" value={tags} onChange={setTags} placeholder="e.g. Adventure, Culture" />
+          <Field label="Best Time to Visit" value={bestTimeToVisit} onChange={setBestTimeToVisit} placeholder="e.g. Nov - Feb" />
           <Field label="Description" value={description} onChange={setDescription} placeholder="Short description..." required />
         </div>
 
@@ -167,32 +164,52 @@ function PackageModal({ mode, initial, destinations, onSave, onClose }: { mode: 
   const [destinationId, setDestinationId] = useState(initial?.destinationId || destinations[0]?.id || "");
   const [durationNights, setDurationNights] = useState<string>(typeof initial?.durationNights === "number" ? String(initial.durationNights) : "");
   const [tags, setTags] = useState(initial?.tags?.join(", ") || "");
-  const [itineraryJson, setItineraryJson] = useState(
-    JSON.stringify(
-      initial?.itinerary?.length
-        ? initial.itinerary
-        : [
-            { day: 1, title: "Arrival & Check-in", details: ["Pickup", "Hotel check-in", "Leisure time"] },
-            { day: 2, title: "Sightseeing", details: ["Guided tour", "Optional activities"] },
-          ],
-      null,
-      2
-    )
+  const [itinerary, setItinerary] = useState<Package["itinerary"]>(
+    initial?.itinerary?.length
+      ? initial.itinerary
+      : [
+          { day: 1, title: "Arrival & Check-in", details: ["Pickup", "Hotel check-in", "Leisure time"] },
+          { day: 2, title: "Sightseeing", details: ["Guided tour", "Optional activities"] },
+        ]
   );
-  const [itineraryError, setItineraryError] = useState<string>("");
+
+  const addDay = () => {
+    setItinerary([...(itinerary || []), { day: (itinerary?.length || 0) + 1, title: "", details: [""] }]);
+  };
+
+  const removeDay = (index: number) => {
+    const newItinerary = [...(itinerary || [])];
+    newItinerary.splice(index, 1);
+    newItinerary.forEach((day, i) => (day.day = i + 1));
+    setItinerary(newItinerary);
+  };
+
+  const updateDayTitle = (index: number, title: string) => {
+    const newItinerary = [...(itinerary || [])];
+    newItinerary[index].title = title;
+    setItinerary(newItinerary);
+  };
+
+  const updateDayDetail = (dayIndex: number, detailIndex: number, text: string) => {
+    const newItinerary = [...(itinerary || [])];
+    newItinerary[dayIndex].details[detailIndex] = text;
+    setItinerary(newItinerary);
+  };
+
+  const addDetail = (dayIndex: number) => {
+    const newItinerary = [...(itinerary || [])];
+    newItinerary[dayIndex].details.push("");
+    setItinerary(newItinerary);
+  };
+
+  const removeDetail = (dayIndex: number, detailIndex: number) => {
+    const newItinerary = [...(itinerary || [])];
+    newItinerary[dayIndex].details.splice(detailIndex, 1);
+    setItinerary(newItinerary);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setItineraryError("");
-    let itinerary: Package["itinerary"] | undefined;
-    try {
-      const parsed = JSON.parse(itineraryJson) as unknown;
-      if (Array.isArray(parsed)) itinerary = parsed as Package["itinerary"];
-      else throw new Error("Itinerary must be an array");
-    } catch (err) {
-      setItineraryError(err instanceof Error ? err.message : "Invalid itinerary JSON");
-      return;
-    }
 
     const nights =
       durationNights.trim() === ""
@@ -215,7 +232,7 @@ function PackageModal({ mode, initial, destinations, onSave, onClose }: { mode: 
 
   return (
     <div className="fixed inset-0 z-[80] flex items-start sm:items-center justify-center bg-black/60 backdrop-blur-sm px-4 overflow-y-auto py-6">
-      <form onSubmit={handleSubmit} className="w-full max-w-lg p-5 sm:p-6 rounded-2xl bg-[#192122] border border-white/10 my-auto max-h-[90vh] overflow-y-auto">
+      <form onSubmit={handleSubmit} className="w-full max-w-2xl p-5 sm:p-6 rounded-2xl bg-[#192122] border border-white/10 my-auto max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-white font-bold text-lg">{mode === "add" ? "➕ Add Package" : "✏️ Edit Package"}</h3>
           <button type="button" onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 text-gray-400 transition-colors"><X size={20} /></button>
@@ -233,26 +250,60 @@ function PackageModal({ mode, initial, destinations, onSave, onClose }: { mode: 
             <Field label="Nights (optional)" value={durationNights} onChange={setDurationNights} placeholder="e.g. 5" />
             <Field label="Tags (optional, comma-separated)" value={tags} onChange={setTags} placeholder="e.g. Family, Luxury" />
           </div>
-          <div>
-            <label className="block text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1.5">Image</label>
-            <select value={image} onChange={(e) => setImage(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-400/50 transition-all appearance-none">
-              {AVAILABLE_IMAGES.map((img) => <option key={img.value} value={img.value}>{img.label}</option>)}
-            </select>
-          </div>
+          
+          <ImageField label="Image" value={image} onChange={setImage} />
+          
           <Field label="Price" value={price} onChange={setPrice} placeholder="e.g. ₹81,500" required />
           <Field label="Highlights (comma-separated)" value={highlights} onChange={setHighlights} placeholder="e.g. 5-Star Hotel, Return Flights" required />
-          <div>
-            <label className="block text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1.5">Itinerary (JSON)</label>
-            <textarea
-              value={itineraryJson}
-              onChange={(e) => setItineraryJson(e.target.value)}
-              rows={10}
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-gray-500 focus:outline-none focus:border-cyan-400/50 focus:bg-white/10 transition-all font-mono text-xs"
-            />
-            {itineraryError && <p className="text-red-400 text-xs mt-2">{itineraryError}</p>}
-            <p className="text-gray-500 text-[11px] mt-2">
-              Format: <span className="text-gray-400">[{`{ day: 1, title: \"...\", details: [\"...\", \"...\"] }`}]</span>
-            </p>
+          
+          <div className="pt-4 border-t border-white/10">
+            <div className="flex items-center justify-between mb-4">
+              <label className="block text-xs text-gray-400 uppercase tracking-wider font-semibold">Itinerary</label>
+              <button type="button" onClick={addDay} className="flex items-center gap-1 text-[11px] bg-cyan-500/20 text-cyan-400 px-2 py-1 rounded hover:bg-cyan-500/30 transition-colors">
+                <Plus size={12} /> Add Day
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {itinerary?.map((day, dIdx) => (
+                <div key={dIdx} className="p-4 rounded-xl bg-white/5 border border-white/10">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="bg-white/10 text-white text-xs font-bold px-2 py-1 rounded">Day {day.day}</span>
+                    <input 
+                      type="text" 
+                      value={day.title} 
+                      onChange={(e) => updateDayTitle(dIdx, e.target.value)} 
+                      placeholder="Day Title (e.g. Arrival in Dubai)" 
+                      className="flex-1 bg-transparent text-sm text-white focus:outline-none placeholder:text-gray-600 font-semibold"
+                      required
+                    />
+                    <button type="button" onClick={() => removeDay(dIdx)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button>
+                  </div>
+                  
+                  <div className="space-y-2 pl-2 border-l border-white/10 ml-3">
+                    {day.details.map((detail, detIdx) => (
+                      <div key={detIdx} className="flex items-start gap-2 relative group">
+                        <div className="w-1.5 h-1.5 rounded-full bg-cyan-500/50 mt-1.5 flex-shrink-0" />
+                        <input 
+                          type="text" 
+                          value={detail} 
+                          onChange={(e) => updateDayDetail(dIdx, detIdx, e.target.value)} 
+                          placeholder="Activity detail..." 
+                          className="flex-1 bg-transparent text-sm text-gray-300 focus:outline-none focus:text-white placeholder:text-gray-600"
+                          required
+                        />
+                        <button type="button" onClick={() => removeDetail(dIdx, detIdx)} className="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-400 transition-opacity">
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                    <button type="button" onClick={() => addDetail(dIdx)} className="text-[11px] text-gray-500 hover:text-cyan-400 flex items-center gap-1 mt-2">
+                      <Plus size={10} /> Add Activity
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -279,6 +330,27 @@ function Field({ label, value, onChange, placeholder, required }: { label: strin
         required={required}
         className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-gray-500 focus:outline-none focus:border-cyan-400/50 focus:bg-white/10 transition-all"
       />
+    </div>
+  );
+}
+
+function ImageField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  const [mode, setMode] = useState<"preset" | "custom">("preset");
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1.5">
+        <label className="text-xs text-gray-400 uppercase tracking-wider font-semibold">{label}</label>
+        <button type="button" onClick={() => setMode(mode === "preset" ? "custom" : "preset")} className="text-[10px] text-cyan-400 hover:text-cyan-300">
+          {mode === "preset" ? "Use Custom URL" : "Use Preset"}
+        </button>
+      </div>
+      {mode === "preset" ? (
+        <select value={value} onChange={(e) => onChange(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-400/50 transition-all appearance-none">
+          {AVAILABLE_IMAGES.map((img) => <option key={img.value} value={img.value}>{img.label}</option>)}
+        </select>
+      ) : (
+        <input type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder="https://example.com/image.jpg" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-gray-500 focus:outline-none focus:border-cyan-400/50 focus:bg-white/10 transition-all" />
+      )}
     </div>
   );
 }
@@ -466,6 +538,9 @@ export default function AdminPage() {
                     <span className="text-cyan-400 font-bold text-sm">{d.price}</span>
                     <span className="text-gray-500 text-xs">{d.duration}</span>
                   </div>
+                  {d.bestTimeToVisit && (
+                    <div className="mt-2 text-[11px] text-orange/80 font-medium">Best Time: {d.bestTimeToVisit}</div>
+                  )}
                 </div>
               ))}
             </div>

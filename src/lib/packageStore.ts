@@ -10,6 +10,7 @@ export interface Destination {
   price: string;
   tags: string[];
   description: string;
+  bestTimeToVisit?: string;
 }
 
 export type ItineraryDay = {

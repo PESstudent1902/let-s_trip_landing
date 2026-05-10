@@ -6,9 +6,12 @@ import ConciergeSection from "@/components/ConciergeSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import Footer from "@/components/Footer";
 import MobileWhatsAppCTA from "@/components/MobileWhatsAppCTA";
+import ItineraryManager from "@/components/ItineraryManager";
+
 export default function Home() {
   return (
     <main className="relative">
+      <ItineraryManager />
       <Navbar />
       <HeroSection />
       <DestinationsSection />

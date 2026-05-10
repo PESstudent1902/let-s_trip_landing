@@ -4,7 +4,8 @@ import { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import { MagneticButton } from "./Navbar";
-import { ChevronLeft, ChevronRight, Hotel, Plane, UtensilsCrossed, Globe } from "lucide-react";
+import { ChevronLeft, ChevronRight, Hotel, Plane, UtensilsCrossed, Globe, Eye } from "lucide-react";
+import { openItinerary } from "./ItineraryManager";
 import { type Destination, type Package } from "@/lib/packageStore";
 import { fetchDestinations, fetchPackages } from "@/app/actions";
 
@@ -44,10 +45,7 @@ export default function DestinationsSection() {
 
   const destinationMap = useMemo(() => new Map(destinations.map((d) => [d.id, d.name])), [destinations]);
 
-  const visiblePackages = useMemo(() => {
-    if (selectedDestinationId === "all") return packages;
-    return packages.filter((pkg) => pkg.destinationId === selectedDestinationId);
-  }, [packages, selectedDestinationId]);
+  const visiblePackages = packages; // Show all packages by default now that filter is removed
 
   const scroll = (dir: "left" | "right") => {
     if (!scrollContainerRef.current) return;
@@ -60,83 +58,6 @@ export default function DestinationsSection() {
       <div className="absolute inset-0 bg-gradient-to-b from-abyss via-deep-space to-abyss" />
 
       <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16">
-        {/* Section Header */}
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} className="text-center mb-8 md:mb-12">
-          <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-dashed border-cyan/30 text-cyan text-sm tracking-wide mb-4 md:mb-6" style={{ fontFamily: "var(--font-handwritten)" }}>
-            <span className="w-2 h-2 rounded-full bg-cyan pulse-glow" /> Holiday Packages
-          </span>
-          <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl mb-3 md:mb-4" style={{ fontFamily: "var(--font-brush)" }}>
-            <span className="text-white">Choose Your </span>
-            <span className="bg-gradient-to-r from-cyan to-violet bg-clip-text text-transparent text-glow-cyan">Destination</span>
-          </h2>
-          <p className="text-text-secondary text-sm md:text-lg max-w-2xl mx-auto" style={{ fontFamily: "var(--font-handwritten)" }}>
-            Select a destination to explore curated packages
-          </p>
-        </motion.div>
-
-        {/* ========== DESTINATION SELECTOR — CARD GRID ========== */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }} 
-          animate={isInView ? { opacity: 1, y: 0 } : {}} 
-          transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 mb-14 md:mb-20"
-        >
-          {/* "All" card */}
-          <button
-            onClick={() => setSelectedDestinationId("all")}
-            className={`group relative flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-5 rounded-2xl border transition-all duration-300 cursor-pointer active:scale-95 ${
-              selectedDestinationId === "all"
-                ? "bg-cyan/10 border-cyan/40 shadow-[0_0_20px_rgba(0,240,255,0.15)]"
-                : "bg-white/[0.04] border-white/10 hover:bg-white/[0.08] hover:border-cyan/20"
-            }`}
-          >
-            <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-2xl transition-all ${
-              selectedDestinationId === "all" ? "bg-cyan/20 shadow-lg" : "bg-white/10 group-hover:bg-white/15"
-            }`}>
-              <Globe size={24} className={selectedDestinationId === "all" ? "text-cyan" : "text-white/70"} />
-            </div>
-            <span className={`text-xs sm:text-sm font-semibold tracking-wide transition-colors ${
-              selectedDestinationId === "all" ? "text-cyan" : "text-white/80 group-hover:text-white"
-            }`} style={{ fontFamily: "var(--font-headline)" }}>
-              All
-            </span>
-            {selectedDestinationId === "all" && (
-              <motion.div layoutId="activeIndicator" className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-cyan" />
-            )}
-          </button>
-
-          {/* Destination cards */}
-          {destinations.map((dest) => (
-            <button
-              key={dest.id}
-              onClick={() => setSelectedDestinationId(dest.id)}
-              className={`group relative flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-5 rounded-2xl border transition-all duration-300 cursor-pointer active:scale-95 ${
-                selectedDestinationId === dest.id
-                  ? "bg-cyan/10 border-cyan/40 shadow-[0_0_20px_rgba(0,240,255,0.15)]"
-                  : "bg-white/[0.04] border-white/10 hover:bg-white/[0.08] hover:border-cyan/20"
-              }`}
-            >
-              <div className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden flex items-center justify-center transition-all ${
-                selectedDestinationId === dest.id ? "ring-2 ring-cyan/50 shadow-lg" : "ring-1 ring-white/10 group-hover:ring-white/20"
-              }`}>
-                {dest.image && dest.image !== "/hero-bg.png" ? (
-                  <Image src={dest.image} alt={dest.name} fill className="object-cover" />
-                ) : (
-                  <span className="text-2xl">{DESTINATION_ICONS[dest.id] || "✈️"}</span>
-                )}
-              </div>
-              <span className={`text-xs sm:text-sm font-semibold tracking-wide transition-colors text-center leading-tight ${
-                selectedDestinationId === dest.id ? "text-cyan" : "text-white/80 group-hover:text-white"
-              }`} style={{ fontFamily: "var(--font-headline)" }}>
-                {dest.name}
-              </span>
-              {selectedDestinationId === dest.id && (
-                <motion.div layoutId="activeIndicator" className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-cyan" />
-              )}
-            </button>
-          ))}
-        </motion.div>
-
         {/* ========== POPULAR PACKAGES ========== */}
         <div id="packages" className="relative z-10">
           <motion.div initial={{ opacity: 0, y: 40 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }} className="text-center mb-8 md:mb-12">
@@ -145,9 +66,7 @@ export default function DestinationsSection() {
               <span className="text-orange text-glow-orange">Packages</span>
             </h2>
             <p className="text-text-secondary text-sm md:text-lg" style={{ fontFamily: "var(--font-handwritten)" }}>
-              {selectedDestinationId === "all"
-                ? "All-inclusive experiences at unbeatable value"
-                : `Showing packages for ${destinationMap.get(selectedDestinationId) || "selected destination"}`}
+              All-inclusive experiences at unbeatable value
             </p>
           </motion.div>
 
@@ -254,7 +173,10 @@ function DestinationCard({ destination, index, isInView }: { destination: Destin
 
           <motion.div animate={{ opacity: hovered ? 1 : 0.7, y: hovered ? 0 : 10 }} className="flex items-center justify-between">
             <div>
-              <span className="text-text-muted text-xs" style={{ fontFamily: "var(--font-handwritten)" }}>{destination.duration}</span>
+              <span className="text-text-muted text-xs block" style={{ fontFamily: "var(--font-handwritten)" }}>{destination.duration}</span>
+              {destination.bestTimeToVisit && (
+                <span className="text-orange/80 text-[10px] block mt-0.5" style={{ fontFamily: "var(--font-handwritten)" }}>Best Time: {destination.bestTimeToVisit}</span>
+              )}
             </div>
             <a href="https://wa.me/918867767171" target="_blank" rel="noopener noreferrer" className="adventure-link flex items-center gap-2 text-orange hover:text-warm transition-colors cursor-pointer text-sm" style={{ fontFamily: "var(--font-brush)" }}>
               Explore <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
@@ -279,7 +201,10 @@ function MobileDestinationCard({ destination, index, isInView }: { destination: 
           <p className="text-text-secondary text-xs sm:text-sm mb-3 line-clamp-2" style={{ fontFamily: "var(--font-handwritten)" }}>{destination.description}</p>
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-text-muted text-xs" style={{ fontFamily: "var(--font-handwritten)" }}>{destination.duration}</span>
+              <span className="text-text-muted text-xs block" style={{ fontFamily: "var(--font-handwritten)" }}>{destination.duration}</span>
+              {destination.bestTimeToVisit && (
+                <span className="text-orange/80 text-[10px] block mt-0.5" style={{ fontFamily: "var(--font-handwritten)" }}>Best Time: {destination.bestTimeToVisit}</span>
+              )}
             </div>
             <a href="https://wa.me/918867767171" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-orange text-sm active:scale-95 transition-transform" style={{ fontFamily: "var(--font-brush)" }}>
               Explore →
@@ -321,9 +246,9 @@ function PackageCard({ pkg, destinationName, index, isInView }: { pkg: Package; 
           </div>
 
           <MagneticButton>
-            <a href="https://wa.me/918867767171" target="_blank" rel="noopener noreferrer" className="adventure-link inline-flex items-center gap-2 text-orange hover:text-warm transition-colors cursor-pointer text-sm" style={{ fontFamily: "var(--font-brush)" }}>
-              Book This Journey <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
-            </a>
+            <button onClick={() => openItinerary(pkg, destinationName)} className="adventure-link inline-flex items-center gap-2 text-cyan hover:text-white transition-colors cursor-pointer text-sm" style={{ fontFamily: "var(--font-brush)" }}>
+              <Eye size={16} /> View Itinerary
+            </button>
           </MagneticButton>
         </div>
       </div>
