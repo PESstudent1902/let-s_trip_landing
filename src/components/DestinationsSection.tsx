@@ -38,6 +38,7 @@ export default function DestinationsSection() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line
     loadData();
     const interval = setInterval(loadData, 30000);
     return () => clearInterval(interval);
