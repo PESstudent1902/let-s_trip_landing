@@ -31,12 +31,6 @@ const testimonials = [
   },
 ];
 
-const trustBadges = [
-  { icon: Shield, label: "IATA Certified" },
-  { icon: Heart, label: "15,000+ Happy Travelers" },
-  { icon: Star, label: "4.9 Average Rating" },
-  { icon: ThumbsUp, label: "100% Money Back Guarantee" },
-];
 
 export default function TestimonialsSection() {
   const ref = useRef<HTMLDivElement>(null);
@@ -95,20 +89,7 @@ export default function TestimonialsSection() {
           ))}
         </div>
 
-        {/* Trust Badges */}
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-14 md:mt-20 glass rounded-2xl p-6 md:p-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {trustBadges.map((badge) => (
-              <div key={badge.label} className="flex flex-col items-center text-center gap-2 md:gap-3">
-                <div className="p-3 rounded-xl bg-white/5">
-                  <badge.icon size={22} className="text-cyan" />
-                </div>
-                <p className="text-xs md:text-sm font-semibold text-text-secondary" style={{ fontFamily: "var(--font-headline)" }}>{badge.label}</p>
-              </div>
-            ))}
-          </div>
-        </motion.div>
+
       </div>
     </section>
   );
