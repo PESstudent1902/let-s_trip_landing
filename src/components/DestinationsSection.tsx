@@ -38,7 +38,7 @@ export default function DestinationsSection() {
     return () => clearInterval(interval);
   }, [loadData]);
 
-  const destinationMap = useMemo(() => new Map(destinations.map((d) => [d.id, d.name])), [destinations]);
+  const destinationMap = useMemo(() => new Map(destinations.map((d) => [d.id, d])), [destinations]);
 
   /* Group packages by section – a package can appear in multiple */
   const sectionGroups = useMemo(() => {
@@ -110,7 +110,7 @@ function PackageSectionRow({
   icon: string;
   label: string;
   packages: Package[];
-  destinationMap: Map<string, string>;
+  destinationMap: Map<string, Destination>;
   isInView: boolean;
   index: number;
 }) {
@@ -268,7 +268,7 @@ function PackageCard({
 
           <MagneticButton>
             <button
-              onClick={() => openItinerary(pkg, destinationName)}
+              onClick={() => openItinerary(pkg, destination?.name)}
               className={`adventure-link inline-flex items-center gap-2 ${style.accent} hover:text-white transition-colors cursor-pointer text-sm`}
               style={{ fontFamily: "var(--font-brush)" }}
             >
