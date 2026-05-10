@@ -7,6 +7,7 @@ import {
   isAdminAuthenticated,
   logoutAdmin,
   AVAILABLE_IMAGES,
+  PACKAGE_SECTIONS,
   slugifyDestinationName,
   type Destination,
   type Package,
@@ -164,6 +165,7 @@ function PackageModal({ mode, initial, destinations, onSave, onClose }: { mode: 
   const [destinationId, setDestinationId] = useState(initial?.destinationId || destinations[0]?.id || "");
   const [durationNights, setDurationNights] = useState<string>(typeof initial?.durationNights === "number" ? String(initial.durationNights) : "");
   const [tags, setTags] = useState(initial?.tags?.join(", ") || "");
+  const [selectedSections, setSelectedSections] = useState<string[]>(initial?.sections || []);
   const [itinerary, setItinerary] = useState<Package["itinerary"]>(
     initial?.itinerary?.length
       ? initial.itinerary
@@ -226,6 +228,7 @@ function PackageModal({ mode, initial, destinations, onSave, onClose }: { mode: 
       destinationId,
       durationNights: nights,
       tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
+      sections: selectedSections,
       itinerary,
     });
   };
@@ -250,7 +253,35 @@ function PackageModal({ mode, initial, destinations, onSave, onClose }: { mode: 
             <Field label="Nights (optional)" value={durationNights} onChange={setDurationNights} placeholder="e.g. 5" />
             <Field label="Tags (optional, comma-separated)" value={tags} onChange={setTags} placeholder="e.g. Family, Luxury" />
           </div>
-          
+
+          {/* Section Assignment */}
+          <div>
+            <label className="block text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Website Sections</label>
+            <p className="text-[11px] text-gray-500 mb-3">Select which sections this package appears in. A package can appear in multiple sections.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {PACKAGE_SECTIONS.map((section) => (
+                <label key={section.id} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${selectedSections.includes(section.id) ? "bg-cyan-500/10 border-cyan-400/30" : "bg-white/5 border-white/10 hover:border-white/20"}`}>
+                  <input
+                    type="checkbox"
+                    checked={selectedSections.includes(section.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedSections([...selectedSections, section.id]);
+                      } else {
+                        setSelectedSections(selectedSections.filter((s) => s !== section.id));
+                      }
+                    }}
+                    className="sr-only"
+                  />
+                  <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${selectedSections.includes(section.id) ? "bg-cyan-500 border-cyan-500" : "border-white/20"}`}>
+                    {selectedSections.includes(section.id) && <Check size={12} className="text-white" />}
+                  </div>
+                  <span className="text-sm">{section.icon} {section.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
           <ImageField label="Image" value={image} onChange={setImage} />
           
           <Field label="Price" value={price} onChange={setPrice} placeholder="e.g. ₹81,500" required />
@@ -377,6 +408,7 @@ export default function AdminPage() {
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [packages, setPackages] = useState<Package[]>([]);
   const [packageDestinationFilter, setPackageDestinationFilter] = useState<string>("all");
+  const [packageSectionFilter, setPackageSectionFilter] = useState<string>("all");
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   const [destModal, setDestModal] = useState<{ mode: ModalMode; item?: Destination } | null>(null);
@@ -415,9 +447,15 @@ export default function AdminPage() {
   const destinationMap = useMemo(() => new Map(destinations.map((d) => [d.id, d.name])), [destinations]);
 
   const filteredPackages = useMemo(() => {
-    if (packageDestinationFilter === "all") return packages;
-    return packages.filter((pkg) => pkg.destinationId === packageDestinationFilter);
-  }, [packages, packageDestinationFilter]);
+    let result = packages;
+    if (packageDestinationFilter !== "all") {
+      result = result.filter((pkg) => pkg.destinationId === packageDestinationFilter);
+    }
+    if (packageSectionFilter !== "all") {
+      result = result.filter((pkg) => pkg.sections?.includes(packageSectionFilter));
+    }
+    return result;
+  }, [packages, packageDestinationFilter, packageSectionFilter]);
 
   const handleSaveDest = async (data: Omit<Destination, "id">) => {
     if (destModal?.mode === "edit" && destModal.item) {
@@ -568,6 +606,17 @@ export default function AdminPage() {
                   </button>
                 ))}
               </div>
+
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => setPackageSectionFilter("all")} className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${packageSectionFilter === "all" ? "bg-violet-500/20 border-violet-400/40 text-violet-300" : "bg-white/5 border-white/10 text-gray-300 hover:text-white"}`}>
+                  All Sections
+                </button>
+                {PACKAGE_SECTIONS.map((s) => (
+                  <button key={s.id} onClick={() => setPackageSectionFilter(s.id)} className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${packageSectionFilter === s.id ? "bg-violet-500/20 border-violet-400/40 text-violet-300" : "bg-white/5 border-white/10 text-gray-300 hover:text-white"}`}>
+                    {s.icon} {s.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -589,6 +638,14 @@ export default function AdminPage() {
                           <button onClick={() => setConfirmDelete({ type: "pkg", id: p.id, name: p.name })} className="p-1.5 rounded-lg bg-white/5 text-gray-400 hover:bg-red-500/20 hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
                         </div>
                       </div>
+                      {p.sections && p.sections.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1.5">
+                          {p.sections.map((sId) => {
+                            const sec = PACKAGE_SECTIONS.find((s) => s.id === sId);
+                            return sec ? <span key={sId} className="px-1.5 py-0.5 rounded bg-violet-500/15 text-violet-300 text-[9px] font-medium">{sec.icon} {sec.label}</span> : null;
+                          })}
+                        </div>
+                      )}
                       <div className="flex flex-wrap gap-1.5 mt-2">
                         {p.highlights.map((h) => <span key={h} className="px-2 py-0.5 rounded-md bg-white/5 text-gray-400 text-[10px]">{h}</span>)}
                       </div>

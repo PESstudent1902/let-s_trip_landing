@@ -19,6 +19,16 @@ export type ItineraryDay = {
   details: string[];
 };
 
+export const PACKAGE_SECTIONS = [
+  { id: "expert-picks", label: "Expert Picks to Inspire You", icon: "✦" },
+  { id: "adventures", label: "Adventures for You", icon: "🏔️" },
+  { id: "honeymoon", label: "Honeymoon Special", icon: "💕" },
+  { id: "domestic", label: "Domestic / Indian", icon: "🇮🇳" },
+  { id: "explore-more", label: "Explore More", icon: "🌍" },
+] as const;
+
+export type PackageSectionId = typeof PACKAGE_SECTIONS[number]["id"];
+
 export interface Package {
   id: string;
   name: string;
@@ -29,6 +39,7 @@ export interface Package {
   durationNights?: number;
   tags?: string[];
   itinerary?: ItineraryDay[];
+  sections?: string[]; // which website sections this package appears in (multi-select)
 }
 
 export const DEFAULT_DESTINATIONS: Destination[] = [
@@ -51,6 +62,7 @@ export const DEFAULT_PACKAGES: Package[] = [
     highlights: ["4-Star Hotel", "Sightseeing", "Transfers", "Breakfast", "Activities"],
     image: "/thailand.png",
     destinationId: "thailand",
+    sections: ["expert-picks", "adventures"],
     itinerary: [
       { day: 1, title: "Arrival & Check-in", details: ["Airport pickup", "Hotel check-in", "Evening at leisure"] },
       { day: 2, title: "City Highlights", details: ["Guided sightseeing", "Local markets", "Optional activities"] },
@@ -66,6 +78,7 @@ export const DEFAULT_PACKAGES: Package[] = [
     highlights: ["Flights Included", "4-Star Hotel", "Transfers", "Breakfast", "City Tour"],
     image: "/thailand.png",
     destinationId: "thailand",
+    sections: ["adventures", "explore-more"],
     itinerary: [
       { day: 1, title: "Fly & Arrive", details: ["Flights (as per schedule)", "Pickup & check-in"] },
       { day: 2, title: "Guided City Tour", details: ["Top attractions", "Evening free time"] },
@@ -81,6 +94,7 @@ export const DEFAULT_PACKAGES: Package[] = [
     highlights: ["5-Star Hotel", "Return Flights", "Desert Safari", "City Tour", "All Meals"],
     image: "/dubai.png",
     destinationId: "dubai",
+    sections: ["expert-picks", "honeymoon"],
     itinerary: [
       { day: 1, title: "Arrival & Marina Evening", details: ["Airport pickup", "Check-in", "Dhow cruise (optional)"] },
       { day: 2, title: "Dubai City Tour", details: ["Landmarks & souks", "Photo stops", "Evening free"] },
@@ -97,6 +111,7 @@ export const DEFAULT_PACKAGES: Package[] = [
     highlights: ["Private Villa", "Spa Package", "Rice Terrace", "Breakfast", "Transfers"],
     image: "/bali.png",
     destinationId: "bali",
+    sections: ["honeymoon", "explore-more"],
     itinerary: [
       { day: 1, title: "Arrival & Villa Check-in", details: ["Pickup", "Settle in", "Leisure"] },
       { day: 2, title: "Ubud & Rice Terraces", details: ["Scenic stops", "Local experiences"] },
@@ -114,6 +129,7 @@ export const DEFAULT_PACKAGES: Package[] = [
     highlights: ["4-Star Hotels", "Cruise Included", "City Tours", "Transfers", "Half Board"],
     image: "/singapore.png",
     destinationId: "singapore",
+    sections: ["expert-picks", "adventures", "explore-more"],
     itinerary: [
       { day: 1, title: "Arrival Singapore", details: ["Airport pickup", "Check-in", "Evening walk"] },
       { day: 2, title: "Singapore City Tour", details: ["Must-see highlights", "Leisure time"] },
