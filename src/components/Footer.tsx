@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const quickLinks = [
   { label: "Destinations", href: "#destinations" },
   { label: "Packages", href: "#packages" },
-  { label: "Concierge", href: "#concierge" },
+  { label: "Contact Us", href: "#contact" },
   { label: "Reviews", href: "#reviews" },
 ];
 

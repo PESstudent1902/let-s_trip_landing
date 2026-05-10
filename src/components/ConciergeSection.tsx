@@ -10,7 +10,7 @@ export default function ConciergeSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} id="concierge" className="relative py-20 md:py-28 overflow-hidden">
+    <section ref={ref} id="contact" className="relative py-20 md:py-28 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-abyss via-deep-space to-abyss" />
       <div className="absolute top-1/2 left-1/2 w-[800px] h-[600px] rounded-full bg-green-500/5 blur-[150px] -translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 

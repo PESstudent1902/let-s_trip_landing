@@ -14,7 +14,7 @@ const testimonials = [
     name: "Anita & Karan", sub: "Newlyweds", tag: "Honeymoon", tagColor: "bg-pink-500/20 text-pink-400", size: "medium",
   },
   {
-    text: "Traveled solo to Thailand and never felt alone. The concierge was always just a WhatsApp message away!",
+    text: "Traveled solo to Thailand and never felt alone. The support team was always just a WhatsApp message away!",
     name: "Vikram P.", sub: "Solo Traveler", tag: "Solo", tagColor: "bg-violet/20 text-violet", size: "small",
   },
   {

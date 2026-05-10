@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
 function generateConciergeResponse(message: string): string {
   // Simple keyword-based routing for the travel concierge flow
   if (message.includes("hi") || message.includes("hello") || message.includes("start")) {
-    return `Hey! I'm your LetsTrip Concierge 🌍✨\n\nLet me craft your perfect trip! What vibe are you going for?\n\n1️⃣ Adventure & Thrills\n2️⃣ Relaxation & Wellness\n3️⃣ Culture & Heritage\n4️⃣ Luxury & Romance`;
+    return `Hey! I'm your LetsTrip Assistant 🌍✨\n\nLet me craft your perfect trip! What vibe are you going for?\n\n1️⃣ Adventure & Thrills\n2️⃣ Relaxation & Wellness\n3️⃣ Culture & Heritage\n4️⃣ Luxury & Romance`;
   }
 
   if (message.includes("adventure") || message.includes("1")) {
@@ -79,7 +79,7 @@ function generateConciergeResponse(message: string): string {
     return `✨ Here's your perfect match!\n\n🏝️ 5N Bali Bliss Package\n💰 ₹89,000 per person\n\n✅ Luxury Private Villa\n✅ Return Flights\n✅ Spa & Wellness\n✅ Adventure Activities\n✅ All Meals Included\n\nReply BOOK to confirm or EXPLORE for more options!`;
   }
 
-  return `Hey there! 👋 I'm your LetsTrip Travel Concierge.\n\nSay "Hi" to start planning your dream vacation! 🌍`;
+  return `Hey there! 👋 I'm your LetsTrip Travel Assistant.\n\nSay "Hi" to start planning your dream vacation! 🌍`;
 }
 
 async function sendWhatsAppMessage(to: string, message: string) {

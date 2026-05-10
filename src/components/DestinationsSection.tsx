@@ -170,7 +170,7 @@ function PackageSectionRow({
             <PackageCard
               key={pkg.id}
               pkg={pkg}
-              destinationName={pkg.destinationId ? destinationMap.get(pkg.destinationId) : undefined}
+              destination={pkg.destinationId ? destinationMap.get(pkg.destinationId) : undefined}
               index={i}
               isInView={isInView}
               sectionId={sectionId}
@@ -184,7 +184,7 @@ function PackageSectionRow({
             <PackageCard
               key={pkg.id}
               pkg={pkg}
-              destinationName={pkg.destinationId ? destinationMap.get(pkg.destinationId) : undefined}
+              destination={pkg.destinationId ? destinationMap.get(pkg.destinationId) : undefined}
               index={i}
               isInView={isInView}
               sectionId={sectionId}
@@ -201,13 +201,13 @@ function PackageSectionRow({
    ================================================================ */
 function PackageCard({
   pkg,
-  destinationName,
+  destination,
   index,
   isInView,
   sectionId,
 }: {
   pkg: Package;
-  destinationName?: string;
+  destination?: Destination;
   index: number;
   isInView: boolean;
   sectionId: string;
@@ -241,9 +241,15 @@ function PackageCard({
               <p className={`text-lg sm:text-xl md:text-2xl ${style.accent} ${style.accentGlow}`} style={{ fontFamily: "var(--font-brush)" }}>
                 {pkg.price}
               </p>
-              <p className="text-text-muted text-xs" style={{ fontFamily: "var(--font-handwritten)" }}>
-                {destinationName} · per person
+              <p className="text-text-muted text-xs mb-1" style={{ fontFamily: "var(--font-handwritten)" }}>
+                {destination?.name} · per person
               </p>
+              {destination?.bestTimeToVisit && (
+                <div className="flex items-center gap-1.5 text-xs text-text-secondary mt-1">
+                  <span className={`w-2 h-2 rounded-full bg-gradient-to-r ${style.gradient}`} />
+                  <span>Best time: <span className="text-white/90">{destination.bestTimeToVisit}</span></span>
+                </div>
+              )}
             </div>
           </div>
 

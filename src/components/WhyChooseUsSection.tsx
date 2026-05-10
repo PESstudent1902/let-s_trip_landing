@@ -7,7 +7,7 @@ import { Plane, Compass, Palmtree } from "lucide-react";
 const features = [
   { icon: Plane, title: "500+ Destinations", description: "Handpicked locations across the globe for every kind of traveler", accent: "from-cyan/20 to-violet/10", iconColor: "text-cyan" },
   { icon: Compass, title: "Best Price Guarantee", description: "We match any price — luxury travel without the luxury price tag", accent: "from-orange/20 to-gold/10", iconColor: "text-orange" },
-  { icon: Palmtree, title: "Top Notch Support", description: "24/7 dedicated concierge — just a WhatsApp message away", accent: "from-violet/20 to-cyan/10", iconColor: "text-violet" },
+  { icon: Palmtree, title: "Top Notch Support", description: "24/7 dedicated support — just a WhatsApp message away", accent: "from-violet/20 to-cyan/10", iconColor: "text-violet" },
 ];
 
 export default function WhyChooseUsSection() {
