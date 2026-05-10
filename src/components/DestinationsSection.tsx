@@ -268,7 +268,7 @@ function PackageCard({
 
           <MagneticButton>
             <button
-              onClick={() => openItinerary(pkg, destination?.name)}
+              onClick={() => openItinerary(pkg, destination)}
               className={`adventure-link inline-flex items-center gap-2 ${style.accent} hover:text-white transition-colors cursor-pointer text-sm`}
               style={{ fontFamily: "var(--font-brush)" }}
             >

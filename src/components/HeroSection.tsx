@@ -66,8 +66,8 @@ export default function HeroSection() {
     }
     
     if (pkgToOpen) {
-      const destName = destinations.find(d => d.id === pkgToOpen?.destinationId)?.name;
-      openItinerary(pkgToOpen, destName);
+      const dest = destinations.find(d => d.id === pkgToOpen?.destinationId);
+      openItinerary(pkgToOpen, dest);
     } else {
       document.getElementById("packages")?.scrollIntoView({ behavior: "smooth" });
     }

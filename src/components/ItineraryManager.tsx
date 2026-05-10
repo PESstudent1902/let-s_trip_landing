@@ -2,24 +2,24 @@
 
 import { useState, useEffect } from "react";
 import ItineraryModal from "./ItineraryModal";
-import { Package } from "@/lib/packageStore";
+import { Package, Destination } from "@/lib/packageStore";
 
-export function openItinerary(pkg: Package, destinationName?: string) {
+export function openItinerary(pkg: Package, destination?: Destination) {
   if (typeof window !== "undefined") {
-    window.dispatchEvent(new CustomEvent("open-itinerary", { detail: { pkg, destinationName } }));
+    window.dispatchEvent(new CustomEvent("open-itinerary", { detail: { pkg, destination } }));
   }
 }
 
 export default function ItineraryManager() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPkg, setSelectedPkg] = useState<Package | null>(null);
-  const [destinationName, setDestinationName] = useState<string | undefined>();
+  const [destination, setDestination] = useState<Destination | undefined>();
 
   useEffect(() => {
     const handleOpen = (e: Event) => {
       const customEvent = e as CustomEvent;
       setSelectedPkg(customEvent.detail.pkg);
-      setDestinationName(customEvent.detail.destinationName);
+      setDestination(customEvent.detail.destination);
       setIsOpen(true);
     };
     window.addEventListener("open-itinerary", handleOpen);
@@ -31,7 +31,7 @@ export default function ItineraryManager() {
       pkg={selectedPkg}
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
-      destinationName={destinationName}
+      destination={destination}
     />
   );
 }

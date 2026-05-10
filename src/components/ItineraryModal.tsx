@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Calendar, MapPin, CheckCircle2, ChevronRight, Clock } from "lucide-react";
 import Image from "next/image";
-import { Package } from "@/lib/packageStore";
+import { Package, Destination } from "@/lib/packageStore";
 import { MagneticButton } from "./Navbar";
 import { useState } from "react";
 
@@ -11,10 +11,10 @@ interface ItineraryModalProps {
   pkg: Package | null;
   isOpen: boolean;
   onClose: () => void;
-  destinationName?: string;
+  destination?: Destination;
 }
 
-export default function ItineraryModal({ pkg, isOpen, onClose, destinationName }: ItineraryModalProps) {
+export default function ItineraryModal({ pkg, isOpen, onClose, destination }: ItineraryModalProps) {
   const [expandedDay, setExpandedDay] = useState<number | null>(1);
 
   if (!pkg) return null;
@@ -55,9 +55,17 @@ export default function ItineraryModal({ pkg, isOpen, onClose, destinationName }
                 </div>
                 
                 <div className="p-6 md:p-8 flex-1 flex flex-col bg-gradient-to-b from-transparent to-[#0A1118]">
-                  <div className="mb-2 inline-flex items-center gap-1.5 text-cyan text-sm" style={{ fontFamily: "var(--font-handwritten)" }}>
-                    <MapPin size={14} />
-                    {destinationName || "Destination"}
+                  <div className="mb-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-cyan text-sm" style={{ fontFamily: "var(--font-handwritten)" }}>
+                    <div className="inline-flex items-center gap-1.5">
+                      <MapPin size={14} />
+                      {destination?.name || "Destination"}
+                    </div>
+                    {destination?.bestTimeToVisit && (
+                      <div className="inline-flex items-center gap-1.5 text-text-muted">
+                        <span className="w-1.5 h-1.5 rounded-full bg-cyan" />
+                        Best time: <span className="text-white/90">{destination.bestTimeToVisit}</span>
+                      </div>
+                    )}
                   </div>
                   <h2 className="text-3xl sm:text-4xl mb-2 text-white" style={{ fontFamily: "var(--font-brush)" }}>
                     {pkg.name}
