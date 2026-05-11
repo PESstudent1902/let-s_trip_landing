@@ -61,7 +61,7 @@ export default function DestinationsSection() {
       <div className="absolute inset-0 bg-abyss z-0" />
       
       {/* Dynamic Background Image */}
-      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+      <div className="absolute inset-0 z-0 opacity-40 pointer-events-none">
         <AnimatePresence mode="wait">
           {activeBgImage && (
             <motion.div
@@ -69,10 +69,10 @@ export default function DestinationsSection() {
               initial={{ opacity: 0, scale: 1.1 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 1.5, ease: "easeInOut" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               className="absolute inset-0"
             >
-              <Image src={activeBgImage} alt="Background" fill className="object-cover blur-sm" />
+              <Image src={activeBgImage} alt="Background" fill className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-b from-abyss via-transparent to-abyss" />
             </motion.div>
           )}
@@ -153,7 +153,7 @@ function PackageSectionRow({
       id={`section-${sectionId}`} 
       className="mb-16 md:mb-24 last:mb-0"
       onViewportEnter={onActive}
-      viewport={{ margin: "-40% 0px -40% 0px", amount: 0.1 }}
+      viewport={{ margin: "-20% 0px -20% 0px", amount: 0.1 }}
     >
       {/* Section Header */}
       <motion.div
