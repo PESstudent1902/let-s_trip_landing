@@ -82,8 +82,7 @@ export default function DestinationPackagesModal({ isOpen, onClose, destination,
                         <div>
                           <h3 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "var(--font-brush)" }}>{pkg.name}</h3>
                           <div className="flex flex-wrap gap-2 mb-3">
-                            <span className="text-xs bg-white/10 text-white px-2 py-1 rounded-md">{pkg.duration} Days</span>
-                            {pkg.hotelRating && <span className="text-xs bg-gold/20 text-gold px-2 py-1 rounded-md">{pkg.hotelRating}</span>}
+                            {pkg.durationNights && <span className="text-xs bg-white/10 text-white px-2 py-1 rounded-md">{pkg.durationNights} Nights</span>}
                           </div>
                         </div>
                         <div className="flex items-end justify-between mt-4">
