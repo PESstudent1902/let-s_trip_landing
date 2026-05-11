@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect, useMemo, useCallback } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { MagneticButton } from "./Navbar";
 import { ChevronLeft, ChevronRight, Hotel, Plane, UtensilsCrossed, Eye } from "lucide-react";
@@ -10,12 +10,12 @@ import { PACKAGE_SECTIONS, type Destination, type Package } from "@/lib/packageS
 import { fetchDestinations, fetchPackages } from "@/app/actions";
 
 /* Visual config per section – each gets a unique accent gradient */
-const SECTION_STYLES: Record<string, { gradient: string; accent: string; accentGlow: string }> = {
-  "expert-picks": { gradient: "from-cyan-400 to-violet-500", accent: "text-cyan", accentGlow: "text-glow-cyan" },
-  "adventures": { gradient: "from-orange to-warm", accent: "text-orange", accentGlow: "text-glow-orange" },
-  "honeymoon": { gradient: "from-pink-400 to-rose-500", accent: "text-pink-400", accentGlow: "" },
-  "domestic": { gradient: "from-amber-400 to-orange", accent: "text-amber-400", accentGlow: "" },
-  "explore-more": { gradient: "from-emerald-400 to-cyan", accent: "text-emerald-400", accentGlow: "" },
+const SECTION_STYLES: Record<string, { gradient: string; accent: string; accentGlow: string; bgImage?: string }> = {
+  "expert-picks": { gradient: "from-cyan-400 to-violet-500", accent: "text-cyan", accentGlow: "text-glow-cyan", bgImage: "/singapore.png" },
+  "adventures": { gradient: "from-orange to-warm", accent: "text-orange", accentGlow: "text-glow-orange", bgImage: "/dubai.png" },
+  "honeymoon": { gradient: "from-pink-400 to-rose-500", accent: "text-pink-400", accentGlow: "", bgImage: "/bali.png" },
+  "domestic": { gradient: "from-amber-400 to-orange", accent: "text-amber-400", accentGlow: "", bgImage: "/thailand.png" },
+  "explore-more": { gradient: "from-emerald-400 to-cyan", accent: "text-emerald-400", accentGlow: "", bgImage: "/hero-bg.png" },
 };
 
 export default function DestinationsSection() {
@@ -24,6 +24,7 @@ export default function DestinationsSection() {
 
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [packages, setPackages] = useState<Package[]>([]);
+  const [activeSection, setActiveSection] = useState<string>("expert-picks");
 
   const loadData = useCallback(async () => {
     const [dests, pkgs] = await Promise.all([fetchDestinations(), fetchPackages()]);
@@ -53,9 +54,30 @@ export default function DestinationsSection() {
     return packages.filter((pkg) => !pkg.sections || pkg.sections.length === 0);
   }, [packages]);
 
+  const activeBgImage = SECTION_STYLES[activeSection]?.bgImage;
+
   return (
-    <section ref={ref} id="destinations" className="relative py-16 md:py-28 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-abyss via-deep-space to-abyss" />
+    <section ref={ref} id="destinations" className="relative py-16 md:py-28 overflow-hidden transition-colors duration-1000">
+      <div className="absolute inset-0 bg-abyss z-0" />
+      
+      {/* Dynamic Background Image */}
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+        <AnimatePresence mode="wait">
+          {activeBgImage && (
+            <motion.div
+              key={activeBgImage}
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+              className="absolute inset-0"
+            >
+              <Image src={activeBgImage} alt="Background" fill className="object-cover blur-sm" />
+              <div className="absolute inset-0 bg-gradient-to-b from-abyss via-transparent to-abyss" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16">
         {/* ===== SECTION-BASED PACKAGE ROWS ===== */}
@@ -70,6 +92,7 @@ export default function DestinationsSection() {
               destinationMap={destinationMap}
               isInView={isInView}
               index={sIdx}
+              onActive={() => setActiveSection(section.id)}
             />
           ) : null
         )}
@@ -84,6 +107,7 @@ export default function DestinationsSection() {
             destinationMap={destinationMap}
             isInView={isInView}
             index={sectionGroups.length}
+            onActive={() => setActiveSection("all")}
           />
         )}
 
@@ -105,6 +129,7 @@ function PackageSectionRow({
   destinationMap,
   isInView,
   index,
+  onActive,
 }: {
   sectionId: string;
   icon: string;
@@ -113,6 +138,7 @@ function PackageSectionRow({
   destinationMap: Map<string, Destination>;
   isInView: boolean;
   index: number;
+  onActive?: () => void;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const style = SECTION_STYLES[sectionId] || SECTION_STYLES["explore-more"];
@@ -123,7 +149,12 @@ function PackageSectionRow({
   };
 
   return (
-    <div id={`section-${sectionId}`} className="mb-16 md:mb-24 last:mb-0">
+    <motion.div 
+      id={`section-${sectionId}`} 
+      className="mb-16 md:mb-24 last:mb-0"
+      onViewportEnter={onActive}
+      viewport={{ margin: "-40% 0px -40% 0px", amount: 0.1 }}
+    >
       {/* Section Header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -192,7 +223,7 @@ function PackageSectionRow({
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -222,7 +253,7 @@ function PackageCard({
       className="glass rounded-3xl overflow-hidden group hover:border-cyan/15 transition-all duration-500 md:min-w-[420px] md:max-w-[480px] snap-start flex-shrink-0"
     >
       <div className="flex flex-col sm:flex-row h-full">
-        <div className="relative h-44 sm:h-auto sm:w-44 md:w-48 flex-shrink-0">
+        <div className="relative h-44 sm:h-auto sm:w-44 md:w-48 flex-shrink-0 overflow-hidden">
           <Image src={pkg.image} alt={pkg.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
           <div className="absolute inset-0 bg-gradient-to-b sm:bg-gradient-to-r from-transparent to-abyss/80" />
           {/* Section badge on image */}

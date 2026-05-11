@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, Briefcase, ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
+import { Search, MapPin, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { fetchDestinations, fetchPackages } from "@/app/actions";
 import { Destination, Package } from "@/lib/packageStore";
-import { openItinerary } from "./ItineraryManager";
+import DestinationPackagesModal from "./DestinationPackagesModal";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -42,7 +42,7 @@ export default function HeroSection() {
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [packages, setPackages] = useState<Package[]>([]);
   const [selectedDestId, setSelectedDestId] = useState<string>("");
-  const [selectedPkgId, setSelectedPkgId] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([fetchDestinations(), fetchPackages()]).then(([dests, pkgs]) => {
@@ -52,22 +52,8 @@ export default function HeroSection() {
   }, []);
 
   const handleSearch = () => {
-    let pkgToOpen: Package | undefined;
-    
-    if (selectedPkgId) {
-      pkgToOpen = packages.find(p => p.id === selectedPkgId);
-    } else if (selectedDestId) {
-      // If only destination is selected, show the first package of that destination, or scroll to destinations
-      pkgToOpen = packages.find(p => p.destinationId === selectedDestId);
-      if (!pkgToOpen) {
-        document.getElementById("packages")?.scrollIntoView({ behavior: "smooth" });
-        return;
-      }
-    }
-    
-    if (pkgToOpen) {
-      const dest = destinations.find(d => d.id === pkgToOpen?.destinationId);
-      openItinerary(pkgToOpen, dest);
+    if (selectedDestId) {
+      setIsModalOpen(true);
     } else {
       document.getElementById("packages")?.scrollIntoView({ behavior: "smooth" });
     }
@@ -162,7 +148,7 @@ export default function HeroSection() {
                 <select 
                   className="w-full bg-transparent text-white font-bold text-lg md:text-xl appearance-none outline-none cursor-pointer" 
                   value={selectedDestId}
-                  onChange={(e) => { setSelectedDestId(e.target.value); setSelectedPkgId(""); }}
+                  onChange={(e) => setSelectedDestId(e.target.value)}
                   style={{ fontFamily: "var(--font-headline)" }}
                 >
                   <option value="" className="bg-abyss text-white">Any Destination</option>
@@ -174,25 +160,7 @@ export default function HeroSection() {
               <ChevronDown className="text-white/50 pointer-events-none absolute right-4" size={20} />
             </div>
 
-            <div className="flex-1 flex items-center bg-white/5 hover:bg-white/10 transition-colors rounded-2xl px-4 py-3 border border-white/10 group cursor-pointer relative">
-              <Briefcase className="text-violet-400 mr-3 group-hover:scale-110 transition-transform" size={24} />
-              <div className="flex-1 text-left">
-                <p className="text-[10px] text-text-muted uppercase tracking-widest font-semibold mb-0.5">Which Package?</p>
-                <select 
-                  className="w-full bg-transparent text-white font-bold text-lg md:text-xl appearance-none outline-none cursor-pointer" 
-                  value={selectedPkgId}
-                  onChange={(e) => setSelectedPkgId(e.target.value)}
-                  style={{ fontFamily: "var(--font-headline)" }}
-                  disabled={filteredPackages.length === 0}
-                >
-                  <option value="" className="bg-abyss text-white">Any Package</option>
-                  {filteredPackages.map(p => (
-                    <option key={p.id} value={p.id} className="bg-abyss text-white">{p.name}</option>
-                  ))}
-                </select>
-              </div>
-              <ChevronDown className="text-white/50 pointer-events-none absolute right-4" size={20} />
-            </div>
+
 
             <button onClick={handleSearch} className="md:w-auto w-full px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan to-violet hover:opacity-90 transition-opacity flex items-center justify-center gap-2 group">
               <Search className="text-white group-hover:scale-110 transition-transform" size={20} />
@@ -213,6 +181,13 @@ export default function HeroSection() {
         </motion.div>
       </div>
 
+      {/* Render the Modal */}
+      <DestinationPackagesModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        destination={destinations.find(d => d.id === selectedDestId) || null}
+        packages={filteredPackages}
+      />
     </section>
   );
 }

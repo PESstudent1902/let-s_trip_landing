@@ -8,7 +8,7 @@ import Link from "next/link";
 const navLinks = [
   { label: "Destinations", href: "#destinations" },
   { label: "Packages", href: "#packages" },
-  { label: "Contact Us", href: "#contact" },
+  { label: "Contact Us", href: "https://wa.me/918867767171", external: true },
   { label: "Reviews", href: "#reviews" },
 ];
 
@@ -71,6 +71,8 @@ export default function Navbar() {
               <Link
                 key={link.label}
                 href={link.href}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener noreferrer" : undefined}
                 className="adventure-link text-text-secondary hover:text-white text-sm font-medium tracking-wide"
                 style={{ fontFamily: "var(--font-headline)" }}
               >
@@ -163,7 +165,9 @@ export default function Navbar() {
                   >
                     <Link
                       href={link.href}
-                      onClick={() => setMobileOpen(false)}
+                      target={link.external ? "_blank" : undefined}
+                      rel={link.external ? "noopener noreferrer" : undefined}
+                      onClick={() => !link.external && setMobileOpen(false)}
                       className="text-3xl text-text-secondary hover:text-white transition-colors py-3 block"
                       style={{ fontFamily: "var(--font-brush)" }}
                     >
