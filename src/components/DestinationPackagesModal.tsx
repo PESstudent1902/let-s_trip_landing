@@ -67,7 +67,7 @@ export default function DestinationPackagesModal({ isOpen, onClose, destination,
             </div>
 
             {/* Body */}
-            <div className="p-6 md:p-8 overflow-y-auto">
+            <div className="p-6 md:p-8 overflow-y-auto" data-lenis-prevent>
               {packages.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {packages.map((pkg) => (

@@ -57,7 +57,7 @@ export default function ItineraryModal({ pkg, isOpen, onClose, destination }: It
               <X size={20} />
             </button>
 
-            <div className="flex flex-col md:flex-row h-full overflow-y-auto md:overflow-hidden">
+            <div className="flex flex-col md:flex-row h-full overflow-y-auto md:overflow-hidden" data-lenis-prevent>
               {/* Left Column: Summary & Image */}
               <div className="w-full md:w-2/5 flex flex-col relative flex-shrink-0">
                 <div className="relative h-64 md:h-1/2 w-full">
@@ -110,7 +110,7 @@ export default function ItineraryModal({ pkg, isOpen, onClose, destination }: It
               </div>
 
               {/* Right Column: Itinerary Details */}
-              <div className="w-full md:w-3/5 p-6 md:p-8 md:overflow-y-auto bg-white/[0.02]">
+              <div className="w-full md:w-3/5 p-6 md:p-8 md:overflow-y-auto bg-white/[0.02]" data-lenis-prevent>
                 <div className="flex items-center gap-3 mb-8">
                   <div className="p-3 rounded-xl bg-cyan/10">
                     <Calendar className="text-cyan" size={24} />
