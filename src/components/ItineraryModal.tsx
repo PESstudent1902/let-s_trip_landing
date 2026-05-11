@@ -5,7 +5,7 @@ import { X, Calendar, MapPin, CheckCircle2, ChevronRight, Clock } from "lucide-r
 import Image from "next/image";
 import { Package, Destination } from "@/lib/packageStore";
 import { MagneticButton } from "./Navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ItineraryModalProps {
   pkg: Package | null;
@@ -16,6 +16,17 @@ interface ItineraryModalProps {
 
 export default function ItineraryModal({ pkg, isOpen, onClose, destination }: ItineraryModalProps) {
   const [expandedDay, setExpandedDay] = useState<number | null>(1);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   if (!pkg) return null;
 
