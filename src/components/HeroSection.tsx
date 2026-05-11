@@ -52,10 +52,9 @@ export default function HeroSection() {
   }, []);
 
   const handleSearch = () => {
-    if (selectedDestId) {
-      setIsModalOpen(true);
-    } else {
-      document.getElementById("packages")?.scrollIntoView({ behavior: "smooth" });
+    setIsModalOpen(true);
+    if (!selectedDestId) {
+      document.getElementById("destinations")?.scrollIntoView({ behavior: "smooth" });
     }
   };
 

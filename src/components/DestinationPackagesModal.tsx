@@ -39,14 +39,12 @@ export default function DestinationPackagesModal({ isOpen, onClose, destination,
               <div className="absolute inset-0 bg-gradient-to-r from-cyan/10 to-violet/10 pointer-events-none" />
               <div className="relative z-10">
                 <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent mb-1" style={{ fontFamily: "var(--font-brush)" }}>
-                  {destination?.name ? `Packages for ${destination.name}` : "Select a Destination"}
+                  {destination?.name ? `Packages for ${destination.name}` : "All Travel Packages"}
                 </h2>
-                {destination && (
-                  <div className="flex items-center gap-2 text-cyan text-sm">
-                    <MapPin size={16} />
-                    <span>{packages.length} {packages.length === 1 ? "Package" : "Packages"} available</span>
-                  </div>
-                )}
+                <div className="flex items-center gap-2 text-cyan text-sm">
+                  <MapPin size={16} />
+                  <span>{packages.length} {packages.length === 1 ? "Package" : "Packages"} available</span>
+                </div>
               </div>
               <button
                 onClick={onClose}
