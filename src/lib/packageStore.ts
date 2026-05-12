@@ -24,7 +24,6 @@ export const PACKAGE_SECTIONS = [
   { id: "adventures", label: "Adventures for You", icon: "🏔️" },
   { id: "honeymoon", label: "Honeymoon Special", icon: "💕" },
   { id: "domestic", label: "Domestic / Indian", icon: "🇮🇳" },
-  { id: "explore-more", label: "Explore More", icon: "🌍" },
 ] as const;
 
 export type PackageSectionId = typeof PACKAGE_SECTIONS[number]["id"];

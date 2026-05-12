@@ -15,7 +15,6 @@ const SECTION_STYLES: Record<string, { gradient: string; accent: string; accentG
   "adventures": { gradient: "from-orange to-warm", accent: "text-orange", accentGlow: "text-glow-orange", bgImage: "/dubai.png" },
   "honeymoon": { gradient: "from-pink-400 to-rose-500", accent: "text-pink-400", accentGlow: "", bgImage: "/bali.png" },
   "domestic": { gradient: "from-amber-400 to-orange", accent: "text-amber-400", accentGlow: "", bgImage: "/thailand.png" },
-  "explore-more": { gradient: "from-emerald-400 to-cyan", accent: "text-emerald-400", accentGlow: "", bgImage: "/hero-bg.png" },
 };
 
 export default function DestinationsSection() {
@@ -57,7 +56,7 @@ export default function DestinationsSection() {
   const activeBgImage = SECTION_STYLES[activeSection]?.bgImage;
 
   return (
-    <section ref={ref} id="destinations" className="relative py-16 md:py-28 overflow-hidden transition-colors duration-1000">
+    <section ref={ref} id="destinations" className="relative py-12 md:py-16 overflow-hidden transition-colors duration-1000">
       <div className="absolute inset-0 bg-abyss z-0" />
       
       {/* Dynamic Background Image */}
@@ -141,7 +140,7 @@ function PackageSectionRow({
   onActive?: () => void;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const style = SECTION_STYLES[sectionId] || SECTION_STYLES["explore-more"];
+  const style = SECTION_STYLES[sectionId] || SECTION_STYLES["adventures"];
 
   const scroll = (dir: "left" | "right") => {
     if (!scrollRef.current) return;
@@ -243,14 +242,15 @@ function PackageCard({
   isInView: boolean;
   sectionId: string;
 }) {
-  const style = SECTION_STYLES[sectionId] || SECTION_STYLES["explore-more"];
+  const style = SECTION_STYLES[sectionId] || SECTION_STYLES["adventures"];
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay: 0.2 + index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      className="glass rounded-3xl overflow-hidden group hover:border-cyan/15 transition-all duration-500 md:min-w-[420px] md:max-w-[480px] snap-start flex-shrink-0"
+      onClick={() => openItinerary(pkg, destination)}
+      className="glass rounded-3xl overflow-hidden group hover:border-cyan/15 transition-all duration-500 md:min-w-[420px] md:max-w-[480px] snap-start flex-shrink-0 cursor-pointer active:scale-[0.98]"
     >
       <div className="flex flex-col sm:flex-row h-full">
         <div className="relative h-44 sm:h-auto sm:w-44 md:w-48 flex-shrink-0 overflow-hidden">
@@ -297,15 +297,12 @@ function PackageCard({
             ))}
           </div>
 
-          <MagneticButton>
-            <button
-              onClick={() => openItinerary(pkg, destination)}
-              className={`adventure-link inline-flex items-center gap-2 ${style.accent} hover:text-white transition-colors cursor-pointer text-sm`}
-              style={{ fontFamily: "var(--font-brush)" }}
-            >
-              <Eye size={16} /> View Itinerary
-            </button>
-          </MagneticButton>
+          <div
+            className={`adventure-link inline-flex items-center gap-2 ${style.accent} hover:text-white transition-colors text-sm`}
+            style={{ fontFamily: "var(--font-brush)" }}
+          >
+            <Eye size={16} /> View Itinerary
+          </div>
         </div>
       </div>
     </motion.div>

@@ -112,7 +112,7 @@ export default function HeroSection() {
         <div key={i} className="hero-particle absolute rounded-full bg-cyan/20" style={{ ...particle, filter: "blur(1px)" }} />
       ))}
 
-      <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16 text-center pt-28 pb-20 md:pb-32">
+      <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16 text-center pt-28 pb-10 md:pb-16">
         {/* Handwritten badge — like a passport stamp */}
         <motion.div initial={{ opacity: 0, scale: 0.8, rotate: -3 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }} className="mb-6 md:mb-8">
           <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-dashed border-cyan/30 text-cyan text-sm md:text-base tracking-wide" style={{ fontFamily: "var(--font-handwritten)" }}>
@@ -170,7 +170,7 @@ export default function HeroSection() {
         </motion.div>
 
         {/* Scroll indicator */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }} className="mt-14 md:mt-20 hidden md:block">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }} className="mt-8 md:mt-12 hidden md:block">
           <motion.div animate={{ y: [0, 12, 0] }} transition={{ duration: 2, repeat: Infinity }} className="flex flex-col items-center gap-2">
             <span className="text-text-muted text-xs tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-handwritten)" }}>Scroll to explore</span>
             <div className="w-6 h-10 rounded-full border-2 border-text-muted/30 flex items-start justify-center p-2">

@@ -1,136 +1,134 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Star } from "lucide-react";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { Star, Quote } from "lucide-react";
 import Image from "next/image";
 
 const testimonials = [
   {
-    text: "Our family took a trip to Indonesia this summer booked through LetsTrip. All of the flights, went smoothly and there was an english speaking tour guide to pick us up at each location. The tour guides were very friendly and a pleasure to be with. The accommodations at each location were even better than expected! During the planning phase it was nice to be able to go back and forth and change things up until we created a trip that was perfect for our family and our budget.",
-    name: "Priya & Raj Sharma",
-    date: "June 2025",
-    rating: "5/5",
-    image: "/bali.png",
+    text: "We had our itinerary customized as per our need and LetsTrip did a good job in addressing our list. The recommendation and issues were heard. LetsTrip is a reliable source and would definitely recommended as you would get surety of services.",
+    name: "Amrita Keshari",
+    location: "Thailand",
+    rating: 5,
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Amrita",
   },
   {
-    text: "Our Dubai trip was magical! The kids loved the desert safari and we felt so well taken care of. LetsTrip handled everything from airport pickup to every single activity. Five-star treatment from booking to return. This is the only travel agency I trust now.",
-    name: "Arjun M.",
-    date: "August 2025",
-    rating: "5/5",
-    image: "/dubai.png",
+    text: "Everything was so good. Your team services and arrangements were very good. Eagerly waiting for planning my next trip with you again. Your agent handling our trip did an amazing job for us.",
+    name: "Himanshu Gupta",
+    location: "Maldives",
+    rating: 5,
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Himanshu",
   },
   {
-    text: "The cultural immersion in Thailand was unforgettable. Our guide knew every hidden gem, every secret temple, every authentic restaurant. We felt like locals. Truly unforgettable.",
+    text: "The cultural immersion in Thailand was unforgettable. Our guide knew every hidden gem, every secret temple, every authentic restaurant. We felt like locals. Truly unforgettable. Highly recommended!",
     name: "Meera K.",
-    date: "September 2025",
-    rating: "4.9/5",
-    image: "/thailand.png",
+    location: "Thailand",
+    rating: 4.9,
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Meera",
   },
   {
-    text: "The Singapore-Malaysia cruise package blew our minds. Incredible value for money and seamless planning! The support team was always just a WhatsApp message away!",
-    name: "Vikram P.",
-    date: "December 2025",
-    rating: "5/5",
-    image: "/singapore.png",
+    text: "Our family took a trip to Indonesia this summer booked through LetsTrip. All of the flights went smoothly and there was an english speaking tour guide to pick us up at each location. Five-star treatment!",
+    name: "Priya Sharma",
+    location: "Bali",
+    rating: 5,
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya",
   },
 ];
 
 export default function TestimonialsSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Auto-advance
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, []);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section id="reviews" className="relative h-screen min-h-[700px] w-full overflow-hidden flex items-center bg-abyss">
-      {/* Background Images */}
-      <AnimatePresence initial={false}>
+    <section ref={sectionRef} id="reviews" className="relative py-20 md:py-28 overflow-hidden bg-abyss">
+      {/* Abstract Background elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan/5 rounded-full blur-[120px] -mr-64 -mt-64 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-violet/5 rounded-full blur-[120px] -ml-64 -mb-64 pointer-events-none" />
+
+      <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16">
         <motion.div
-          key={currentIndex}
-          initial={{ opacity: 0, scale: 1.05 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: "easeInOut" }}
-          className="absolute inset-0"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-12 md:mb-16"
         >
-          <Image
-            src={testimonials[currentIndex].image}
-            alt="Background"
-            fill
-            className="object-cover"
-            priority
-          />
-          {/* Dark overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-abyss via-abyss/80 to-transparent" />
-          <div className="absolute inset-0 bg-black/40" />
+          <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-dashed border-cyan/30 text-cyan text-sm tracking-wide mb-6" style={{ fontFamily: "var(--font-handwritten)" }}>
+            <span className="w-2 h-2 rounded-full bg-cyan pulse-glow" />
+            Guest Experiences
+          </span>
+          <h2 className="text-4xl sm:text-5xl md:text-7xl leading-tight" style={{ fontFamily: "var(--font-brush)" }}>
+            <span className="text-white">Stories from the </span>
+            <span className="bg-gradient-to-r from-cyan to-violet bg-clip-text text-transparent">road</span>
+          </h2>
         </motion.div>
-      </AnimatePresence>
 
-      <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-10 md:px-16 lg:px-24 py-20 flex flex-col items-start justify-end h-full text-left">
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-4xl sm:text-5xl md:text-6xl text-white mb-10 tracking-tight font-light"
-          style={{ fontFamily: "var(--font-headline)" }}
+        {/* Horizontal Scroll Area */}
+        <div 
+          ref={scrollRef}
+          className="flex gap-6 overflow-x-auto pb-12 snap-x snap-mandatory scrollbar-hide"
+          style={{ scrollbarWidth: "none" }}
         >
-          What our guests say
-        </motion.h2>
-
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentIndex}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
-            className="w-full"
-          >
-            <div className="flex gap-2 mb-6">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={32} className="text-white fill-white drop-shadow-lg" />
-              ))}
-            </div>
-
-            <div className="flex items-center gap-4 text-white/80 text-sm mb-8 font-medium tracking-wide">
-              <span>{testimonials[currentIndex].date}</span>
-              <span className="w-px h-4 bg-white/40" />
-              <span>Rating {testimonials[currentIndex].rating}</span>
-            </div>
-
-            <p className="text-white text-lg sm:text-xl md:text-2xl leading-relaxed mb-10 max-w-3xl drop-shadow-md">
-              {testimonials[currentIndex].text}
-            </p>
-
-            <div className="w-16 h-px bg-white mb-6" />
-
-            <h3 className="text-white text-xl sm:text-2xl font-bold tracking-wide" style={{ fontFamily: "var(--font-headline)" }}>
-              {testimonials[currentIndex].name}
-            </h3>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Pagination Dots */}
-        <div className="flex gap-3 mt-16 md:mt-24">
-          {testimonials.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentIndex(i)}
-              className="group py-2"
-              aria-label={`Go to slide ${i + 1}`}
+          {testimonials.map((t, i) => (
+            <motion.div
+              key={t.name}
+              initial={{ opacity: 0, x: 50 }}
+              animate={isInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              className="min-w-[320px] sm:min-w-[400px] md:min-w-[450px] snap-start"
             >
-              <div
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === currentIndex ? "w-10 bg-white" : "w-6 bg-white/30 group-hover:bg-white/60"
-                }`}
-              />
-            </button>
+              <div className="glass-strong rounded-[2.5rem] p-8 md:p-10 h-full relative overflow-hidden group hover:border-white/20 transition-all duration-500 flex flex-col border border-white/10">
+                {/* Red Stamp visual element */}
+                <div className="absolute top-8 right-8 w-16 h-16 md:w-20 md:h-20 opacity-30 group-hover:opacity-50 transition-opacity rotate-12 pointer-events-none">
+                  <div className="w-full h-full border-2 border-orange/80 rounded-lg flex items-center justify-center p-1">
+                    <div className="w-full h-full border border-orange/60 rounded flex flex-col items-center justify-center text-[8px] md:text-[10px] text-orange/80 font-bold uppercase tracking-tighter">
+                      <span>LetsTrip</span>
+                      <div className="w-8 h-px bg-orange/40 my-1" />
+                      <span>Verified</span>
+                    </div>
+                  </div>
+                </div>
+
+                <Quote className="text-cyan mb-6 md:mb-8" size={40} strokeWidth={1} />
+
+                <p className="text-white text-base md:text-lg leading-relaxed mb-8 md:mb-12 flex-1 italic font-light" style={{ fontFamily: "var(--font-handwritten)" }}>
+                  "{t.text}"
+                </p>
+
+                <div className="flex items-center justify-between mt-auto">
+                  <div className="flex items-center gap-4">
+                    <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-cyan/20">
+                      <Image src={t.avatar} alt={t.name} fill className="object-cover" />
+                    </div>
+                    <div>
+                      <h4 className="text-white font-bold text-base md:text-lg" style={{ fontFamily: "var(--font-headline)" }}>{t.name}</h4>
+                      <p className="text-cyan/80 text-xs md:text-sm" style={{ fontFamily: "var(--font-handwritten)" }}>{t.location}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-end gap-1">
+                    <div className="flex gap-0.5">
+                      {[...Array(5)].map((_, starIdx) => (
+                        <Star 
+                          key={starIdx} 
+                          size={14} 
+                          className={starIdx < Math.floor(t.rating) ? "text-orange fill-orange" : "text-white/20"} 
+                        />
+                      ))}
+                    </div>
+                    <span className="text-[10px] text-text-muted uppercase tracking-widest font-bold">Rating {t.rating}/5</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Scroll Progress indicator */}
+        <div className="flex justify-center gap-3 mt-4">
+          {testimonials.map((_, i) => (
+            <div key={i} className="w-2 h-2 rounded-full bg-white/10" />
           ))}
         </div>
       </div>

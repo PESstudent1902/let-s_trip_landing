@@ -15,7 +15,7 @@ export default function WhyChooseUsSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="relative py-20 md:py-28 overflow-hidden">
+    <section ref={ref} className="relative py-12 md:py-16 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-abyss via-deep-space to-abyss" />
       <div className="absolute top-1/2 left-1/4 w-[600px] h-[400px] rounded-full bg-cyan/3 blur-[150px] -translate-y-1/2 pointer-events-none" />
 
