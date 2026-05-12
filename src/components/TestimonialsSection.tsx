@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Star, Quote } from "lucide-react";
+import { Star, Quote, ChevronLeft, ChevronRight, User } from "lucide-react";
 import Image from "next/image";
 
 const testimonials = [
@@ -41,6 +41,11 @@ export default function TestimonialsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
+  const scroll = (dir: "left" | "right") => {
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollBy({ left: dir === "left" ? -400 : 400, behavior: "smooth" });
+  };
+
   return (
     <section ref={sectionRef} id="reviews" className="relative py-20 md:py-28 overflow-hidden bg-abyss">
       {/* Abstract Background elements */}
@@ -63,6 +68,21 @@ export default function TestimonialsSection() {
             <span className="bg-gradient-to-r from-cyan to-violet bg-clip-text text-transparent">road</span>
           </h2>
         </motion.div>
+
+        <div className="relative group">
+          {/* Scroll Buttons */}
+          <button
+            onClick={() => scroll("left")}
+            className="absolute -left-3 md:-left-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-14 md:h-14 glass-strong rounded-full border border-white/10 hover:border-cyan/30 flex items-center justify-center transition-all cursor-pointer opacity-0 group-hover:opacity-100 hidden md:flex"
+          >
+            <ChevronLeft className="text-cyan" size={28} />
+          </button>
+          <button
+            onClick={() => scroll("right")}
+            className="absolute -right-3 md:-right-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-14 md:h-14 glass-strong rounded-full border border-white/10 hover:border-cyan/30 flex items-center justify-center transition-all cursor-pointer opacity-0 group-hover:opacity-100 hidden md:flex"
+          >
+            <ChevronRight className="text-cyan" size={28} />
+          </button>
 
         {/* Horizontal Scroll Area */}
         <div 
@@ -98,8 +118,8 @@ export default function TestimonialsSection() {
 
                 <div className="flex items-center justify-between mt-auto">
                   <div className="flex items-center gap-4">
-                    <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-cyan/20">
-                      <Image src={t.avatar} alt={t.name} fill className="object-cover" />
+                    <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden border-2 border-cyan/20 bg-white/5 flex items-center justify-center">
+                      <User size={24} className="text-cyan/50" />
                     </div>
                     <div>
                       <h4 className="text-white font-bold text-base md:text-lg" style={{ fontFamily: "var(--font-headline)" }}>{t.name}</h4>
@@ -124,6 +144,7 @@ export default function TestimonialsSection() {
             </motion.div>
           ))}
         </div>
+      </div>
 
         {/* Scroll Progress indicator */}
         <div className="flex justify-center gap-3 mt-4">
