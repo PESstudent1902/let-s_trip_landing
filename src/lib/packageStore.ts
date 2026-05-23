@@ -11,6 +11,7 @@ export interface Destination {
   tags: string[];
   description: string;
   bestTimeToVisit?: string;
+  sections?: string[];
 }
 
 export type ItineraryDay = {
@@ -18,6 +19,12 @@ export type ItineraryDay = {
   title: string;
   details: string[];
 };
+
+export const DESTINATION_SECTIONS = [
+  { id: "expert-picks", label: "Expert Picks Itineraries", icon: "✦" },
+  { id: "domestic", label: "Domestic Tours", icon: "🇮🇳" },
+  { id: "explore", label: "Explore Destinations", icon: "🌍" },
+] as const;
 
 export const PACKAGE_SECTIONS = [
   { id: "expert-picks", label: "Expert Picks to Inspire You", icon: "✦" },
@@ -42,26 +49,26 @@ export interface Package {
 }
 
 export const DEFAULT_DESTINATIONS: Destination[] = [
-  { id: "thailand", name: "Thailand", image: "/thailand.png", duration: "7N", price: "₹62,000", tags: ["Adventure", "Culture"], description: "Ancient temples, tropical beaches, and vibrant street food", bestTimeToVisit: "November to April" },
-  { id: "france", name: "France", image: "/france.png", duration: "6N", price: "₹1,25,000", tags: ["Romance", "History"], description: "Paris skyline, historical châteaux, and world-renowned art and fashion", bestTimeToVisit: "April to October" },
-  { id: "egypt", name: "Egypt", image: "/egypt.png", duration: "5N", price: "₹75,000", tags: ["History", "Mystery"], description: "Giza Pyramids, Nile cruises, and mysterious ancient ruins", bestTimeToVisit: "October to April" },
-  { id: "maldives", name: "Maldives", image: "/maldives.png", duration: "4N", price: "₹92,000", tags: ["Luxury", "Relaxation"], description: "Overwater villas, turquoise lagoons, and private island calm", bestTimeToVisit: "November to April" },
-  { id: "dubai", name: "Dubai", image: "/dubai.png", duration: "5N", price: "₹81,500", tags: ["Luxury", "Adventure"], description: "Futuristic skyline, golden deserts, and world-class dining" },
-  { id: "singapore", name: "Singapore", image: "/singapore.png", duration: "7N", price: "₹1,15,000", tags: ["Culture", "Luxury"], description: "Garden city wonders, hawker centers, and stunning architecture" },
-  { id: "bali", name: "Bali", image: "/bali.png", duration: "5N", price: "₹45,000", tags: ["Relaxation", "Culture"], description: "Sacred temples, rice terraces, and serene spa retreats" },
-  { id: "vietnam", name: "Vietnam", image: "/hero-bg.png", duration: "6N", price: "₹58,000", tags: ["Culture", "Adventure"], description: "Limestone bays, old quarters, and unforgettable local cuisine" },
-  { id: "japan", name: "Japan", image: "/hero-bg.png", duration: "6N", price: "₹1,45,000", tags: ["Culture", "Luxury"], description: "Neon cities, mountain shrines, and iconic seasonal beauty" },
-  { id: "europe", name: "Europe", image: "/hero-bg.png", duration: "8N", price: "₹1,68,000", tags: ["Luxury", "Culture"], description: "Multi-city classics with guided tours and premium stays" },
-  { id: "spiti", name: "Spiti Valley", image: "/hero-bg.png", duration: "9N", price: "₹18,000", tags: ["Adventure", "Backpacking"], description: "The middle land between Tibet and India, a cold desert mountain valley", bestTimeToVisit: "May to October (Circuit), February (Winter)" },
-  { id: "himachal", name: "Himachal Pradesh", image: "/hero-bg.png", duration: "6N", price: "₹13,500", tags: ["Backpacking", "Nature"], description: "Mist-covered mountains, lush valleys, and serene pine forests", bestTimeToVisit: "March to June, September to December" },
-  { id: "ladakh", name: "Ladakh", image: "/ladakh.png", duration: "6N", price: "₹28,500", tags: ["Adventure", "Mountains"], description: "Turquoise lakes, ancient monasteries, and high-altitude mountain passes", bestTimeToVisit: "May to September" },
-  { id: "kashmir", name: "Kashmir", image: "/kashmir.png", duration: "5N", price: "₹24,500", tags: ["Nature", "Romance"], description: "Shikara rides on Dal Lake, blooming tulip gardens, and snow-capped peaks", bestTimeToVisit: "March to August" },
-  { id: "kerala", name: "Kerala", image: "/kerala.png", duration: "6N", price: "₹22,000", tags: ["Relaxation", "Backwaters"], description: "Tranquil backwaters, palm-fringed canals, and Ayurvedic spa retreats", bestTimeToVisit: "September to March" },
-  { id: "goa", name: "Goa", image: "/goa.png", duration: "4N", price: "₹16,500", tags: ["Beaches", "Nightlife"], description: "Golden sand beaches, historic churches, and vibrant coastal cuisine", bestTimeToVisit: "November to February" },
-  { id: "rajasthan", name: "Rajasthan", image: "/rajasthan.png", duration: "6N", price: "₹19,500", tags: ["Heritage", "Culture"], description: "Majestic forts, desert safaris, and luxurious royal palace stays", bestTimeToVisit: "October to March" },
-  { id: "canada", name: "Canada", image: "/canada.png", duration: "8N", price: "₹1,85,000", tags: ["Nature", "Adventure"], description: "Lakes, soaring mountain peaks, and deep forest trails in the Rockies", bestTimeToVisit: "June to September" },
-  { id: "italy", name: "Italy", image: "/italy.png", duration: "7N", price: "₹1,55,000", tags: ["Culture", "Romance"], description: "Venice gondolas, ancient Roman ruins, and Tuscan culinary heritage", bestTimeToVisit: "April to June, September to October" },
-  { id: "almaty", name: "Almaty", image: "/almaty.png", duration: "5N", price: "₹72,990", tags: ["Nature", "Honeymoon"], description: "Snowy peak backdrops, turquoise alpine lakes, and modern hospitality in Kazakhstan", bestTimeToVisit: "September to May" },
+  { id: "thailand", name: "Thailand", image: "/thailand.png", duration: "7N", price: "₹62,000", tags: ["Adventure", "Culture"], description: "Ancient temples, tropical beaches, and vibrant street food", bestTimeToVisit: "November to April", sections: ["expert-picks"] },
+  { id: "france", name: "France", image: "/france.png", duration: "6N", price: "₹1,25,000", tags: ["Romance", "History"], description: "Paris skyline, historical châteaux, and world-renowned art and fashion", bestTimeToVisit: "April to October", sections: ["expert-picks"] },
+  { id: "egypt", name: "Egypt", image: "/egypt.png", duration: "5N", price: "₹75,000", tags: ["History", "Mystery"], description: "Giza Pyramids, Nile cruises, and mysterious ancient ruins", bestTimeToVisit: "October to April", sections: ["expert-picks"] },
+  { id: "maldives", name: "Maldives", image: "/maldives.png", duration: "4N", price: "₹92,000", tags: ["Luxury", "Relaxation"], description: "Overwater villas, turquoise lagoons, and private island calm", bestTimeToVisit: "November to April", sections: ["expert-picks", "explore"] },
+  { id: "dubai", name: "Dubai", image: "/dubai.png", duration: "5N", price: "₹81,500", tags: ["Luxury", "Adventure"], description: "Futuristic skyline, golden deserts, and world-class dining", sections: ["explore"] },
+  { id: "singapore", name: "Singapore", image: "/singapore.png", duration: "7N", price: "₹1,15,000", tags: ["Culture", "Luxury"], description: "Garden city wonders, hawker centers, and stunning architecture", sections: ["explore"] },
+  { id: "bali", name: "Bali", image: "/bali.png", duration: "5N", price: "₹45,000", tags: ["Relaxation", "Culture"], description: "Sacred temples, rice terraces, and serene spa retreats", sections: ["explore"] },
+  { id: "vietnam", name: "Vietnam", image: "/hero-bg.png", duration: "6N", price: "₹58,000", tags: ["Culture", "Adventure"], description: "Limestone bays, old quarters, and unforgettable local cuisine", sections: ["explore"] },
+  { id: "japan", name: "Japan", image: "/hero-bg.png", duration: "6N", price: "₹1,45,000", tags: ["Culture", "Luxury"], description: "Neon cities, mountain shrines, and iconic seasonal beauty", sections: ["explore"] },
+  { id: "europe", name: "Europe", image: "/hero-bg.png", duration: "8N", price: "₹1,68,000", tags: ["Luxury", "Culture"], description: "Multi-city classics with guided tours and premium stays", sections: ["explore"] },
+  { id: "spiti", name: "Spiti Valley", image: "/hero-bg.png", duration: "9N", price: "₹18,000", tags: ["Adventure", "Backpacking"], description: "The middle land between Tibet and India, a cold desert mountain valley", bestTimeToVisit: "May to October (Circuit), February (Winter)", sections: ["domestic"] },
+  { id: "himachal", name: "Himachal Pradesh", image: "/hero-bg.png", duration: "6N", price: "₹13,500", tags: ["Backpacking", "Nature"], description: "Mist-covered mountains, lush valleys, and serene pine forests", bestTimeToVisit: "March to June, September to December", sections: ["domestic"] },
+  { id: "ladakh", name: "Ladakh", image: "/ladakh.png", duration: "6N", price: "₹28,500", tags: ["Adventure", "Mountains"], description: "Turquoise lakes, ancient monasteries, and high-altitude mountain passes", bestTimeToVisit: "May to September", sections: ["domestic"] },
+  { id: "kashmir", name: "Kashmir", image: "/kashmir.png", duration: "5N", price: "₹24,500", tags: ["Nature", "Romance"], description: "Shikara rides on Dal Lake, blooming tulip gardens, and snow-capped peaks", bestTimeToVisit: "March to August", sections: ["domestic"] },
+  { id: "kerala", name: "Kerala", image: "/kerala.png", duration: "6N", price: "₹22,000", tags: ["Relaxation", "Backwaters"], description: "Tranquil backwaters, palm-fringed canals, and Ayurvedic spa retreats", bestTimeToVisit: "September to March", sections: ["domestic"] },
+  { id: "goa", name: "Goa", image: "/goa.png", duration: "4N", price: "₹16,500", tags: ["Beaches", "Nightlife"], description: "Golden sand beaches, historic churches, and vibrant coastal cuisine", bestTimeToVisit: "November to February", sections: ["domestic"] },
+  { id: "rajasthan", name: "Rajasthan", image: "/rajasthan.png", duration: "6N", price: "₹19,500", tags: ["Heritage", "Culture"], description: "Majestic forts, desert safaris, and luxurious royal palace stays", bestTimeToVisit: "October to March", sections: ["domestic"] },
+  { id: "canada", name: "Canada", image: "/canada.png", duration: "8N", price: "₹1,85,000", tags: ["Nature", "Adventure"], description: "Lakes, soaring mountain peaks, and deep forest trails in the Rockies", bestTimeToVisit: "June to September", sections: ["explore"] },
+  { id: "italy", name: "Italy", image: "/italy.png", duration: "7N", price: "₹1,55,000", tags: ["Culture", "Romance"], description: "Venice gondolas, ancient Roman ruins, and Tuscan culinary heritage", bestTimeToVisit: "April to June, September to October", sections: ["explore"] },
+  { id: "almaty", name: "Almaty", image: "/almaty.png", duration: "5N", price: "₹72,990", tags: ["Nature", "Honeymoon"], description: "Snowy peak backdrops, turquoise alpine lakes, and modern hospitality in Kazakhstan", bestTimeToVisit: "September to May", sections: [] },
 ];
 
 export const DEFAULT_PACKAGES: Package[] = [

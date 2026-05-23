@@ -8,6 +8,7 @@ import {
   logoutAdmin,
   AVAILABLE_IMAGES,
   PACKAGE_SECTIONS,
+  DESTINATION_SECTIONS,
   slugifyDestinationName,
   type Destination,
   type Package,
@@ -119,15 +120,25 @@ function DestinationModal({ mode, initial, onSave, onClose }: { mode: ModalMode;
   const [tags, setTags] = useState(initial?.tags.join(", ") || "");
   const [description, setDescription] = useState(initial?.description || "");
   const [bestTimeToVisit, setBestTimeToVisit] = useState(initial?.bestTimeToVisit || "");
+  const [selectedSections, setSelectedSections] = useState<string[]>(initial?.sections || []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ name, image, duration, price, tags: tags.split(",").map((t) => t.trim()).filter(Boolean), description, bestTimeToVisit });
+    onSave({ 
+      name, 
+      image, 
+      duration, 
+      price, 
+      tags: tags.split(",").map((t) => t.trim()).filter(Boolean), 
+      description, 
+      bestTimeToVisit,
+      sections: selectedSections
+    });
   };
 
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 overflow-y-auto py-8">
-      <form onSubmit={handleSubmit} className="w-full max-w-lg p-6 rounded-2xl bg-[#192122] border border-white/10">
+      <form onSubmit={handleSubmit} className="w-full max-w-lg p-6 rounded-2xl bg-[#192122] border border-white/10 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-white font-bold text-lg">{mode === "add" ? "➕ Add Destination" : "✏️ Edit Destination"}</h3>
           <button type="button" onClick={onClose} className="p-2 rounded-lg hover:bg-white/10 text-gray-400 transition-colors"><X size={20} /></button>
@@ -142,6 +153,35 @@ function DestinationModal({ mode, initial, onSave, onClose }: { mode: ModalMode;
           </div>
           <Field label="Tags (comma-separated)" value={tags} onChange={setTags} placeholder="e.g. Adventure, Culture" />
           <Field label="Best Time to Visit" value={bestTimeToVisit} onChange={setBestTimeToVisit} placeholder="e.g. Nov - Feb" />
+          
+          {/* Section Assignment */}
+          <div>
+            <label className="block text-xs text-gray-400 uppercase tracking-wider font-semibold mb-2">Website Sections</label>
+            <p className="text-[11px] text-gray-500 mb-3">Select which sections this destination appears in. A destination can appear in multiple sections.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {DESTINATION_SECTIONS.map((section) => (
+                <label key={section.id} className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${selectedSections.includes(section.id) ? "bg-cyan-500/10 border-cyan-400/30" : "bg-white/5 border-white/10 hover:border-white/20"}`}>
+                  <input
+                    type="checkbox"
+                    checked={selectedSections.includes(section.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedSections([...selectedSections, section.id]);
+                      } else {
+                        setSelectedSections(selectedSections.filter((s) => s !== section.id));
+                      }
+                    }}
+                    className="sr-only"
+                  />
+                  <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all ${selectedSections.includes(section.id) ? "bg-cyan-500 border-cyan-500" : "border-white/20"}`}>
+                    {selectedSections.includes(section.id) && <Check size={12} className="text-white" />}
+                  </div>
+                  <span className="text-sm">{section.icon} {section.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
           <Field label="Description" value={description} onChange={setDescription} placeholder="Short description..." required />
         </div>
 
@@ -407,6 +447,7 @@ export default function AdminPage() {
 
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [packages, setPackages] = useState<Package[]>([]);
+  const [destSectionFilter, setDestSectionFilter] = useState<string>("all");
   const [packageDestinationFilter, setPackageDestinationFilter] = useState<string>("all");
   const [packageSectionFilter, setPackageSectionFilter] = useState<string>("all");
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
@@ -445,6 +486,14 @@ export default function AdminPage() {
   const showToast = (message: string, type: "success" | "error") => setToast({ message, type });
 
   const destinationMap = useMemo(() => new Map(destinations.map((d) => [d.id, d.name])), [destinations]);
+
+  const filteredDestinations = useMemo(() => {
+    let result = destinations;
+    if (destSectionFilter !== "all") {
+      result = result.filter((d) => d.sections?.includes(destSectionFilter));
+    }
+    return result;
+  }, [destinations, destSectionFilter]);
 
   const filteredPackages = useMemo(() => {
     let result = packages;
@@ -526,7 +575,25 @@ export default function AdminPage() {
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       {destModal && <DestinationModal mode={destModal.mode} initial={destModal.item} onSave={handleSaveDest} onClose={() => setDestModal(null)} />}
       {pkgModal && <PackageModal mode={pkgModal.mode} initial={pkgModal.item} destinations={destinations} onSave={handleSavePkg} onClose={() => setPkgModal(null)} />}
-      {confirmDelete && <ConfirmDialog message={`This will permanently delete "${confirmDelete.name}". This action cannot be undone.`} onConfirm={confirmDelete.type === "dest" ? handleDeleteDest : handleDeletePkg} onCancel={() => setConfirmDelete(null)} />}
+      {confirmDelete && (
+        <ConfirmDialog
+          message={
+            confirmDelete.type === "dest"
+              ? `This will permanently delete "${confirmDelete.name}"${
+                  packages.filter((pkg) => pkg.destinationId === confirmDelete.id).length > 0
+                    ? ` and all ${packages.filter((pkg) => pkg.destinationId === confirmDelete.id).length} linked packages (e.g., ${packages
+                        .filter((pkg) => pkg.destinationId === confirmDelete.id)
+                        .map((pkg) => pkg.name)
+                        .slice(0, 2)
+                        .join(", ")}${packages.filter((pkg) => pkg.destinationId === confirmDelete.id).length > 2 ? ", etc." : ""})`
+                    : ""
+                }. This action cannot be undone.`
+              : `This will permanently delete "${confirmDelete.name}". This action cannot be undone.`
+          }
+          onConfirm={confirmDelete.type === "dest" ? handleDeleteDest : handleDeletePkg}
+          onCancel={() => setConfirmDelete(null)}
+        />
+      )}
 
       <header className="sticky top-0 z-50 bg-[#050B1F]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
@@ -553,34 +620,85 @@ export default function AdminPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         {tab === "destinations" ? (
           <>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold" style={{ fontFamily: "var(--font-headline)" }}>Manage Destinations</h2>
-              <button onClick={() => setDestModal({ mode: "add" })} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 text-white text-sm font-bold hover:opacity-90 transition-opacity">
-                <Plus size={16} /> Add Destination
-              </button>
+            <div className="flex flex-col gap-3 mb-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-bold" style={{ fontFamily: "var(--font-headline)" }}>Manage Destinations</h2>
+                <button onClick={() => setDestModal({ mode: "add" })} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 text-white text-sm font-bold hover:opacity-90 transition-opacity">
+                  <Plus size={16} /> Add Destination
+                </button>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => setDestSectionFilter("all")} className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${destSectionFilter === "all" ? "bg-cyan-500/20 border-cyan-400/40 text-cyan-300" : "bg-white/5 border-white/10 text-gray-300 hover:text-white"}`}>
+                  All Sections
+                </button>
+                {DESTINATION_SECTIONS.map((s) => (
+                  <button key={s.id} onClick={() => setDestSectionFilter(s.id)} className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${destSectionFilter === s.id ? "bg-cyan-500/20 border-cyan-400/40 text-cyan-300" : "bg-white/5 border-white/10 text-gray-300 hover:text-white"}`}>
+                    {s.icon} {s.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {destinations.map((d) => (
-                <div key={d.id} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all group">
-                  <div className="relative h-36 rounded-xl overflow-hidden mb-3 bg-gray-800">
-                    <Image src={d.image} alt={d.name} fill className="object-cover" />
-                    <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => setDestModal({ mode: "edit", item: d })} className="p-2 rounded-lg bg-black/60 backdrop-blur text-white hover:bg-cyan-500/40 transition-colors"><Pencil size={14} /></button>
-                      <button onClick={() => setConfirmDelete({ type: "dest", id: d.id, name: d.name })} className="p-2 rounded-lg bg-black/60 backdrop-blur text-white hover:bg-red-500/40 transition-colors"><Trash2 size={14} /></button>
+              {filteredDestinations.map((d) => {
+                const linkedPkgs = packages.filter((pkg) => pkg.destinationId === d.id);
+                return (
+                  <div key={d.id} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all group flex flex-col justify-between">
+                    <div>
+                      <div className="relative h-36 rounded-xl overflow-hidden mb-3 bg-gray-800">
+                        <Image src={d.image} alt={d.name} fill className="object-cover" />
+                        <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button onClick={() => setDestModal({ mode: "edit", item: d })} className="p-2 rounded-lg bg-black/60 backdrop-blur text-white hover:bg-cyan-500/40 transition-colors"><Pencil size={14} /></button>
+                          <button onClick={() => setConfirmDelete({ type: "dest", id: d.id, name: d.name })} className="p-2 rounded-lg bg-black/60 backdrop-blur text-white hover:bg-red-500/40 transition-colors"><Trash2 size={14} /></button>
+                        </div>
+                      </div>
+                      <h3 className="font-bold text-white mb-1" style={{ fontFamily: "var(--font-headline)" }}>{d.name}</h3>
+                      <p className="text-gray-400 text-xs mb-2 line-clamp-2">{d.description}</p>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-cyan-400 font-bold text-sm">{d.price}</span>
+                        <span className="text-gray-500 text-xs">{d.duration}</span>
+                      </div>
+                      
+                      {d.bestTimeToVisit && (
+                        <div className="mt-2 text-[11px] text-orange/80 font-medium">Best Time: {d.bestTimeToVisit}</div>
+                      )}
+
+                      {/* Section Badges */}
+                      {d.sections && d.sections.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-2.5">
+                          {d.sections.map((sId) => {
+                            const sec = DESTINATION_SECTIONS.find((s) => s.id === sId);
+                            return sec ? (
+                              <span key={sId} className="px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-300 text-[9px] font-medium">
+                                {sec.icon} {sec.label}
+                              </span>
+                            ) : null;
+                          })}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Linked Packages Handshake info */}
+                    <div className="mt-4 pt-3 border-t border-white/5 flex flex-col gap-1">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-gray-400">Linked Packages:</span>
+                        {linkedPkgs.length > 0 ? (
+                          <span className="text-green-400 font-semibold">{linkedPkgs.length} Packages</span>
+                        ) : (
+                          <span className="text-amber-400 font-semibold flex items-center gap-1">⚠️ No packages</span>
+                        )}
+                      </div>
+                      {linkedPkgs.length > 0 && (
+                        <div className="text-[10px] text-gray-500 truncate max-w-full">
+                          {linkedPkgs.map((p) => p.name).join(", ")}
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <h3 className="font-bold text-white mb-1" style={{ fontFamily: "var(--font-headline)" }}>{d.name}</h3>
-                  <p className="text-gray-400 text-xs mb-2 line-clamp-2">{d.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-cyan-400 font-bold text-sm">{d.price}</span>
-                    <span className="text-gray-500 text-xs">{d.duration}</span>
-                  </div>
-                  {d.bestTimeToVisit && (
-                    <div className="mt-2 text-[11px] text-orange/80 font-medium">Best Time: {d.bestTimeToVisit}</div>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           </>
         ) : (

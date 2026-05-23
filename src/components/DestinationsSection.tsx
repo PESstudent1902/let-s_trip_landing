@@ -1,21 +1,104 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { 
   MapPin, Compass, Ship, Wind, Snowflake, 
-  MessageSquare, DollarSign, Award 
+  Award, DollarSign, MessageSquare, ChevronLeft, ChevronRight 
 } from "lucide-react";
 import { type Destination, type Package } from "@/lib/packageStore";
 import { fetchDestinations, fetchPackages } from "@/app/actions";
 
+// Adventure Icons Helper
 function getAdventureIcon(id: string) {
   if (id.includes("bungee")) return <Compass className="text-black group-hover:text-white" size={20} />;
   if (id.includes("rafting")) return <Ship className="text-black group-hover:text-white" size={20} />;
   if (id.includes("paragliding")) return <Wind className="text-black group-hover:text-white" size={20} />;
   return <Snowflake className="text-black group-hover:text-white" size={20} />;
+}
+
+// Reusable Scrollable Carousel Wrapper with Left/Right Arrows
+interface CarouselProps {
+  children: React.ReactNode;
+}
+
+function Carousel({ children }: CarouselProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [showLeft, setShowLeft] = useState(false);
+  const [showRight, setShowRight] = useState(false);
+
+  const updateScrollButtons = useCallback(() => {
+    if (containerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
+      setShowLeft(scrollLeft > 5);
+      setShowRight(scrollLeft + clientWidth < scrollWidth - 5);
+    }
+  }, []);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (el) {
+      el.addEventListener("scroll", updateScrollButtons);
+      
+      // Check immediately and also use ResizeObserver for dynamic resizing/data load adjustments
+      updateScrollButtons();
+      const observer = new ResizeObserver(() => {
+        updateScrollButtons();
+      });
+      observer.observe(el);
+
+      window.addEventListener("resize", updateScrollButtons);
+      
+      return () => {
+        el.removeEventListener("scroll", updateScrollButtons);
+        observer.disconnect();
+        window.removeEventListener("resize", updateScrollButtons);
+      };
+    }
+  }, [children, updateScrollButtons]);
+
+  const handleScroll = (direction: "left" | "right") => {
+    if (containerRef.current) {
+      const scrollAmount = containerRef.current.clientWidth * 0.75;
+      containerRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  return (
+    <div className="relative group/carousel w-full">
+      {/* Left Arrow Button */}
+      <button
+        onClick={() => handleScroll("left")}
+        disabled={!showLeft}
+        className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-30 w-11 h-11 rounded-full border border-white/10 bg-black/60 hover:bg-cyan/20 backdrop-blur-md text-white flex items-center justify-center transition-all duration-300 shadow-2xl scale-95 hover:scale-105 active:scale-95 disabled:opacity-0 disabled:pointer-events-none opacity-0 md:opacity-0 group-hover/carousel:opacity-100`}
+        aria-label="Scroll left"
+      >
+        <ChevronLeft size={20} />
+      </button>
+
+      {/* Right Arrow Button */}
+      <button
+        onClick={() => handleScroll("right")}
+        disabled={!showRight}
+        className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-30 w-11 h-11 rounded-full border border-white/10 bg-black/60 hover:bg-cyan/20 backdrop-blur-md text-white flex items-center justify-center transition-all duration-300 shadow-2xl scale-95 hover:scale-105 active:scale-95 disabled:opacity-0 disabled:pointer-events-none opacity-0 md:opacity-0 group-hover/carousel:opacity-100`}
+        aria-label="Scroll right"
+      >
+        <ChevronRight size={20} />
+      </button>
+
+      {/* Horizontal Scroll Area */}
+      <div
+        ref={containerRef}
+        className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide pb-6 px-1"
+      >
+        {children}
+      </div>
+    </div>
+  );
 }
 
 export default function DestinationsSection() {
@@ -34,18 +117,32 @@ export default function DestinationsSection() {
     return () => clearInterval(interval);
   }, [loadData]);
 
-  // Helper arrays filtered for sections
-  const expertPickDests = destinations.filter(d => 
-    ["thailand", "france", "egypt", "maldives"].includes(d.id)
-  );
+  // --- Dynamic Section Filtering with Fail-Safe Fallbacks ---
 
-  const adventurePkgs = packages.filter(p => 
-    p.sections?.includes("adventures") || ["pkg-bungee", "pkg-rafting", "pkg-paragliding", "pkg-skiing"].includes(p.id)
-  );
+  // 1. Expert Picks Itineraries (Destinations)
+  const expertPickDests = destinations.filter(d => d.sections?.includes("expert-picks")).length > 0
+    ? destinations.filter(d => d.sections?.includes("expert-picks"))
+    : destinations.filter(d => ["thailand", "france", "egypt", "maldives"].includes(d.id));
 
-  const domesticDests = destinations.filter(d => 
-    ["ladakh", "kashmir", "kerala", "goa", "rajasthan"].includes(d.id)
-  );
+  // 2. Adventures for you (Packages)
+  const adventurePkgs = packages.filter(p => p.sections?.includes("adventures")).length > 0
+    ? packages.filter(p => p.sections?.includes("adventures"))
+    : packages.filter(p => ["pkg-bungee", "pkg-rafting", "pkg-paragliding", "pkg-skiing"].includes(p.id));
+
+  // 3. Honeymoon Special (Packages)
+  const honeymoonPkgs = packages.filter(p => p.sections?.includes("honeymoon")).length > 0
+    ? packages.filter(p => p.sections?.includes("honeymoon"))
+    : packages.filter(p => p.id === "pkg-almaty" || p.destinationId === "almaty");
+
+  // 4. Domestic Tours (Destinations)
+  const domesticDests = destinations.filter(d => d.sections?.includes("domestic")).length > 0
+    ? destinations.filter(d => d.sections?.includes("domestic"))
+    : destinations.filter(d => ["ladakh", "kashmir", "kerala", "goa", "rajasthan"].includes(d.id));
+
+  // 5. Explore Destinations (Destinations)
+  const exploreDests = destinations.filter(d => d.sections?.includes("explore")).length > 0
+    ? destinations.filter(d => d.sections?.includes("explore"))
+    : destinations.filter(d => ["maldives", "canada", "italy"].includes(d.id));
 
   return (
     <section id="destinations" className="relative py-20 overflow-hidden bg-[#050B1F]">
@@ -65,12 +162,12 @@ export default function DestinationsSection() {
             <div className="flex-1 h-px bg-gradient-to-r from-cyan to-transparent opacity-20" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Carousel>
             {expertPickDests.map((dest) => (
               <Link 
                 href={`/destinations/${dest.id}`} 
                 key={dest.id} 
-                className="relative aspect-[4/3] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg"
+                className="relative aspect-[4/3] w-[280px] sm:w-[320px] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
               >
                 <Image src={dest.image} alt={dest.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -80,7 +177,7 @@ export default function DestinationsSection() {
                 </div>
               </Link>
             ))}
-          </div>
+          </Carousel>
         </div>
 
         {/* ============================================================
@@ -94,12 +191,12 @@ export default function DestinationsSection() {
             <div className="flex-1 h-px bg-gradient-to-r from-orange to-transparent opacity-20" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Carousel>
             {adventurePkgs.map((pkg) => (
               <Link 
                 href={`/packages/${pkg.id}`} 
                 key={pkg.id} 
-                className="relative aspect-[3/4] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg"
+                className="relative aspect-[3/4] w-[240px] sm:w-[280px] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
               >
                 <Image src={pkg.image} alt={pkg.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
@@ -109,17 +206,17 @@ export default function DestinationsSection() {
                   <div className="p-2 rounded-xl bg-black/5 transition-colors group-hover:bg-white/20">
                     {getAdventureIcon(pkg.id)}
                   </div>
-                  <span className="font-bold text-sm md:text-base tracking-wide" style={{ fontFamily: "var(--font-headline)" }}>
+                  <span className="font-bold text-sm md:text-base tracking-wide truncate" style={{ fontFamily: "var(--font-headline)" }}>
                     {pkg.name.replace(" Adventure", "").replace(" in River Rapids", "").replace(" Tandem Flight", "").replace(" Experience", "")}
                   </span>
                 </div>
               </Link>
             ))}
-          </div>
+          </Carousel>
         </div>
 
         {/* ============================================================
-           3. HONEYMOON SPECIAL WIDE BANNER
+           3. HONEYMOON SPECIAL
            ============================================================ */}
         <div>
           <div className="flex items-center gap-3 mb-8 md:mb-12">
@@ -129,35 +226,39 @@ export default function DestinationsSection() {
             <div className="flex-1 h-px bg-gradient-to-r from-pink-400 to-transparent opacity-20" />
           </div>
 
-          <div className="relative w-full rounded-3xl overflow-hidden border border-white/15 shadow-2xl min-h-[340px] md:min-h-[400px] flex items-center p-8 md:p-16">
-            <Image src="/almaty.png" alt="Big Almaty Lake" fill className="object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent z-0" />
-            
-            <div className="relative z-10 max-w-2xl text-left">
-              <span className="text-xs md:text-sm font-semibold tracking-wider text-cyan uppercase block mb-3" style={{ fontFamily: "var(--font-headline)" }}>
-                #KazakhstanWithDook
-              </span>
-              <h3 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight mb-4 text-white" style={{ fontFamily: "var(--font-headline)" }}>
-                Mountain Magic, Modern Vibes,<br />Endless Hospitality.
-              </h3>
-              <p className="text-lg sm:text-xl font-medium text-text-secondary mb-8" style={{ fontFamily: "var(--font-headline)" }}>
-                Discover Almaty.
-              </p>
-              
-              <div className="flex flex-wrap items-center gap-6">
-                <Link href="/packages/pkg-almaty" className="px-8 py-4 rounded-2xl bg-[#FF385C] hover:bg-[#FF385C]/90 text-white font-bold text-sm tracking-wide text-center transition-all shadow-xl hover:scale-[1.02]">
-                  RESERVE YOUR SPOT
-                </Link>
-                <span className="text-white text-lg font-bold" style={{ fontFamily: "var(--font-headline)" }}>
-                  Starting @72,990* PP
-                </span>
-              </div>
-            </div>
-          </div>
+          <Carousel>
+            {honeymoonPkgs.map((pkg) => (
+              <Link 
+                href={`/packages/${pkg.id}`} 
+                key={pkg.id} 
+                className="relative aspect-[16/10] w-[300px] sm:w-[420px] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
+              >
+                <Image src={pkg.image} alt={pkg.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
+                
+                <div className="absolute bottom-6 left-6 right-6">
+                  <span className="text-xs font-semibold tracking-wider text-cyan uppercase block mb-1">
+                    Honeymoon Special
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-black text-white mb-2 leading-tight truncate" style={{ fontFamily: "var(--font-headline)" }}>
+                    {pkg.name}
+                  </h3>
+                  <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-white/15">
+                    <span className="text-text-secondary text-sm font-semibold">
+                      {pkg.durationNights ? `${pkg.durationNights} Nights` : "Tailored Trip"}
+                    </span>
+                    <span className="text-cyan font-bold text-base sm:text-lg" style={{ fontFamily: "var(--font-headline)" }}>
+                      Starting @ {pkg.price}*
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </Carousel>
         </div>
 
         {/* ============================================================
-           4. DOMESTIC TOURS (SWISS CARDS IN THE SCREENSHOT)
+           4. DOMESTIC TOURS
            ============================================================ */}
         <div>
           <div className="flex items-center gap-3 mb-8 md:mb-12">
@@ -167,12 +268,12 @@ export default function DestinationsSection() {
             <div className="flex-1 h-px bg-gradient-to-r from-amber-400 to-transparent opacity-20" />
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <Carousel>
             {domesticDests.map((dest) => (
               <Link 
                 href={`/destinations/${dest.id}`} 
                 key={dest.id} 
-                className="relative aspect-[3/5] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg"
+                className="relative aspect-[3/5] w-[185px] sm:w-[220px] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
               >
                 <Image src={dest.image} alt={dest.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/10 to-transparent" />
@@ -183,7 +284,7 @@ export default function DestinationsSection() {
                 </div>
               </Link>
             ))}
-          </div>
+          </Carousel>
         </div>
 
         {/* ============================================================
@@ -197,46 +298,37 @@ export default function DestinationsSection() {
             <div className="flex-1 h-px bg-gradient-to-r from-violet to-transparent opacity-20" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Maldives */}
-            <Link href="/destinations/maldives" className="relative aspect-[3/4] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg">
-              <Image src="/maldives.png" alt="Maldives" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              <div className="absolute bottom-6 left-6 text-white font-bold text-2xl flex items-center gap-2">
-                <MapPin size={22} className="text-cyan" />
-                <span style={{ fontFamily: "var(--font-headline)" }}>Maldives</span>
-              </div>
-            </Link>
-
-            {/* Canada */}
-            <Link href="/destinations/canada" className="relative aspect-[3/4] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg">
-              <Image src="/canada.png" alt="Canada" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-              <div className="absolute bottom-6 left-6 right-6">
-                <div className="text-white font-bold text-2xl flex items-center gap-2 mb-2">
-                  <MapPin size={22} className="text-cyan" />
-                  <span style={{ fontFamily: "var(--font-headline)" }}>Canada</span>
-                </div>
-                <div className="h-px bg-white/20 my-3" />
-                <div className="flex items-center justify-between text-sm text-text-secondary">
-                  <span className="font-semibold" style={{ fontFamily: "var(--font-body)" }}>3+ Tour Packages</span>
-                  <span className="text-orange font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform" style={{ fontFamily: "var(--font-headline)" }}>
-                    Explore →
-                  </span>
-                </div>
-              </div>
-            </Link>
-
-            {/* Italy */}
-            <Link href="/destinations/italy" className="relative aspect-[3/4] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg">
-              <Image src="/italy.png" alt="Italy" fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-              <div className="absolute bottom-6 left-6 text-white font-bold text-2xl flex items-center gap-2">
-                <MapPin size={22} className="text-cyan" />
-                <span style={{ fontFamily: "var(--font-headline)" }}>Italy</span>
-              </div>
-            </Link>
-          </div>
+          <Carousel>
+            {exploreDests.map((dest) => {
+              const packageCount = packages.filter(pkg => pkg.destinationId === dest.id).length;
+              return (
+                <Link 
+                  href={`/destinations/${dest.id}`} 
+                  key={dest.id} 
+                  className="relative aspect-[3/4] w-[280px] sm:w-[320px] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
+                >
+                  <Image src={dest.image} alt={dest.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <div className="text-white font-bold text-2xl flex items-center gap-2 mb-2">
+                      <MapPin size={22} className="text-cyan" />
+                      <span style={{ fontFamily: "var(--font-headline)" }}>{dest.name}</span>
+                    </div>
+                    <div className="h-px bg-white/20 my-3" />
+                    <div className="flex items-center justify-between text-sm text-text-secondary">
+                      <span className="font-semibold" style={{ fontFamily: "var(--font-body)" }}>
+                        {packageCount > 0 ? `${packageCount}+ Tour Packages` : "Custom Packages"}
+                      </span>
+                      <span className="text-orange font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform" style={{ fontFamily: "var(--font-headline)" }}>
+                        Explore →
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </Carousel>
         </div>
 
         {/* ============================================================
