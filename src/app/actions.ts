@@ -62,15 +62,35 @@ function getRedisClient(): Redis | null {
 }
 
 function normalizeDestinations(destinations: Destination[]): Destination[] {
-  return destinations.length > 0 ? destinations : DEFAULT_DESTINATIONS;
+  const base = destinations.length > 0 ? destinations : DEFAULT_DESTINATIONS;
+  return base.map((d) => {
+    if (d.image === "/hero-bg.png" || d.image === "hero-bg.png") {
+      if (d.id === "vietnam") return { ...d, image: "/vietnam.png" };
+      if (d.id === "japan") return { ...d, image: "/japan.png" };
+      if (d.id === "europe") return { ...d, image: "/interlaken.png" };
+      if (d.id === "spiti") return { ...d, image: "/zermatt.png" };
+      if (d.id === "himachal") return { ...d, image: "/paragliding.png" };
+    }
+    return d;
+  });
 }
 
 function normalizePackages(packages: Package[], destinations: Destination[]): Package[] {
   const safeDestinations = normalizeDestinations(destinations);
-  return (packages.length > 0 ? packages : DEFAULT_PACKAGES).map((pkg) => ({
-    ...pkg,
-    destinationId: pkg.destinationId || inferDestinationIdFromPackage(pkg, safeDestinations),
-  }));
+  const base = packages.length > 0 ? packages : DEFAULT_PACKAGES;
+  return base.map((pkg) => {
+    let img = pkg.image;
+    if (img === "/hero-bg.png" || img === "hero-bg.png") {
+      if (pkg.id === "pkg-spiti-winter") img = "/skiing.png";
+      else if (pkg.id === "pkg-spiti-circuit") img = "/laax.png";
+      else if (pkg.id === "pkg-himachal-backpacking") img = "/rafting.png";
+    }
+    return {
+      ...pkg,
+      image: img,
+      destinationId: pkg.destinationId || inferDestinationIdFromPackage(pkg, safeDestinations),
+    };
+  });
 }
 
 function getErrorMessage(error: unknown, fallback: string): string {
