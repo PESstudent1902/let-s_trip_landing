@@ -44,7 +44,7 @@ export default function DestinationsSection() {
   );
 
   const domesticDests = destinations.filter(d => 
-    ["lucerne", "laax", "interlaken", "zurich", "zermatt"].includes(d.id)
+    ["ladakh", "kashmir", "kerala", "goa", "rajasthan"].includes(d.id)
   );
 
   return (
