@@ -216,46 +216,53 @@ export default function DestinationsSection() {
         </div>
 
         {/* ============================================================
-           3. HONEYMOON SPECIAL
+           3. HONEYMOON SPECIAL WIDE BANNER
            ============================================================ */}
-        <div>
-          <div className="flex items-center gap-3 mb-8 md:mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
-              Honeymoon
-            </h2>
-            <div className="flex-1 h-px bg-gradient-to-r from-pink-400 to-transparent opacity-20" />
-          </div>
+        {honeymoonPkgs.length > 0 && (
+          <div>
+            <div className="flex items-center gap-3 mb-8 md:mb-12">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
+                Honeymoon
+              </h2>
+              <div className="flex-1 h-px bg-gradient-to-r from-pink-400 to-transparent opacity-20" />
+            </div>
 
-          <Carousel>
-            {honeymoonPkgs.map((pkg) => (
-              <Link 
-                href={`/packages/${pkg.id}`} 
-                key={pkg.id} 
-                className="relative aspect-[16/10] w-[300px] sm:w-[420px] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
-              >
-                <Image src={pkg.image} alt={pkg.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
-                
-                <div className="absolute bottom-6 left-6 right-6">
-                  <span className="text-xs font-semibold tracking-wider text-cyan uppercase block mb-1">
-                    Honeymoon Special
-                  </span>
-                  <h3 className="text-xl sm:text-2xl font-black text-white mb-2 leading-tight truncate" style={{ fontFamily: "var(--font-headline)" }}>
-                    {pkg.name}
-                  </h3>
-                  <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-white/15">
-                    <span className="text-text-secondary text-sm font-semibold">
-                      {pkg.durationNights ? `${pkg.durationNights} Nights` : "Tailored Trip"}
+            {(() => {
+              const pkg = honeymoonPkgs[0];
+              const hashtag = pkg.tags?.[0] ? `#${pkg.tags[0]}` : `#HoneymoonSpecial`;
+              const title = pkg.name;
+              const subtitle = pkg.highlights.slice(0, 4).join(" · ");
+              
+              return (
+                <div className="relative w-full rounded-3xl overflow-hidden border border-white/15 shadow-2xl min-h-[340px] md:min-h-[400px] flex items-center p-8 md:p-16">
+                  <Image src={pkg.image} alt={pkg.name} fill className="object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent z-0" />
+                  
+                  <div className="relative z-10 max-w-2xl text-left">
+                    <span className="text-xs md:text-sm font-semibold tracking-wider text-cyan uppercase block mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+                      {hashtag}
                     </span>
-                    <span className="text-cyan font-bold text-base sm:text-lg" style={{ fontFamily: "var(--font-headline)" }}>
-                      Starting @ {pkg.price}*
-                    </span>
+                    <h3 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight mb-4 text-white" style={{ fontFamily: "var(--font-headline)" }}>
+                      {title}
+                    </h3>
+                    <p className="text-base sm:text-lg font-medium text-text-secondary mb-8" style={{ fontFamily: "var(--font-headline)" }}>
+                      {subtitle}
+                    </p>
+                    
+                    <div className="flex flex-wrap items-center gap-6">
+                      <Link href={`/packages/${pkg.id}`} className="px-8 py-4 rounded-2xl bg-[#FF385C] hover:bg-[#FF385C]/90 text-white font-bold text-sm tracking-wide text-center transition-all shadow-xl hover:scale-[1.02]">
+                        RESERVE YOUR SPOT
+                      </Link>
+                      <span className="text-white text-lg font-bold" style={{ fontFamily: "var(--font-headline)" }}>
+                        Starting @ {pkg.price}*
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </Link>
-            ))}
-          </Carousel>
-        </div>
+              );
+            })()}
+          </div>
+        )}
 
         {/* ============================================================
            4. DOMESTIC TOURS
