@@ -10,8 +10,8 @@ const PACKAGES_KEY = "letstrip_packages";
 const DESTINATIONS_KEY = "letstrip_destinations";
 
 const NEW_DESTINATIONS = [
-  { id: "spiti", name: "Spiti Valley", image: "/hero-bg.png", duration: "9N", price: "₹18,000", tags: ["Adventure", "Backpacking"], description: "The middle land between Tibet and India, a cold desert mountain valley", bestTimeToVisit: "May to October (Circuit), February (Winter)" },
-  { id: "himachal", name: "Himachal Pradesh", image: "/hero-bg.png", duration: "6N", price: "₹13,500", tags: ["Backpacking", "Nature"], description: "Mist-covered mountains, lush valleys, and serene pine forests", bestTimeToVisit: "March to June, September to December" },
+  { id: "spiti", name: "Spiti Valley", image: "/zermatt.png", duration: "9N", price: "₹18,000", tags: ["Adventure", "Backpacking"], description: "The middle land between Tibet and India, a cold desert mountain valley", bestTimeToVisit: "May to October (Circuit), February (Winter)" },
+  { id: "himachal", name: "Himachal Pradesh", image: "/paragliding.png", duration: "6N", price: "₹13,500", tags: ["Backpacking", "Nature"], description: "Mist-covered mountains, lush valleys, and serene pine forests", bestTimeToVisit: "March to June, September to December" },
 ];
 
 const NEW_PACKAGES = [
@@ -21,7 +21,7 @@ const NEW_PACKAGES = [
     price: "₹18,000 + GST",
     durationNights: 8,
     highlights: ["Tempo Traveler", "Homestays", "All Meals", "Sightseeing", "Guided Tour"],
-    image: "/hero-bg.png",
+    image: "/skiing.png",
     destinationId: "spiti",
     sections: ["domestic", "adventures"],
     itinerary: [
@@ -42,7 +42,7 @@ const NEW_PACKAGES = [
     price: "₹23,000 + GST",
     durationNights: 9,
     highlights: ["9N Accommodations", "All Transfers", "Meals", "Inner Line Permit", "Oxygen Support"],
-    image: "/hero-bg.png",
+    image: "/laax.png",
     destinationId: "spiti",
     sections: ["domestic", "expert-picks"],
     itinerary: [
@@ -64,7 +64,7 @@ const NEW_PACKAGES = [
     price: "₹13,500 + GST",
     durationNights: 6,
     highlights: ["Delhi-Manali-Delhi Volvo", "Stays", "Breakfast & Dinner", "Sightseeing", "Trek to Kheerganga"],
-    image: "/hero-bg.png",
+    image: "/rafting.png",
     destinationId: "himachal",
     sections: ["domestic", "explore-more"],
     itinerary: [

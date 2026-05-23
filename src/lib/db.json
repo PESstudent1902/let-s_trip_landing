@@ -77,7 +77,7 @@
     {
       "id": "vietnam",
       "name": "Vietnam",
-      "image": "/hero-bg.png",
+      "image": "/vietnam.png",
       "duration": "6N",
       "price": "₹58,000",
       "tags": ["Culture", "Adventure"],
@@ -87,7 +87,7 @@
     {
       "id": "japan",
       "name": "Japan",
-      "image": "/hero-bg.png",
+      "image": "/japan.png",
       "duration": "6N",
       "price": "₹1,45,000",
       "tags": ["Culture", "Luxury"],
@@ -97,7 +97,7 @@
     {
       "id": "europe",
       "name": "Europe",
-      "image": "/hero-bg.png",
+      "image": "/interlaken.png",
       "duration": "8N",
       "price": "₹1,68,000",
       "tags": ["Luxury", "Culture"],
@@ -107,7 +107,7 @@
     {
       "id": "spiti",
       "name": "Spiti Valley",
-      "image": "/hero-bg.png",
+      "image": "/zermatt.png",
       "duration": "9N",
       "price": "₹18,000",
       "tags": ["Adventure", "Backpacking"],
@@ -118,7 +118,7 @@
     {
       "id": "himachal",
       "name": "Himachal Pradesh",
-      "image": "/hero-bg.png",
+      "image": "/paragliding.png",
       "duration": "6N",
       "price": "₹13,500",
       "tags": ["Backpacking", "Nature"],
