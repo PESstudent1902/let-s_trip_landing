@@ -12,9 +12,7 @@
       ],
       "description": "Ancient temples, tropical beaches, and vibrant street food",
       "bestTimeToVisit": "November to April",
-      "sections": [
-        "expert-picks"
-      ],
+      "sections": [],
       "order": 1
     },
     {
@@ -29,9 +27,7 @@
       ],
       "description": "Paris skyline, historical châteaux, and world-renowned art and fashion",
       "bestTimeToVisit": "April to October",
-      "sections": [
-        "expert-picks"
-      ],
+      "sections": [],
       "order": 2
     },
     {
@@ -46,9 +42,7 @@
       ],
       "description": "Giza Pyramids, Nile cruises, and mysterious ancient ruins",
       "bestTimeToVisit": "October to April",
-      "sections": [
-        "expert-picks"
-      ],
+      "sections": [],
       "order": 3
     },
     {
@@ -63,10 +57,7 @@
       ],
       "description": "Overwater villas, turquoise lagoons, and private island calm",
       "bestTimeToVisit": "November to April",
-      "sections": [
-        "expert-picks",
-        "explore"
-      ],
+      "sections": [],
       "order": 4
     },
     {
@@ -80,9 +71,7 @@
         "Adventure"
       ],
       "description": "Futuristic skyline, golden deserts, and world-class dining",
-      "sections": [
-        "explore"
-      ],
+      "sections": [],
       "order": 5
     },
     {
@@ -112,9 +101,7 @@
         "Culture"
       ],
       "description": "Sacred temples, rice terraces, and serene spa retreats",
-      "sections": [
-        "explore"
-      ],
+      "sections": [],
       "order": 7
     },
     {
@@ -128,9 +115,7 @@
         "Adventure"
       ],
       "description": "Limestone bays, old quarters, and unforgettable local cuisine",
-      "sections": [
-        "explore"
-      ],
+      "sections": [],
       "order": 8
     },
     {
@@ -160,9 +145,7 @@
         "Culture"
       ],
       "description": "Multi-city classics with guided tours and premium stays",
-      "sections": [
-        "explore"
-      ],
+      "sections": [],
       "order": 10
     },
     {
@@ -262,9 +245,7 @@
       ],
       "description": "Golden sand beaches, historic churches, and vibrant coastal cuisine",
       "bestTimeToVisit": "November to February",
-      "sections": [
-        "domestic"
-      ],
+      "sections": [],
       "order": 16
     },
     {
@@ -296,9 +277,7 @@
       ],
       "description": "Lakes, soaring mountain peaks, and deep forest trails in the Rockies",
       "bestTimeToVisit": "June to September",
-      "sections": [
-        "explore"
-      ],
+      "sections": [],
       "order": 18
     },
     {
@@ -313,9 +292,7 @@
       ],
       "description": "Venice gondolas, ancient Roman ruins, and Tuscan culinary heritage",
       "bestTimeToVisit": "April to June, September to October",
-      "sections": [
-        "explore"
-      ],
+      "sections": [],
       "order": 19
     },
     {
@@ -401,7 +378,8 @@
       "description": "Escape to the beautiful Andaman archipelago. Visit historical Cellular Jail in Port Blair, relax on the white sands of Radhanagar Beach in Havelock, and see the natural coral reefs of Neil Island.",
       "bestTimeToVisit": "October to May",
       "sections": [
-        "expert-picks"
+        "expert-picks",
+        "domestic"
       ],
       "order": 24
     },
@@ -419,9 +397,86 @@
       "description": "Journey through the stunning landscapes of Northeast India. Spot rhinos in Kaziranga, trek to the Double Decker Root Bridge in Nongriat, and boat on the crystal-clear Umngot River in Dawki.",
       "bestTimeToVisit": "October to April",
       "sections": [
-        "expert-picks"
+        "expert-picks",
+        "domestic"
       ],
       "order": 25
+    },
+    {
+      "id": "rishikesh",
+      "name": "Rishikesh",
+      "image": "/rafting.png",
+      "duration": "1N",
+      "price": "₹2,499",
+      "tags": [
+        "Adventure",
+        "Rafting"
+      ],
+      "description": "Experience white water rafting and camping in the adventure capital of India.",
+      "sections": [],
+      "order": 26
+    },
+    {
+      "id": "jim-corbett",
+      "name": "Jim Corbett",
+      "image": "/kerala.png",
+      "duration": "2N",
+      "price": "₹8,500",
+      "tags": [
+        "Wildlife",
+        "Safari"
+      ],
+      "description": "Explore the wilderness of India's oldest national park and spot the majestic Bengal tiger.",
+      "sections": [],
+      "order": 27
+    },
+    {
+      "id": "sikkim",
+      "name": "Sikkim & Darjeeling",
+      "image": "/interlaken.png",
+      "duration": "4N",
+      "price": "₹24,500",
+      "tags": [
+        "Mountains",
+        "Culture"
+      ],
+      "description": "A scenic escape into the Eastern Himalayas, covering Tsomgo Lake, tea gardens, and Tiger Hill.",
+      "sections": [
+        "domestic"
+      ],
+      "order": 28
+    },
+    {
+      "id": "tawang",
+      "name": "Tawang",
+      "image": "/zermatt.png",
+      "duration": "6N",
+      "price": "₹29,500",
+      "tags": [
+        "Monasteries",
+        "Passes"
+      ],
+      "description": "Explore Tawang Monastery, Sangetsar Lake, and cross the majestic high-altitude Sela Pass.",
+      "sections": [
+        "domestic"
+      ],
+      "order": 29
+    },
+    {
+      "id": "kenya",
+      "name": "Kenya",
+      "image": "/egypt.png",
+      "duration": "5N",
+      "price": "₹1,45,000",
+      "tags": [
+        "Wildlife",
+        "Adventure"
+      ],
+      "description": "Witness the great wildebeest migration, explore Maasai Mara, and experience authentic African safaris.",
+      "sections": [
+        "explore"
+      ],
+      "order": 30
     }
   ],
   "packages": [
@@ -438,9 +493,7 @@
       ],
       "image": "/bungee.png",
       "destinationId": "himachal",
-      "sections": [
-        "adventures"
-      ],
+      "sections": [],
       "itinerary": [
         {
           "day": 1,
@@ -468,9 +521,7 @@
       ],
       "image": "/rafting.png",
       "destinationId": "himachal",
-      "sections": [
-        "adventures"
-      ],
+      "sections": [],
       "itinerary": [
         {
           "day": 1,
@@ -498,9 +549,7 @@
       ],
       "image": "/paragliding.png",
       "destinationId": "himachal",
-      "sections": [
-        "adventures"
-      ],
+      "sections": [],
       "itinerary": [
         {
           "day": 1,
@@ -528,9 +577,7 @@
       ],
       "image": "/skiing.png",
       "destinationId": "laax",
-      "sections": [
-        "adventures"
-      ],
+      "sections": [],
       "itinerary": [
         {
           "day": 1,
@@ -567,9 +614,7 @@
       ],
       "image": "/almaty.png",
       "destinationId": "almaty",
-      "sections": [
-        "honeymoon"
-      ],
+      "sections": [],
       "itinerary": [
         {
           "day": 1,
@@ -633,9 +678,7 @@
       ],
       "image": "/thailand.png",
       "destinationId": "thailand",
-      "sections": [
-        "expert-picks"
-      ],
+      "sections": [],
       "itinerary": [
         {
           "day": 1,
@@ -689,10 +732,7 @@
       ],
       "image": "/dubai.png",
       "destinationId": "dubai",
-      "sections": [
-        "expert-picks",
-        "explore-more"
-      ],
+      "sections": [],
       "itinerary": [
         {
           "day": 1,
@@ -753,9 +793,7 @@
       ],
       "image": "/bali.png",
       "destinationId": "bali",
-      "sections": [
-        "explore-more"
-      ],
+      "sections": [],
       "itinerary": [
         {
           "day": 1,
@@ -1170,6 +1208,1144 @@
           "details": [
             "Breakfast at the hotel.",
             "Private transfer and drop-off at Guwahati Airport / Railway Station for departure."
+          ]
+        }
+      ],
+      "order": 25
+    },
+    {
+      "id": "pkg-hampta-pass",
+      "name": "Hampta Pass Trek With Chandratal: 5-Day Thrilling Adventure",
+      "price": "₹8,500",
+      "durationNights": 4,
+      "highlights": [
+        "Jobra to Chika Trek",
+        "Balu Ka Ghera crossing",
+        "Hampta Pass (14,100 ft) summit",
+        "Chandratal Lake (Moon Lake) visit",
+        "Camping under the stars"
+      ],
+      "image": "/skiing.png",
+      "destinationId": "himachal",
+      "sections": [
+        "adventures"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Manali to Jobra & Trek to Chika",
+          "details": [
+            "Drive from Manali to Jobra (approx. 2 hours)",
+            "Gentle trek to Chika through pine and maple forests",
+            "Camp near Rani Nallah stream"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Trek from Chika to Balu Ka Ghera",
+          "details": [
+            "Trek through Jwara meadows crossing mountain streams",
+            "Enjoy beautiful vistas of snow-capped peaks",
+            "Camp at Balu Ka Ghera"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Balu Ka Ghera over Hampta Pass to Shea Goru",
+          "details": [
+            "Cross the challenging Hampta Pass (14,100 ft)",
+            "Panoramic views of the Pir Panjal range",
+            "Descend into the stark barren valley of Shea Goru"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Trek to Chatru & Drive to Chandratal Lake",
+          "details": [
+            "Trek down to Chatru and board vehicles",
+            "Drive to the spectacular crescent-shaped Chandratal Lake",
+            "Return to campsite at Chatru"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Drive from Chatru to Manali",
+          "details": [
+            "Drive back to Manali via Lahaul Valley and Atal Tunnel",
+            "End of the thrilling trekking adventure"
+          ]
+        }
+      ],
+      "order": 9
+    },
+    {
+      "id": "pkg-dreamy-andaman",
+      "name": "Dreamy Andaman Scuba & Leisure",
+      "price": "₹24,990",
+      "durationNights": 3,
+      "highlights": [
+        "Port Blair & Havelock Island stay",
+        "Private AC Transfers & Harbor Ferry",
+        "Radhanagar Beach Sunset",
+        "Elephant Beach Excursion",
+        "Optional Scuba Diving Session"
+      ],
+      "image": "/maldives.png",
+      "destinationId": "andaman-delight",
+      "sections": [
+        "adventures"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival in Port Blair",
+          "details": [
+            "Private transfer from Veer Savarkar Airport to hotel",
+            "Check in and relax",
+            "Optional visit to local beaches or markets"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Port Blair to Havelock & Radhanagar Beach",
+          "details": [
+            "Transfer to jetty and board private ferry cruise to Havelock",
+            "Check in at beachfront resort",
+            "Spend the afternoon at world-famous Radhanagar Beach"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Elephant Beach Excursion",
+          "details": [
+            "Boat ride to Elephant Beach for water activities",
+            "Enjoy snorkeling, swimming, or optional Scuba Diving",
+            "Ferry back to Port Blair in the evening"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Departure",
+          "details": [
+            "Savor breakfast at the hotel",
+            "Check out and private transfer to Port Blair Airport for flight"
+          ]
+        }
+      ],
+      "order": 10
+    },
+    {
+      "id": "pkg-rishikesh-rafting",
+      "name": "River Rafting in Rishikesh | 2 Days Adventure Packages by Go4Explore",
+      "price": "₹2,499",
+      "durationNights": 1,
+      "highlights": [
+        "Riverside Alpine Camping",
+        "16km White Water Rafting Session",
+        "Cliff Jumping & Body Surfing",
+        "Neer Garh Waterfall Hike",
+        "Bonfire & Campsite Music"
+      ],
+      "image": "/rafting.png",
+      "destinationId": "rishikesh",
+      "sections": [
+        "adventures"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival in Rishikesh & Waterfall Hike",
+          "details": [
+            "Check into riverside camps near Neergarh waterfall",
+            "Enjoy a hot lunch at the campsite",
+            "Hike to the Neer Garh Waterfall",
+            "Evening bonfire with music, snacks, and dinner"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "16km White Water Rafting & Local Exploration",
+          "details": [
+            "Breakfast at camps followed by checkout",
+            "Transfer to the rafting point",
+            "Enjoy a thrilling 16km rafting session through major rapids",
+            "Experience cliff jumping and body surfing",
+            "Explore Lakshman Jhula and local cafes before departure"
+          ]
+        }
+      ],
+      "order": 11
+    },
+    {
+      "id": "pkg-jim-corbett",
+      "name": "Jim Corbett Tour Package for 2 Nights / 3 Days with 1 Gypsy Safari",
+      "price": "₹8,500",
+      "durationNights": 2,
+      "highlights": [
+        "2 Nights stay in Corbett Wildlife Resort",
+        "1 Gypsy Safari in Tiger Reserve Zone",
+        "Garjiya Devi Temple & Corbett Museum visit",
+        "Swimming Pool & Resort Activities",
+        "All Buffet Meals Included"
+      ],
+      "image": "/kerala.png",
+      "destinationId": "jim-corbett",
+      "sections": [
+        "adventures"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival at Jim Corbett Resort",
+          "details": [
+            "Check-in at pre-booked wildlife resort in Ramnagar",
+            "Enjoy a welcome drink and buffet lunch",
+            "Evening at leisure or visit Kosi River and Garjiya Devi Temple",
+            "Dinner and overnight stay"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Morning Gypsy Safari & Resort Activities",
+          "details": [
+            "Early morning departure for a 4x4 Gypsy Safari in Corbett Tiger Reserve",
+            "Search for Bengal tigers, elephants, deer, and exotic birds",
+            "Return to resort for breakfast and relax by the pool",
+            "Evening bonfire, dinner, and overnight stay"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Resort Check-out & Departure",
+          "details": [
+            "Savor breakfast at the resort",
+            "Complete check-out and visit Corbett Museum",
+            "Depart for your return journey"
+          ]
+        }
+      ],
+      "order": 12
+    },
+    {
+      "id": "pkg-maldives-family",
+      "name": "Maldives Blissful Family Getaway",
+      "price": "₹98,990",
+      "durationNights": 3,
+      "highlights": [
+        "Beach Villa & Water Villa Stay Combo",
+        "Shared Speedboat Transfers Included",
+        "Free Snorkeling Excursion",
+        "Free Dolphin Watching Boat Trip",
+        "All Taxes & GST Included"
+      ],
+      "image": "/maldives.png",
+      "destinationId": "maldives",
+      "sections": [
+        "honeymoon"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival in Maldives",
+          "details": [
+            "Arrive at Malé Airport",
+            "Board the shared speedboat transfer to your resort",
+            "Check in to your Beach Villa and settle in"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Leisure Day & Water Activities",
+          "details": [
+            "Enjoy the white sand beaches and lagoon",
+            "Join the included guided snorkeling trip to explore coral reefs",
+            "Spend the night in your Beach Villa"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Water Villa Experience & Dolphin Watching",
+          "details": [
+            "Move and check in to your Water Villa with direct lagoon access",
+            "Board the afternoon dolphin-watching boat cruise",
+            "Enjoy a romantic dinner over the water"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Departure",
+          "details": [
+            "Breakfast at the resort and check out",
+            "Speedboat transfer back to Malé Airport for departure flight"
+          ]
+        }
+      ],
+      "order": 13
+    },
+    {
+      "id": "pkg-kashmir-go4explore",
+      "name": "Kashmir Travel Package from Srinagar | 5 Nights 6 Days | Go4Explore",
+      "price": "₹24,500",
+      "durationNights": 5,
+      "highlights": [
+        "Premium Stays & Houseboat on Dal Lake",
+        "Gondola Ride in Gulmarg (Asia's Highest Cable Car)",
+        "Sonamarg Glaciers Visit",
+        "Awantipura Ruins & Pahalgam Valley Tour",
+        "Complimentary Dal Lake Shikara Ride"
+      ],
+      "image": "/kashmir.png",
+      "destinationId": "kashmir",
+      "sections": [
+        "honeymoon"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival in Srinagar & Mughal Gardens",
+          "details": [
+            "Pickup from Srinagar Airport and transfer to hotel",
+            "Visit Shalimar Bagh, Nishat Bagh, and Chashme Shahi",
+            "Dinner and overnight stay in Srinagar"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Day Trip to Gulmarg & Gondola Ride",
+          "details": [
+            "Drive to Gulmarg, the Meadow of Flowers",
+            "Ride the famous Gulmarg Gondola (cable car) to the peaks",
+            "Return to Srinagar for overnight stay"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Day Trip to Sonamarg Glacier",
+          "details": [
+            "Excursion to Sonamarg, the Meadow of Gold",
+            "Enjoy views of snowy mountains and optional pony rides to Thajiwas Glacier",
+            "Return to Srinagar for overnight stay"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Srinagar to Pahalgam Valley",
+          "details": [
+            "Drive to Pahalgam passing saffron fields and Awantipura ruins",
+            "Check in to Pahalgam hotel",
+            "Explore Lidder River valley and local trails",
+            "Overnight stay in Pahalgam"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Pahalgam to Srinagar & Houseboat Stay",
+          "details": [
+            "Return drive to Srinagar and check in to premium Dal Lake Houseboat",
+            "Enjoy a scenic 1-hour Shikara ride on the lake",
+            "Overnight stay in the Houseboat"
+          ]
+        },
+        {
+          "day": 6,
+          "title": "Departure",
+          "details": [
+            "Breakfast on the houseboat, checkout, and transfer to airport"
+          ]
+        }
+      ],
+      "order": 14
+    },
+    {
+      "id": "pkg-andaman-serenity",
+      "name": "Andaman serenity",
+      "price": "₹26,990",
+      "durationNights": 5,
+      "highlights": [
+        "5 Nights Port Blair, Havelock & Neil Island",
+        "Cellular Jail Sound & Light Show",
+        "Radhanagar Beach Sunset",
+        "Elephant Beach Excursion & Snorkeling",
+        "Natural Rock Bridge Formation on Neil Island"
+      ],
+      "image": "/maldives.png",
+      "destinationId": "andaman-delight",
+      "sections": [
+        "domestic"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival & Port Blair Sightseeing",
+          "details": [
+            "Pickup at Port Blair Airport and private transfer to hotel",
+            "Visit Corbyn's Cove Beach",
+            "Watch the Cellular Jail Light & Sound Show in the evening"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Port Blair to Havelock Island",
+          "details": [
+            "Transfer to harbor and board cruise ferry to Havelock",
+            "Settle in at resort",
+            "Enjoy sunset at Radhanagar Beach"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Elephant Beach Excursion",
+          "details": [
+            "Boat trip to Elephant Beach for coral reef views",
+            "Included snorkeling session in shallow crystal waters",
+            "Overnight in Havelock"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Havelock to Neil Island Tour",
+          "details": [
+            "Take ferry to Neil Island",
+            "Check in at resort",
+            "Visit Sitapur, Laxmanpur beaches, and the Natural Rock Bridge"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Neil Island to Port Blair",
+          "details": [
+            "Morning checkout and ferry back to Port Blair",
+            "Leisure afternoon and shopping in Port Blair markets",
+            "Overnight stay in Port Blair"
+          ]
+        },
+        {
+          "day": 6,
+          "title": "Departure",
+          "details": [
+            "Breakfast at hotel, check out, and transfer to airport"
+          ]
+        }
+      ],
+      "order": 15
+    },
+    {
+      "id": "pkg-himalayan-highs",
+      "name": "Himachal – Himalayan Highs",
+      "price": "₹13,500",
+      "durationNights": 3,
+      "highlights": [
+        "Manali Stays & Volvo Transfers",
+        "Solang Valley Adventure Sports",
+        "Atal Tunnel & Sissu Lahaul Valley drive",
+        "Hadimba Temple & Mall Road City Tour",
+        "Kasol & Manikaran Day Excursion"
+      ],
+      "image": "/paragliding.png",
+      "destinationId": "himachal",
+      "sections": [
+        "domestic"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival in Manali & City Tour",
+          "details": [
+            "Pickup from Manali Volvo stand and transfer to hotel",
+            "Visit Hadimba Devi Temple, Vashisht Hot Springs, and Van Vihar",
+            "Free evening to explore Mall Road",
+            "Overnight in Manali"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Solang Valley, Atal Tunnel & Sissu",
+          "details": [
+            "Drive to Solang Valley for paragliding and zip-lining",
+            "Cross the Atal Tunnel to explore Sissu in Lahaul Valley",
+            "Return to Manali for overnight stay"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Manikaran Hot Springs & Kasol",
+          "details": [
+            "Full day trip to Kasol in Parvati Valley",
+            "Visit Manikaran hot springs and gurudwara",
+            "Return to Manali for dinner and overnight stay"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Checkout & Departure",
+          "details": [
+            "Breakfast, hotel checkout, and transfer to Manali Volvo stand for return journey"
+          ]
+        }
+      ],
+      "order": 16
+    },
+    {
+      "id": "pkg-spiti-circuit-go4explore",
+      "name": "Spiti Valley Circuit Tour Packages | Spiti Valley Circuit Trip from Delhi & Shimla to Manali",
+      "price": "₹18,000",
+      "durationNights": 6,
+      "highlights": [
+        "Shimla to Manali Complete Spiti Loop",
+        "Chitkul (Last Indian Village) & Kalpa stays",
+        "Kaza, Key Monastery & Chicham Bridge",
+        "Langza, Komic & Hikkim (Highest Post Office)",
+        "Chandratal Lake Campsite Stay"
+      ],
+      "image": "/zermatt.png",
+      "destinationId": "spiti",
+      "sections": [
+        "domestic"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Shimla to Chitkul",
+          "details": [
+            "Drive from Shimla to Chitkul, the last village on the Indo-Tibetan border",
+            "Overnight stay in Chitkul"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Chitkul to Kalpa",
+          "details": [
+            "Short drive to Kalpa overlooking Kinnaur Kailash range",
+            "Explore Roghi Suicide Point",
+            "Overnight stay in Kalpa"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Kalpa to Tabo via Gue Mummy",
+          "details": [
+            "Drive to Tabo via Nako Lake and Khab Sangam",
+            "Visit Gue village to see the 500-year-old mummified monk",
+            "Overnight stay in Tabo"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Tabo to Kaza via Dhankar Monastery",
+          "details": [
+            "Explore ancient Tabo and Dhankar Monasteries",
+            "Drive to Kaza and check in",
+            "Overnight stay in Kaza"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Kaza Local (Langza, Komic & Hikkim)",
+          "details": [
+            "Visit fossil village Langza, high altitude Komic monastery",
+            "Send a postcard from the highest post office in Hikkim",
+            "Overnight stay in Kaza"
+          ]
+        },
+        {
+          "day": 6,
+          "title": "Kaza to Chandratal via Key & Chicham",
+          "details": [
+            "Visit spectacular Key Monastery and cross Chicham Bridge",
+            "Drive to Chandratal Lake",
+            "Overnight stay in Swiss camps at Chandratal"
+          ]
+        },
+        {
+          "day": 7,
+          "title": "Chandratal to Manali via Atal Tunnel",
+          "details": [
+            "Scenic drive from Chandratal to Manali crossing the Atal Tunnel",
+            "End of the epic circuit"
+          ]
+        }
+      ],
+      "order": 17
+    },
+    {
+      "id": "pkg-kashmir-voyage",
+      "name": "Kashmir Valley Voyage",
+      "price": "₹24,500",
+      "durationNights": 4,
+      "highlights": [
+        "Srinagar Mughal Gardens tour",
+        "Dal Lake Houseboat & Shikara ride",
+        "Pahalgam Valley Excursion",
+        "Gulmarg Snow Peaks & Gondola Ride",
+        "Sonamarg Glaciers Visit"
+      ],
+      "image": "/kashmir.png",
+      "destinationId": "kashmir",
+      "sections": [
+        "domestic"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival in Srinagar & City Tour",
+          "details": [
+            "Srinagar Airport pickup and hotel check-in",
+            "Visit Shankaracharya Temple, Nishat Bagh, and Shalimar Bagh",
+            "1-hour Shikara ride on Dal Lake",
+            "Overnight in Srinagar"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Day Excursion to Pahalgam",
+          "details": [
+            "Full day trip to Pahalgam, the Valley of Shepherds",
+            "See saffron fields and Apple orchards along Lidder River",
+            "Return to Srinagar for overnight stay"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Day Excursion to Gulmarg",
+          "details": [
+            "Travel to Gulmarg, Meadow of Flowers",
+            "Enjoy optional Gondola cable car ride and snow walks",
+            "Return to Srinagar for overnight stay"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Day Excursion to Sonamarg",
+          "details": [
+            "Day trip to Sonamarg, the Meadow of Gold",
+            "Explore glaciers and mountain streams",
+            "Return to Srinagar for overnight stay"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Departure",
+          "details": [
+            "Breakfast at the hotel, checkout, and transfer to airport"
+          ]
+        }
+      ],
+      "order": 18
+    },
+    {
+      "id": "pkg-kerala-coastal-bliss",
+      "name": "Kerala Coastal Bliss",
+      "price": "₹22,000",
+      "durationNights": 4,
+      "highlights": [
+        "Munnar Tea Hills & Waterfalls",
+        "Periyar Wildlife Sanctuary (Thekkady)",
+        "Houseboat stay & Backwater cruise (Alleppey)",
+        "Fort Kochi Chinese Fishing Nets",
+        "All Private AC Transfers"
+      ],
+      "image": "/kerala.png",
+      "destinationId": "kerala",
+      "sections": [
+        "domestic"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Cochin to Munnar Hills",
+          "details": [
+            "Pickup from Cochin Airport/Station",
+            "Drive to Munnar stopping at Cheeyappara Waterfalls",
+            "Check in and relax at resort"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Munnar Sightseeing",
+          "details": [
+            "Explore Eravikulam National Park (Nilgiri Tahr)",
+            "Visit Mattupetty Dam, Echo Point, and Tata Tea Museum",
+            "Evening shopping for spices and tea"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Munnar to Thekkady (Periyar)",
+          "details": [
+            "Drive to Thekkady spice capital",
+            "Explore spice plantations and Periyar Lake",
+            "Optional Kathakali or Kalaripayattu shows",
+            "Overnight in Thekkady"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Thekkady to Alleppey Houseboat",
+          "details": [
+            "Drive to Alleppey and check into a private traditional houseboat",
+            "Enjoy a scenic cruise through backwaters with local meals",
+            "Overnight stay onboard"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Alleppey to Cochin Departure",
+          "details": [
+            "Disembark houseboat, transfer back to Kochi",
+            "Visit Fort Kochi, Jewish Synagogue, and Chinese Fishing Nets",
+            "Drop-off at airport/station"
+          ]
+        }
+      ],
+      "order": 19
+    },
+    {
+      "id": "pkg-meghalaya-waterfalls",
+      "name": "Meghalaya Waterfalls & Root Trails | Himavat Destinations",
+      "price": "₹24,500",
+      "durationNights": 5,
+      "highlights": [
+        "Guwahati & Shillong (Scotland of the East)",
+        "Elephant Falls & Umiam Lake",
+        "Cherrapunji Nohkalikai & Seven Sisters Falls",
+        "Double-Decker Living Root Bridge Nongriat Trek",
+        "Dawki Transparent Umngot River Boating",
+        "Mawlynnong (Asia's Cleanest Village)"
+      ],
+      "image": "/kerala.png",
+      "destinationId": "meghalaya",
+      "sections": [
+        "domestic"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Guwahati to Shillong",
+          "details": [
+            "Pickup from Guwahati Airport/Station",
+            "Drive to Shillong stopping at Umiam Lake en route",
+            "Check in and explore Police Bazaar",
+            "Overnight in Shillong"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Shillong Sightseeing",
+          "details": [
+            "Visit Elephant Falls, Wards Lake, and Shillong Peak viewpoint",
+            "Dinner and overnight stay in Shillong"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Shillong to Cherrapunji Waterfalls",
+          "details": [
+            "Drive to Cherrapunji",
+            "Visit Nohkalikai Falls, Seven Sisters Falls, Mawsmai Cave, and Mawkdok viewpoint",
+            "Overnight stay in Cherrapunji"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Double-Decker Living Root Bridge Trek",
+          "details": [
+            "Trek from Tyrna village down 3,500 steps to Double-Decker Living Root Bridge in Nongriat",
+            "Optional hike to Rainbow Falls",
+            "Overnight stay in Cherrapunji"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Dawki Boating & Mawlynnong Cleanest Village",
+          "details": [
+            "Visit Mawlynnong (Asia's Cleanest Village) and Riwai Single Root Bridge",
+            "Drive to Dawki for boating in clear Umngot River",
+            "Return to Shillong for overnight stay"
+          ]
+        },
+        {
+          "day": 6,
+          "title": "Shillong to Guwahati Drop",
+          "details": [
+            "Drive back to Guwahati and transfer to airport/station for departure"
+          ]
+        }
+      ],
+      "order": 20
+    },
+    {
+      "id": "pkg-ladakh-umlingla",
+      "name": "Leh Ladakh Tour with Umling La & Hanle | Ladakh Backpacking Adventure | Go4Explore",
+      "price": "₹28,500",
+      "durationNights": 7,
+      "highlights": [
+        "Leh Acclimatization & Monasteries",
+        "Khardung La Pass & Nubra Valley",
+        "Shyok River drive to Pangong Tso",
+        "Hanle Dark Sky Reserve Stargazing",
+        "Umling La (19,024 ft) - World's Highest Road"
+      ],
+      "image": "/ladakh.png",
+      "destinationId": "ladakh",
+      "sections": [
+        "domestic"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival in Leh & Acclimatization",
+          "details": [
+            "Pickup from airport, check-in, and full day rest for altitude adjustment",
+            "Overnight in Leh"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Leh Palace & Shanti Stupa Sightseeing",
+          "details": [
+            "Visit Shanti Stupa, Leh Palace, and local markets",
+            "Check vehicles and prep for high altitude drive",
+            "Overnight in Leh"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Leh to Nubra Valley via Khardung La",
+          "details": [
+            "Cross Khardung La (17,580 ft)",
+            "Drive to Nubra Valley, check in",
+            "Ride double-humped camels at Hunder sand dunes",
+            "Overnight in Nubra"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Nubra Valley to Pangong Tso via Shyok",
+          "details": [
+            "Scenic drive along Shyok River to Pangong Tso",
+            "Enjoy spectacular lake views at 14,000 ft",
+            "Overnight stay in lakeside camps"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Pangong Tso to Hanle via Rezang La",
+          "details": [
+            "Drive through remote Changthang region passing Chushul and Rezang La War Memorial",
+            "Arrive at Hanle, visit Astronomical Observatory for stargazing",
+            "Overnight stay in Hanle homestay"
+          ]
+        },
+        {
+          "day": 6,
+          "title": "Hanle to Umling La (19,024 ft) Excursion",
+          "details": [
+            "Ascend to Umling La (19,024 ft) - the highest motorable road in the world",
+            "Take photos at the summit and return to Hanle for overnight stay"
+          ]
+        },
+        {
+          "day": 7,
+          "title": "Hanle back to Leh",
+          "details": [
+            "Drive from Hanle back to Leh via Chumathang hot springs",
+            "Overnight stay in Leh"
+          ]
+        },
+        {
+          "day": 8,
+          "title": "Departure",
+          "details": [
+            "Check out and drop to Leh airport for departure flight"
+          ]
+        }
+      ],
+      "order": 21
+    },
+    {
+      "id": "pkg-sikkim-escape",
+      "name": "Sikkim & Darjeeling Himalayan Escape | Himavat Destinations",
+      "price": "₹24,500",
+      "durationNights": 4,
+      "highlights": [
+        "Gangtok MG Marg & local viewpoints",
+        "Tsomgo Lake & Baba Mandir excursion",
+        "Tiger Hill spectacular sunrise (Darjeeling)",
+        "Ghoom Monastery & Batasia Loop",
+        "Scenic Darjeeling tea garden tours"
+      ],
+      "image": "/interlaken.png",
+      "destinationId": "sikkim",
+      "sections": [
+        "domestic"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival & Transfer to Gangtok",
+          "details": [
+            "Pickup from NJP Railway Station or Bagdogra Airport",
+            "Private drive to Gangtok, check in to hotel",
+            "Evening walk around MG Marg",
+            "Overnight stay in Gangtok"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Tsomgo Lake & Baba Mandir Excursion",
+          "details": [
+            "Excursion to high-altitude Tsomgo Lake and Baba Mandir",
+            "Optional permit/visit to Nathula Pass",
+            "Return to Gangtok for overnight stay"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Gangtok to Darjeeling",
+          "details": [
+            "Check out and drive through scenic tea garden estates to Darjeeling",
+            "Check in and enjoy the evening at leisure or local markets",
+            "Overnight stay in Darjeeling"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Tiger Hill Sunrise & Darjeeling Sightseeing",
+          "details": [
+            "Early morning sunrise view over Mt. Kanchenjunga from Tiger Hill",
+            "Visit Ghoom Monastery, Batasia Loop, Himalayan Mountaineering Institute, and tea gardens",
+            "Overnight stay in Darjeeling"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Darjeeling to NJP/Bagdogra Departure",
+          "details": [
+            "Breakfast at hotel, check out, and transfer back to NJP or Bagdogra for departure flight"
+          ]
+        }
+      ],
+      "order": 22
+    },
+    {
+      "id": "pkg-tawang-valleys",
+      "name": "Tawang Valleys & Himalayan Passes | Himavat Destinations",
+      "price": "₹29,500",
+      "durationNights": 6,
+      "highlights": [
+        "Guwahati Gateway & Dirang/Bomdila valleys",
+        "Crossing Sela Pass (13,700 ft) & Sela Lake",
+        "Tawang Monastery (largest in India)",
+        "Bum La Pass Indo-China Border Excursion",
+        "Sangetsar Madhuri Lake & Nuranang Falls"
+      ],
+      "image": "/zermatt.png",
+      "destinationId": "tawang",
+      "sections": [
+        "domestic"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Guwahati to Dirang / Bomdila",
+          "details": [
+            "Pickup in Guwahati and drive towards mountain foothills",
+            "Arrive in Dirang/Bomdila for check-in and acclimatization",
+            "Overnight stay"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Dirang to Tawang via Sela Pass",
+          "details": [
+            "Ascend and cross the majestic Sela Pass (13,700 ft) and Sela Lake",
+            "Stop at Jaswant Garh War Memorial",
+            "Check in at hotel in Tawang",
+            "Overnight stay"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Tawang Monastery & Local Sightseeing",
+          "details": [
+            "Visit the historic Tawang Monastery and War Memorial",
+            "Explore local craft markets and cultural spots",
+            "Overnight stay in Tawang"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Bum La Pass & Sangetsar Lake Excursion",
+          "details": [
+            "Drive to Bum La Pass on the Indo-China border (subject to permit)",
+            "Visit the picturesque Sangetsar Lake (Madhuri Lake)",
+            "Return to Tawang for overnight stay"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Tawang to Bomdila via Nuranang Falls",
+          "details": [
+            "Checkout and drive down towards Bomdila",
+            "Stop at Nuranang (Jang) Waterfalls",
+            "Check in at hotel in Bomdila for overnight stay"
+          ]
+        },
+        {
+          "day": 6,
+          "title": "Bomdila back to Guwahati",
+          "details": [
+            "Drive back from Bomdila down to plains of Guwahati",
+            "Check-in and evening at leisure in Guwahati",
+            "Overnight stay"
+          ]
+        },
+        {
+          "day": 7,
+          "title": "Departure",
+          "details": [
+            "Breakfast at hotel, checkout, and drop to Guwahati Airport/Station for departure"
+          ]
+        }
+      ],
+      "order": 23
+    },
+    {
+      "id": "pkg-rajasthan-explorer",
+      "name": "Rajasthan Explorer Tour Package – Jaipur, Jodhpur, Udaipur & Jaisalmer",
+      "price": "₹19,500",
+      "durationNights": 5,
+      "highlights": [
+        "Jaipur Pink City heritage sites",
+        "Jodhpur Mehrangarh Fort exploration",
+        "Udaipur Lake Pichola boat cruise",
+        "Jaisalmer Desert camp & camel safari",
+        "Comfortable boutique hotel stays"
+      ],
+      "image": "/rajasthan.png",
+      "destinationId": "rajasthan",
+      "sections": [
+        "domestic"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival in Jaipur",
+          "details": [
+            "Pickup and transfer to hotel",
+            "Visit Hawa Mahal and Amber Fort",
+            "Overnight stay in Jaipur"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Jaipur to Jodhpur",
+          "details": [
+            "Drive to Blue City Jodhpur",
+            "Explore Mehrangarh Fort and Jaswant Thada",
+            "Overnight stay in Jodhpur"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Jodhpur to Jaisalmer Desert",
+          "details": [
+            "Drive to Golden City Jaisalmer",
+            "Check in to luxury Swiss desert camps",
+            "Enjoy camel safari, sand dune sunset, and folk dances",
+            "Overnight in Jaisalmer Camp"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Jaisalmer Fort to Udaipur",
+          "details": [
+            "Visit Jaisalmer Fort and Havelis",
+            "Drive towards Udaipur, the City of Lakes",
+            "Check in and overnight in Udaipur"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Udaipur Sightseeing & Lakes",
+          "details": [
+            "Visit City Palace and Jagdish Temple",
+            "Enjoy a scenic boat cruise on Lake Pichola",
+            "Overnight stay in Udaipur"
+          ]
+        },
+        {
+          "day": 6,
+          "title": "Departure",
+          "details": [
+            "Savor breakfast and check out from hotel",
+            "Private drop at Udaipur airport/station for departure flight"
+          ]
+        }
+      ],
+      "order": 24
+    },
+    {
+      "id": "pkg-kenya-safari",
+      "name": "Kenya Classic Wilderness Safari",
+      "price": "₹1,45,000",
+      "durationNights": 5,
+      "highlights": [
+        "Maasai Mara Game Reserve Safaris",
+        "Wildebeest Great Migration views",
+        "Lake Nakuru flamingos and rhinos",
+        "Boutique safari lodges and camps",
+        "All transfers and game drives"
+      ],
+      "image": "/egypt.png",
+      "destinationId": "kenya",
+      "sections": [],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival in Nairobi & Transfer to Lake Nakuru",
+          "details": [
+            "Meet and assist at Jomo Kenyatta Airport in Nairobi",
+            "Drive to Lake Nakuru National Park",
+            "Afternoon game drive to spot flamingos and rhinos",
+            "Dinner and stay at safari lodge"
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Lake Nakuru to Maasai Mara",
+          "details": [
+            "Breakfast and drive to the world-famous Maasai Mara Game Reserve",
+            "Arrive in time for lunch and settle in at luxury tented camp",
+            "Late afternoon game drive",
+            "Overnight stay at Mara Camp"
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Full Day Maasai Mara Game Drives",
+          "details": [
+            "Morning and afternoon game drives in search of the Big Five (lion, leopard, elephant, buffalo, rhino)",
+            "Enjoy picnic lunch in the reserve near Mara River",
+            "Overnight stay at Mara Camp"
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Maasai Village Visit & Game Drive",
+          "details": [
+            "Optional hot air balloon safari or morning game drive",
+            "Visit a traditional Maasai village to learn about their culture",
+            "Afternoon game drive and overnight stay"
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Maasai Mara back to Nairobi",
+          "details": [
+            "Early morning game drive and breakfast at camp",
+            "Checkout and drive back to Nairobi",
+            "Drop-off at Jomo Kenyatta Airport for departure flight"
           ]
         }
       ],
