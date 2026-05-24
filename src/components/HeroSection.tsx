@@ -119,7 +119,7 @@ export default function HeroSection() {
         {/* Main headline — brush script for emotional impact */}
         <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }} className="mb-4 md:mb-6">
           <span className="block text-5xl sm:text-6xl md:text-8xl lg:text-9xl leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-brush)" }}>
-            <span className="text-white">Where </span>
+            <span className="text-text-primary">Where </span>
             <span className="bg-gradient-to-r from-cyan via-cyan-dim to-violet bg-clip-text text-transparent text-glow-cyan">Wanderlust</span>
           </span>
           <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-text-secondary mt-2 md:mt-3" style={{ fontFamily: "var(--font-handwritten)" }}>
@@ -140,18 +140,18 @@ export default function HeroSection() {
               <div className="flex-1 text-left">
                 <p className="text-[10px] text-text-muted uppercase tracking-widest font-semibold mb-0.5">Where to?</p>
                 <select 
-                  className="w-full bg-transparent text-white font-bold text-lg md:text-xl appearance-none outline-none cursor-pointer" 
+                  className="w-full bg-transparent text-text-primary font-bold text-lg md:text-xl appearance-none outline-none cursor-pointer" 
                   value={selectedDestId}
                   onChange={(e) => setSelectedDestId(e.target.value)}
                   style={{ fontFamily: "var(--font-headline)" }}
                 >
-                  <option value="" className="bg-abyss text-white">Any Destination</option>
+                  <option value="" className="bg-surface text-text-primary">Any Destination</option>
                   {destinations.map(d => (
-                    <option key={d.id} value={d.id} className="bg-abyss text-white">{d.name}</option>
+                    <option key={d.id} value={d.id} className="bg-surface text-text-primary">{d.name}</option>
                   ))}
                 </select>
               </div>
-              <ChevronDown className="text-white/50 pointer-events-none absolute right-4" size={20} />
+              <ChevronDown className="text-text-muted/80 pointer-events-none absolute right-4" size={20} />
             </div>
 
 

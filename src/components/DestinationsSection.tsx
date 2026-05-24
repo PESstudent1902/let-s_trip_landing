@@ -296,7 +296,7 @@ export default function DestinationsSection() {
         </div>
 
         {/* ============================================================
-           5. EXPLORE DESTINATIONS - Exactly 3 images side by side
+           5. EXPLORE DESTINATIONS - Shows 3 images at a time with carousel navigation
            ============================================================ */}
         <div>
           <div className="flex items-center gap-3 mb-6 md:mb-8">
@@ -306,14 +306,14 @@ export default function DestinationsSection() {
             <div className="flex-1 h-px bg-gradient-to-r from-violet to-transparent opacity-20" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {exploreDests.slice(0, 3).map((dest) => {
+          <Carousel>
+            {exploreDests.map((dest) => {
               const packageCount = packages.filter(pkg => pkg.destinationId === dest.id).length;
               return (
                 <Link 
                   href={`/destinations/${dest.id}`} 
                   key={dest.id} 
-                  className="relative aspect-[3/4] w-full rounded-none overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg"
+                  className="relative aspect-[3/4] w-full sm:w-[calc((100%-24px)/2)] md:w-[calc((100%-48px)/3)] rounded-none overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
                 >
                   <Image src={dest.image} alt={dest.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
@@ -336,7 +336,7 @@ export default function DestinationsSection() {
                 </Link>
               );
             })}
-          </div>
+          </Carousel>
         </div>
 
         {/* ============================================================
@@ -388,7 +388,7 @@ export default function DestinationsSection() {
                 Travel Support
               </h3>
               <p className="text-text-secondary text-sm leading-relaxed">
-                24/7 on-trip helpline, emergency assistance, travel insurance, and flight updates.
+                Flight booking assistance, local bus transfers, train reservations, and overall transport support.
               </p>
             </div>
           </div>
