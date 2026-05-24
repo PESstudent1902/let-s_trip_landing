@@ -99,8 +99,8 @@ export default function HeroSection() {
     <section ref={heroRef} id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div ref={parallaxRef} className="absolute inset-0 z-0 gpu-accelerated">
         <Image src="/hero-bg.png" alt="Breathtaking aerial view of tropical waters" fill className="object-cover" priority quality={90} />
-        <div className="absolute inset-0 bg-gradient-to-b from-abyss/70 via-abyss/40 to-abyss" />
-        <div className="absolute inset-0 bg-gradient-to-r from-abyss/50 via-transparent to-abyss/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#050B1F]/70 via-[#050B1F]/40 to-[#050B1F]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050B1F]/50 via-transparent to-[#050B1F]/50" />
       </div>
 
       {PARTICLES.map((particle, i) => (
@@ -119,15 +119,15 @@ export default function HeroSection() {
         {/* Main headline — brush script for emotional impact */}
         <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }} className="mb-4 md:mb-6">
           <span className="block text-5xl sm:text-6xl md:text-8xl lg:text-9xl leading-[0.95] tracking-tight" style={{ fontFamily: "var(--font-brush)" }}>
-            <span className="text-text-primary">Where </span>
+            <span className="text-white">Where </span>
             <span className="bg-gradient-to-r from-cyan via-cyan-dim to-violet bg-clip-text text-transparent text-glow-cyan">Wanderlust</span>
           </span>
-          <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-text-secondary mt-2 md:mt-3" style={{ fontFamily: "var(--font-handwritten)" }}>
+          <span className="block text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white/80 mt-2 md:mt-3" style={{ fontFamily: "var(--font-handwritten)" }}>
             meets experience
           </span>
         </motion.h1>
 
-        <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.7, ease: [0.22, 1, 0.36, 1] }} className="text-text-secondary text-base md:text-xl max-w-2xl mx-auto mb-10 md:mb-14 leading-relaxed px-2">
+        <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.7, ease: [0.22, 1, 0.36, 1] }} className="text-white/70 text-base md:text-xl max-w-2xl mx-auto mb-10 md:mb-14 leading-relaxed px-2">
           Curated luxury travel experiences designed to make every moment extraordinary. From Bali sunsets to Dubai skylines.
         </motion.p>
 
@@ -140,18 +140,18 @@ export default function HeroSection() {
               <div className="flex-1 text-left">
                 <p className="text-[10px] text-text-muted uppercase tracking-widest font-semibold mb-0.5">Where to?</p>
                 <select 
-                  className="w-full bg-transparent text-text-primary font-bold text-lg md:text-xl appearance-none outline-none cursor-pointer" 
+                  className="w-full bg-transparent text-white font-bold text-lg md:text-xl appearance-none outline-none cursor-pointer" 
                   value={selectedDestId}
                   onChange={(e) => setSelectedDestId(e.target.value)}
                   style={{ fontFamily: "var(--font-headline)" }}
                 >
-                  <option value="" className="bg-surface text-text-primary">Any Destination</option>
+                  <option value="" className="bg-[#050B1F] text-white">Any Destination</option>
                   {destinations.map(d => (
-                    <option key={d.id} value={d.id} className="bg-surface text-text-primary">{d.name}</option>
+                    <option key={d.id} value={d.id} className="bg-[#050B1F] text-white">{d.name}</option>
                   ))}
                 </select>
               </div>
-              <ChevronDown className="text-text-muted/80 pointer-events-none absolute right-4" size={20} />
+              <ChevronDown className="text-white/50 pointer-events-none absolute right-4" size={20} />
             </div>
 
 

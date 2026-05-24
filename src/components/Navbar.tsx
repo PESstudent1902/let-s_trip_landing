@@ -89,7 +89,11 @@ export default function Navbar() {
                 href={link.href}
                 target={link.external ? "_blank" : undefined}
                 rel={link.external ? "noopener noreferrer" : undefined}
-                className="adventure-link text-text-secondary hover:text-white text-sm font-medium tracking-wide"
+                className={`adventure-link text-sm font-medium tracking-wide ${
+                  scrolled 
+                    ? "text-text-secondary hover:text-text-primary" 
+                    : "text-white/80 hover:text-white"
+                }`}
                 style={{ fontFamily: "var(--font-headline)" }}
               >
                 {link.label}
@@ -101,7 +105,11 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-full glass border border-white/10 hover:border-cyan/40 text-cyan cursor-pointer transition-all flex items-center justify-center"
+              className={`p-2.5 rounded-full glass border transition-all flex items-center justify-center cursor-pointer ${
+                scrolled 
+                  ? "border-glass-border text-cyan hover:border-cyan/40" 
+                  : "border-white/10 text-white hover:border-white/30"
+              }`}
               aria-label="Toggle theme"
             >
               {theme === "dark" ? <Sun size={18} /> : <Moon size={18} className="text-violet" />}
@@ -129,7 +137,11 @@ export default function Navbar() {
           <div className="flex md:hidden items-center gap-2">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full glass border border-white/10 text-cyan flex items-center justify-center cursor-pointer"
+              className={`p-2 rounded-full glass border flex items-center justify-center cursor-pointer ${
+                scrolled || mobileOpen
+                  ? "border-glass-border text-cyan" 
+                  : "border-white/10 text-white"
+              }`}
               aria-label="Toggle theme"
             >
               {theme === "dark" ? <Sun size={18} /> : <Moon size={18} className="text-violet" />}
@@ -137,7 +149,9 @@ export default function Navbar() {
             {/* Mobile Toggle */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="text-text-primary p-2 z-[60] relative cursor-pointer"
+              className={`p-2 z-[60] relative cursor-pointer ${
+                scrolled || mobileOpen ? "text-text-primary" : "text-white"
+              }`}
               aria-label="Toggle menu"
             >
               <AnimatePresence mode="wait">
