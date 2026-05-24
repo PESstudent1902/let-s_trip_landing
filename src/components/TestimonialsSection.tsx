@@ -64,7 +64,7 @@ export default function TestimonialsSection() {
             Guest Experiences
           </span>
           <h2 className="text-4xl sm:text-5xl md:text-7xl leading-tight" style={{ fontFamily: "var(--font-brush)" }}>
-            <span className="text-white">Stories from the </span>
+            <span className="text-text-primary">Stories from the </span>
             <span className="bg-gradient-to-r from-cyan to-violet bg-clip-text text-transparent">road</span>
           </h2>
         </motion.div>
@@ -112,7 +112,7 @@ export default function TestimonialsSection() {
 
                 <Quote className="text-cyan mb-6 md:mb-8" size={40} strokeWidth={1} />
 
-                <p className="text-white text-base md:text-lg leading-relaxed mb-8 md:mb-12 flex-1 italic font-light" style={{ fontFamily: "var(--font-handwritten)" }}>
+                <p className="text-text-primary text-base md:text-lg leading-relaxed mb-8 md:mb-12 flex-1 italic font-light" style={{ fontFamily: "var(--font-handwritten)" }}>
                   "{t.text}"
                 </p>
 
@@ -122,7 +122,7 @@ export default function TestimonialsSection() {
                       <User size={24} className="text-cyan/50" />
                     </div>
                     <div>
-                      <h4 className="text-white font-bold text-base md:text-lg" style={{ fontFamily: "var(--font-headline)" }}>{t.name}</h4>
+                      <h4 className="text-text-primary font-bold text-base md:text-lg" style={{ fontFamily: "var(--font-headline)" }}>{t.name}</h4>
                       <p className="text-cyan/80 text-xs md:text-sm" style={{ fontFamily: "var(--font-handwritten)" }}>{t.location}</p>
                     </div>
                   </div>
