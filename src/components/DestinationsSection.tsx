@@ -360,7 +360,7 @@ export default function DestinationsSection() {
         {/* ============================================================
            6. SERVICES SECTION
            ============================================================ */}
-        <div>
+        <div id="services" className="scroll-mt-24">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
               Our Services

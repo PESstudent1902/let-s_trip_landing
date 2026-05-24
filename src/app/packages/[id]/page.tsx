@@ -21,7 +21,7 @@ export default async function PackageDetailsPage({
       <div className="absolute inset-0 bg-gradient-to-b from-abyss via-deep-space to-abyss" />
 
       <section className="relative z-10 max-w-[1100px] mx-auto px-4 sm:px-6 md:px-12 pt-28 pb-12">
-        <Link href="/#packages" className="text-text-muted hover:text-cyan transition-colors text-sm">
+        <Link href="/#destinations" className="text-text-muted hover:text-cyan transition-colors text-sm">
           ← Back to packages
         </Link>
 
@@ -130,7 +130,7 @@ export default async function PackageDetailsPage({
             Chat on WhatsApp
           </a>
           <Link
-            href="/#packages"
+            href="/#destinations"
             className="px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-white font-bold text-sm text-center hover:bg-white/10 transition-colors"
             style={{ fontFamily: "var(--font-headline)" }}
           >
