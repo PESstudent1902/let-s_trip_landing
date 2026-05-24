@@ -406,20 +406,71 @@ function Field({ label, value, onChange, placeholder, required }: { label: strin
 }
 
 function ImageField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
-  const [mode, setMode] = useState<"preset" | "custom">("preset");
+  const [mode, setMode] = useState<"preset" | "upload" | "custom">("preset");
+  const [preview, setPreview] = useState<string>(value);
+
+  useEffect(() => {
+    setPreview(value);
+    if (value) {
+      if (value.startsWith("data:")) {
+        setMode("upload");
+      } else if (AVAILABLE_IMAGES.some((img) => img.value === value)) {
+        setMode("preset");
+      } else {
+        setMode("custom");
+      }
+    }
+  }, [value]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result as string;
+      setPreview(base64);
+      onChange(base64);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-1.5">
         <label className="text-xs text-gray-400 uppercase tracking-wider font-semibold">{label}</label>
-        <button type="button" onClick={() => setMode(mode === "preset" ? "custom" : "preset")} className="text-[10px] text-cyan-400 hover:text-cyan-300">
-          {mode === "preset" ? "Use Custom URL" : "Use Preset"}
-        </button>
+        <div className="flex gap-2.5">
+          <button type="button" onClick={() => setMode("preset")} className={`text-[10px] ${mode === "preset" ? "text-cyan-400 font-bold" : "text-gray-400 hover:text-white"}`}>
+            Preset
+          </button>
+          <button type="button" onClick={() => setMode("upload")} className={`text-[10px] ${mode === "upload" ? "text-cyan-400 font-bold" : "text-gray-400 hover:text-white"}`}>
+            Upload
+          </button>
+          <button type="button" onClick={() => setMode("custom")} className={`text-[10px] ${mode === "custom" ? "text-cyan-400 font-bold" : "text-gray-400 hover:text-white"}`}>
+            Custom URL
+          </button>
+        </div>
       </div>
-      {mode === "preset" ? (
-        <select value={value} onChange={(e) => onChange(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-400/50 transition-all appearance-none">
-          {AVAILABLE_IMAGES.map((img) => <option key={img.value} value={img.value}>{img.label}</option>)}
+      {mode === "preset" && (
+        <select value={AVAILABLE_IMAGES.some(img => img.value === value) ? value : AVAILABLE_IMAGES[0].value} onChange={(e) => onChange(e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-cyan-400/50 transition-all appearance-none">
+          {AVAILABLE_IMAGES.map((img) => <option key={img.value} value={img.value} className="bg-surface text-white">{img.label}</option>)}
         </select>
-      ) : (
+      )}
+      {mode === "upload" && (
+        <div className="flex flex-col gap-3">
+          <div className="relative group/upload border border-dashed border-white/10 hover:border-cyan-400/30 rounded-xl p-4 flex flex-col items-center justify-center bg-white/5 hover:bg-white/10 transition-all cursor-pointer">
+            <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+            <span className="text-sm text-gray-400 group-hover/upload:text-white transition-colors">Click to upload photo</span>
+            <span className="text-[10px] text-gray-500 mt-1">PNG, JPG, WEBP up to 5MB</span>
+          </div>
+          {preview && (
+            <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-white/10">
+              <img src={preview} alt="Upload preview" className="w-full h-full object-cover" />
+            </div>
+          )}
+        </div>
+      )}
+      {mode === "custom" && (
         <input type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder="https://example.com/image.jpg" className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-gray-500 focus:outline-none focus:border-cyan-400/50 focus:bg-white/10 transition-all" />
       )}
     </div>
@@ -647,7 +698,7 @@ export default function AdminPage() {
                   <div key={d.id} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all group flex flex-col justify-between">
                     <div>
                       <div className="relative h-36 rounded-xl overflow-hidden mb-3 bg-gray-800">
-                        <Image src={d.image} alt={d.name} fill className="object-cover" />
+                        <Image src={d.image} alt={d.name} fill unoptimized={true} className="object-cover" />
                         <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button onClick={() => setDestModal({ mode: "edit", item: d })} className="p-2 rounded-lg bg-black/60 backdrop-blur text-white hover:bg-cyan-500/40 transition-colors"><Pencil size={14} /></button>
                           <button onClick={() => setConfirmDelete({ type: "dest", id: d.id, name: d.name })} className="p-2 rounded-lg bg-black/60 backdrop-blur text-white hover:bg-red-500/40 transition-colors"><Trash2 size={14} /></button>
@@ -742,7 +793,7 @@ export default function AdminPage() {
                 <div key={p.id} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all group">
                   <div className="flex gap-4">
                     <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-gray-800">
-                      <Image src={p.image} alt={p.name} fill className="object-cover" />
+                      <Image src={p.image} alt={p.name} fill unoptimized={true} className="object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between">

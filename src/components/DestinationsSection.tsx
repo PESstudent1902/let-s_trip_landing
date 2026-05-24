@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { 
   MapPin, Compass, Ship, Wind, Snowflake, 
-  Award, DollarSign, MessageSquare, ChevronLeft, ChevronRight 
+  Award, DollarSign, MessageSquare, ChevronLeft, ChevronRight,
+  FileText, Globe, Headphones
 } from "lucide-react";
 import { type Destination, type Package } from "@/lib/packageStore";
 import { fetchDestinations, fetchPackages } from "@/app/actions";
@@ -145,18 +146,18 @@ export default function DestinationsSection() {
     : destinations.filter(d => ["maldives", "canada", "italy"].includes(d.id));
 
   return (
-    <section id="destinations" className="relative py-20 overflow-hidden bg-[#050B1F]">
-      <div className="absolute inset-0 bg-[#050B1F] z-0" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#050B1F] via-[#0A1628] to-[#050B1F] opacity-80 z-0" />
+    <section id="destinations" className="relative py-20 overflow-hidden bg-abyss">
+      <div className="absolute inset-0 bg-abyss z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-abyss via-deep-space to-abyss opacity-80 z-0" />
 
-      <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16 space-y-24 md:space-y-32">
+      <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16 space-y-16 md:space-y-20">
 
         {/* ============================================================
            1. EXPERT PICKS ITINERARIES
            ============================================================ */}
         <div>
-          <div className="flex items-center gap-3 mb-8 md:mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
+          <div className="flex items-center gap-3 mb-6 md:mb-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
               Expert Picks Itineraries
             </h2>
             <div className="flex-1 h-px bg-gradient-to-r from-cyan to-transparent opacity-20" />
@@ -169,7 +170,7 @@ export default function DestinationsSection() {
                 key={dest.id} 
                 className="relative aspect-[4/3] w-[280px] sm:w-[320px] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
               >
-                <Image src={dest.image} alt={dest.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                <Image src={dest.image} alt={dest.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute bottom-5 left-5 flex items-center gap-2 text-white font-bold text-lg md:text-xl">
                   <MapPin size={18} className="text-cyan animate-pulse" />
@@ -184,8 +185,8 @@ export default function DestinationsSection() {
            2. ADVENTURES FOR YOU
            ============================================================ */}
         <div>
-          <div className="flex items-center gap-3 mb-8 md:mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
+          <div className="flex items-center gap-3 mb-6 md:mb-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
               Adventures for you
             </h2>
             <div className="flex-1 h-px bg-gradient-to-r from-orange to-transparent opacity-20" />
@@ -196,13 +197,13 @@ export default function DestinationsSection() {
               <Link 
                 href={`/packages/${pkg.id}`} 
                 key={pkg.id} 
-                className="relative aspect-[3/4] w-[240px] sm:w-[280px] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
+                className="relative aspect-[3/4] w-[240px] sm:w-[280px] rounded-none overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
               >
-                <Image src={pkg.image} alt={pkg.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                <Image src={pkg.image} alt={pkg.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 
-                {/* White bottom banner overlapping the bottom of the card */}
-                <div className="absolute bottom-5 left-4 right-4 bg-white text-black p-3.5 rounded-2xl flex items-center gap-3 shadow-2xl transition-all duration-300 group-hover:bg-cyan group-hover:text-white">
+                {/* Theme-compatible bottom banner overlapping the bottom of the card - rectangular corners */}
+                <div className="absolute bottom-5 left-4 right-4 bg-surface text-text-primary border border-glass-border p-3.5 rounded-none flex items-center gap-3 shadow-2xl transition-all duration-300 group-hover:bg-cyan group-hover:text-white">
                   <div className="p-2 rounded-xl bg-black/5 transition-colors group-hover:bg-white/20">
                     {getAdventureIcon(pkg.id)}
                   </div>
@@ -220,8 +221,8 @@ export default function DestinationsSection() {
            ============================================================ */}
         {honeymoonPkgs.length > 0 && (
           <div>
-            <div className="flex items-center gap-3 mb-8 md:mb-12">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
+            <div className="flex items-center gap-3 mb-6 md:mb-8">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
                 Honeymoon
               </h2>
               <div className="flex-1 h-px bg-gradient-to-r from-pink-400 to-transparent opacity-20" />
@@ -235,7 +236,7 @@ export default function DestinationsSection() {
               
               return (
                 <div className="relative w-full rounded-3xl overflow-hidden border border-white/15 shadow-2xl min-h-[340px] md:min-h-[400px] flex items-center p-8 md:p-16">
-                  <Image src={pkg.image} alt={pkg.name} fill className="object-cover" />
+                  <Image src={pkg.image} alt={pkg.name} fill unoptimized={true} className="object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent z-0" />
                   
                   <div className="relative z-10 max-w-2xl text-left">
@@ -268,8 +269,8 @@ export default function DestinationsSection() {
            4. DOMESTIC TOURS
            ============================================================ */}
         <div>
-          <div className="flex items-center gap-3 mb-8 md:mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
+          <div className="flex items-center gap-3 mb-6 md:mb-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
               Domestic Tours
             </h2>
             <div className="flex-1 h-px bg-gradient-to-r from-amber-400 to-transparent opacity-20" />
@@ -280,9 +281,9 @@ export default function DestinationsSection() {
               <Link 
                 href={`/destinations/${dest.id}`} 
                 key={dest.id} 
-                className="relative aspect-[3/5] w-[185px] sm:w-[220px] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
+                className="relative aspect-[3/5] w-[185px] sm:w-[220px] rounded-none overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
               >
-                <Image src={dest.image} alt={dest.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                <Image src={dest.image} alt={dest.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/10 to-transparent" />
                 <div className="absolute bottom-6 left-0 right-0 text-center px-4">
                   <span className="text-white font-bold text-base md:text-lg block transition-colors group-hover:text-cyan" style={{ fontFamily: "var(--font-headline)" }}>
@@ -295,26 +296,26 @@ export default function DestinationsSection() {
         </div>
 
         {/* ============================================================
-           5. EXPLORE DESTINATIONS
+           5. EXPLORE DESTINATIONS - Exactly 3 images side by side
            ============================================================ */}
         <div>
-          <div className="flex items-center gap-3 mb-8 md:mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
+          <div className="flex items-center gap-3 mb-6 md:mb-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
               Explore Destinations
             </h2>
             <div className="flex-1 h-px bg-gradient-to-r from-violet to-transparent opacity-20" />
           </div>
 
-          <Carousel>
-            {exploreDests.map((dest) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {exploreDests.slice(0, 3).map((dest) => {
               const packageCount = packages.filter(pkg => pkg.destinationId === dest.id).length;
               return (
                 <Link 
                   href={`/destinations/${dest.id}`} 
                   key={dest.id} 
-                  className="relative aspect-[3/4] w-[280px] sm:w-[320px] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
+                  className="relative aspect-[3/4] w-full rounded-none overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg"
                 >
-                  <Image src={dest.image} alt={dest.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <Image src={dest.image} alt={dest.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   
                   <div className="absolute bottom-6 left-6 right-6">
@@ -335,15 +336,70 @@ export default function DestinationsSection() {
                 </Link>
               );
             })}
-          </Carousel>
+          </div>
         </div>
 
         {/* ============================================================
-           6. WHY CHOOSE US
+           6. SERVICES SECTION
            ============================================================ */}
         <div>
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
+              Our Services
+            </h2>
+            <p className="text-text-secondary text-sm md:text-base mt-2" style={{ fontFamily: "var(--font-body)" }}>
+              We provide professional support to ensure a worry-free travel experience.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Card 1: Visa Support */}
+            <div className="glass p-8 rounded-3xl border border-white/5 hover:border-white/10 transition-all flex flex-col items-center text-center">
+              <div className="p-4 rounded-2xl bg-cyan-subtle border border-cyan/20 text-cyan mb-6">
+                <FileText size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-text-primary mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+                Visa Support
+              </h3>
+              <p className="text-text-secondary text-sm leading-relaxed">
+                Comprehensive visa guidance, document checking, and application processing support.
+              </p>
+            </div>
+
+            {/* Card 2: Passport Support */}
+            <div className="glass p-8 rounded-3xl border border-white/5 hover:border-white/10 transition-all flex flex-col items-center text-center">
+              <div className="p-4 rounded-2xl bg-orange-glow/10 border border-orange/20 text-orange mb-6">
+                <Globe size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-text-primary mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+                Passport Support
+              </h3>
+              <p className="text-text-secondary text-sm leading-relaxed">
+                Assistance with fresh applications, re-issues, renewals, and tatkaal scheduling.
+              </p>
+            </div>
+
+            {/* Card 3: Travel Support */}
+            <div className="glass p-8 rounded-3xl border border-white/5 hover:border-white/10 transition-all flex flex-col items-center text-center">
+              <div className="p-4 rounded-2xl bg-violet-glow/10 border border-violet/20 text-violet mb-6">
+                <Headphones size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-text-primary mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+                Travel Support
+              </h3>
+              <p className="text-text-secondary text-sm leading-relaxed">
+                24/7 on-trip helpline, emergency assistance, travel insurance, and flight updates.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* ============================================================
+           7. WHY CHOOSE US
+           ============================================================ */}
+        <div>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
               Why Choose Us
             </h2>
             <p className="text-text-secondary text-sm md:text-base mt-2" style={{ fontFamily: "var(--font-body)" }}>
@@ -357,7 +413,7 @@ export default function DestinationsSection() {
               <div className="p-4 rounded-2xl bg-cyan-subtle border border-cyan/20 text-cyan mb-6">
                 <Award size={28} />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+              <h3 className="text-xl font-bold text-text-primary mb-3" style={{ fontFamily: "var(--font-headline)" }}>
                 500+ Destinations
               </h3>
               <p className="text-text-secondary text-sm leading-relaxed">
@@ -370,7 +426,7 @@ export default function DestinationsSection() {
               <div className="p-4 rounded-2xl bg-orange-glow/10 border border-orange/20 text-orange mb-6">
                 <DollarSign size={28} />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+              <h3 className="text-xl font-bold text-text-primary mb-3" style={{ fontFamily: "var(--font-headline)" }}>
                 Best Price Guarantee
               </h3>
               <p className="text-text-secondary text-sm leading-relaxed">
@@ -383,7 +439,7 @@ export default function DestinationsSection() {
               <div className="p-4 rounded-2xl bg-violet-glow/10 border border-violet/20 text-violet mb-6">
                 <MessageSquare size={28} />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+              <h3 className="text-xl font-bold text-text-primary mb-3" style={{ fontFamily: "var(--font-headline)" }}>
                 Top Notch Support
               </h3>
               <p className="text-text-secondary text-sm leading-relaxed">

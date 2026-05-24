@@ -1,36 +1,80 @@
 @import "tailwindcss";
 
+:root {
+  --abyss: #050B1F;
+  --deep-space: #0A1628;
+  --void: #0D1515;
+  --surface: #192122;
+  --surface-high: #232B2C;
+  --surface-highest: #2E3637;
+  
+  --cyan-glow: rgba(0, 240, 255, 0.3);
+  --cyan-subtle: rgba(0, 240, 255, 0.1);
+  --orange-glow: rgba(255, 107, 53, 0.4);
+  --violet-glow: rgba(123, 97, 255, 0.3);
+  
+  --text-primary: #DCE4E5;
+  --text-secondary: #B9CACB;
+  --text-muted: #849495;
+  
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-hover: rgba(255, 255, 255, 0.08);
+}
+
+html.light {
+  --abyss: #FAFBFC;
+  --deep-space: #F0F4F8;
+  --void: #E1E7EE;
+  --surface: #FFFFFF;
+  --surface-high: #F4F7FA;
+  --surface-highest: #E8EDF4;
+  
+  --cyan-glow: rgba(0, 190, 210, 0.2);
+  --cyan-subtle: rgba(0, 240, 255, 0.05);
+  --orange-glow: rgba(255, 107, 53, 0.2);
+  --violet-glow: rgba(123, 97, 255, 0.2);
+  
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  
+  --glass: rgba(15, 23, 42, 0.04);
+  --glass-border: rgba(15, 23, 42, 0.08);
+  --glass-hover: rgba(15, 23, 42, 0.06);
+}
+
 @theme {
   /* === Antigravity Color System === */
-  --color-abyss: #050B1F;
-  --color-deep-space: #0A1628;
-  --color-void: #0D1515;
-  --color-surface: #192122;
-  --color-surface-high: #232B2C;
-  --color-surface-highest: #2E3637;
+  --color-abyss: var(--abyss);
+  --color-deep-space: var(--deep-space);
+  --color-void: var(--void);
+  --color-surface: var(--surface);
+  --color-surface-high: var(--surface-high);
+  --color-surface-highest: var(--surface-highest);
   
   --color-cyan: #00F0FF;
   --color-cyan-dim: #00DBE9;
-  --color-cyan-glow: rgba(0, 240, 255, 0.3);
-  --color-cyan-subtle: rgba(0, 240, 255, 0.1);
+  --color-cyan-glow: var(--cyan-glow);
+  --color-cyan-subtle: var(--cyan-subtle);
   
   --color-orange: #FF6B35;
-  --color-orange-glow: rgba(255, 107, 53, 0.4);
+  --color-orange-glow: var(--orange-glow);
   
   --color-violet: #7B61FF;
-  --color-violet-glow: rgba(123, 97, 255, 0.3);
+  --color-violet-glow: var(--violet-glow);
   
   --color-gold: #FED639;
   --color-warm: #FF9F6A;
   --color-sunset: #FF7B54;
   
-  --color-text-primary: #DCE4E5;
-  --color-text-secondary: #B9CACB;
-  --color-text-muted: #849495;
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
   
-  --color-glass: rgba(255, 255, 255, 0.05);
-  --color-glass-border: rgba(255, 255, 255, 0.1);
-  --color-glass-hover: rgba(255, 255, 255, 0.08);
+  --color-glass: var(--glass);
+  --color-glass-border: var(--glass-border);
+  --color-glass-hover: var(--glass-hover);
   
   /* === Typography === */
   --font-headline: var(--font-outfit), sans-serif;
