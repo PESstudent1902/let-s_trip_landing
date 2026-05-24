@@ -614,7 +614,9 @@
       ],
       "image": "/almaty.png",
       "destinationId": "almaty",
-      "sections": [],
+      "sections": [
+        "honeymoon"
+      ],
       "itinerary": [
         {
           "day": 1,

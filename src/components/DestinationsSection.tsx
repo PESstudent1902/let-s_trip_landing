@@ -102,6 +102,119 @@ function Carousel({ children }: CarouselProps) {
   );
 }
 
+function HoneymoonCarousel({ packages }: { packages: Package[] }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [showLeft, setShowLeft] = useState(false);
+  const [showRight, setShowRight] = useState(false);
+
+  const updateScrollButtons = useCallback(() => {
+    if (containerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
+      setShowLeft(scrollLeft > 5);
+      setShowRight(scrollLeft + clientWidth < scrollWidth - 5);
+    }
+  }, []);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (el) {
+      el.addEventListener("scroll", updateScrollButtons);
+      updateScrollButtons();
+      const observer = new ResizeObserver(() => {
+        updateScrollButtons();
+      });
+      observer.observe(el);
+      window.addEventListener("resize", updateScrollButtons);
+      
+      return () => {
+        el.removeEventListener("scroll", updateScrollButtons);
+        observer.disconnect();
+        window.removeEventListener("resize", updateScrollButtons);
+      };
+    }
+  }, [packages, updateScrollButtons]);
+
+  const handleScroll = (direction: "left" | "right") => {
+    if (containerRef.current) {
+      const scrollAmount = containerRef.current.clientWidth;
+      containerRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  return (
+    <div className="relative group/honeymoon w-full">
+      {/* Left Arrow Button */}
+      <button
+        onClick={() => handleScroll("left")}
+        disabled={!showLeft}
+        className={`absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full border border-white/10 bg-black/60 hover:bg-cyan/20 backdrop-blur-md text-white flex items-center justify-center transition-all duration-300 shadow-2xl scale-95 hover:scale-105 active:scale-95 disabled:opacity-0 disabled:pointer-events-none opacity-0 group-hover/honeymoon:opacity-100`}
+        aria-label="Scroll left"
+      >
+        <ChevronLeft size={20} />
+      </button>
+
+      {/* Right Arrow Button */}
+      <button
+        onClick={() => handleScroll("right")}
+        disabled={!showRight}
+        className={`absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full border border-white/10 bg-black/60 hover:bg-cyan/20 backdrop-blur-md text-white flex items-center justify-center transition-all duration-300 shadow-2xl scale-95 hover:scale-105 active:scale-95 disabled:opacity-0 disabled:pointer-events-none opacity-0 group-hover/honeymoon:opacity-100`}
+        aria-label="Scroll right"
+      >
+        <ChevronRight size={20} />
+      </button>
+
+      {/* Horizontal Scroll Area */}
+      <div
+        ref={containerRef}
+        className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-hide w-full gap-0"
+      >
+        {packages.map((pkg) => {
+          const rawTag = pkg.tags?.[0] || "HoneymoonSpecial";
+          const hashtag = `#${rawTag.toUpperCase()}`;
+          const title = pkg.name;
+          const subtitle = pkg.highlights.slice(0, 4).join(" · ");
+          
+          return (
+            <div 
+              key={pkg.id} 
+              className="w-full flex-shrink-0 snap-start"
+            >
+              <div className="relative w-full rounded-3xl overflow-hidden border border-white/15 shadow-2xl min-h-[340px] md:min-h-[400px] flex items-center p-8 md:p-16">
+                <Image src={pkg.image} alt={pkg.name} fill unoptimized={true} className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent z-0" />
+                
+                <div className="relative z-10 max-w-2xl text-left">
+                  <span className="text-xs md:text-sm font-semibold tracking-wider text-cyan uppercase block mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+                    {hashtag}
+                  </span>
+                  <h3 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight mb-4 text-white" style={{ fontFamily: "var(--font-headline)" }}>
+                    {title}
+                  </h3>
+                  <p className="text-base sm:text-lg font-medium text-text-secondary mb-8" style={{ fontFamily: "var(--font-headline)" }}>
+                    {subtitle}
+                  </p>
+                  
+                  <div className="flex flex-wrap items-center gap-6">
+                    <Link href={`/packages/${pkg.id}`} className="px-8 py-4 rounded-2xl bg-[#FF385C] hover:bg-[#FF385C]/90 text-white font-bold text-sm tracking-wide text-center transition-all shadow-xl hover:scale-[1.02]">
+                      RESERVE YOUR SPOT
+                    </Link>
+                    <span className="text-white text-lg font-bold" style={{ fontFamily: "var(--font-headline)" }}>
+                      Starting @ {pkg.price}*
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function DestinationsSection() {
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [packages, setPackages] = useState<Package[]>([]);
@@ -246,40 +359,7 @@ export default function DestinationsSection() {
               <div className="flex-1 h-px bg-gradient-to-r from-pink-400 to-transparent opacity-20" />
             </div>
 
-            {(() => {
-              const pkg = honeymoonPkgs[0];
-              const hashtag = pkg.tags?.[0] ? `#${pkg.tags[0]}` : `#HoneymoonSpecial`;
-              const title = pkg.name;
-              const subtitle = pkg.highlights.slice(0, 4).join(" · ");
-              
-              return (
-                <div className="relative w-full rounded-3xl overflow-hidden border border-white/15 shadow-2xl min-h-[340px] md:min-h-[400px] flex items-center p-8 md:p-16">
-                  <Image src={pkg.image} alt={pkg.name} fill unoptimized={true} className="object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent z-0" />
-                  
-                  <div className="relative z-10 max-w-2xl text-left">
-                    <span className="text-xs md:text-sm font-semibold tracking-wider text-cyan uppercase block mb-3" style={{ fontFamily: "var(--font-headline)" }}>
-                      {hashtag}
-                    </span>
-                    <h3 className="text-3xl sm:text-4xl md:text-5xl font-black leading-tight mb-4 text-white" style={{ fontFamily: "var(--font-headline)" }}>
-                      {title}
-                    </h3>
-                    <p className="text-base sm:text-lg font-medium text-text-secondary mb-8" style={{ fontFamily: "var(--font-headline)" }}>
-                      {subtitle}
-                    </p>
-                    
-                    <div className="flex flex-wrap items-center gap-6">
-                      <Link href={`/packages/${pkg.id}`} className="px-8 py-4 rounded-2xl bg-[#FF385C] hover:bg-[#FF385C]/90 text-white font-bold text-sm tracking-wide text-center transition-all shadow-xl hover:scale-[1.02]">
-                        RESERVE YOUR SPOT
-                      </Link>
-                      <span className="text-white text-lg font-bold" style={{ fontFamily: "var(--font-headline)" }}>
-                        Starting @ {pkg.price}*
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })()}
+            <HoneymoonCarousel packages={honeymoonPkgs} />
           </div>
         )}
 
