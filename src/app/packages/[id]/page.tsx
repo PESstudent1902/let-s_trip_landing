@@ -34,7 +34,7 @@ export default async function PackageDetailsPage({
           <div className="p-6 sm:p-8">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <div>
-                <h1 className="text-3xl sm:text-5xl text-text-primary" style={{ fontFamily: "var(--font-brush)" }}>
+                <h1 className="text-3xl sm:text-5xl text-white" style={{ fontFamily: "var(--font-brush)" }}>
                   {pkg.name}
                 </h1>
                 <p className="text-text-secondary mt-1" style={{ fontFamily: "var(--font-handwritten)" }}>
@@ -74,7 +74,7 @@ export default async function PackageDetailsPage({
 
       <section className="relative z-10 max-w-[1100px] mx-auto px-4 sm:px-6 md:px-12 pb-28">
         <div className="text-center mb-10">
-          <h2 className="text-3xl sm:text-5xl text-text-primary" style={{ fontFamily: "var(--font-brush)" }}>
+          <h2 className="text-3xl sm:text-5xl text-white" style={{ fontFamily: "var(--font-brush)" }}>
             Your <span className="text-cyan text-glow-cyan">Itinerary</span>
           </h2>
           <p className="text-text-secondary mt-2" style={{ fontFamily: "var(--font-handwritten)" }}>
@@ -95,7 +95,7 @@ export default async function PackageDetailsPage({
                       <p className="text-text-muted text-xs" style={{ fontFamily: "var(--font-handwritten)" }}>
                         Day {day.day}
                       </p>
-                      <p className="text-text-primary font-bold" style={{ fontFamily: "var(--font-headline)" }}>
+                      <p className="text-white font-bold" style={{ fontFamily: "var(--font-headline)" }}>
                         {day.title}
                       </p>
                     </div>

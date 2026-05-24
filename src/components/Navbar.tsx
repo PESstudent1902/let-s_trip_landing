@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 
 const navLinks = [
@@ -16,22 +16,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
-
-  useEffect(() => {
-    const saved = localStorage.getItem("letstrip-theme") as "dark" | "light" | null;
-    const preferred = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-    const initialTheme = saved || preferred;
-    setTheme(initialTheme);
-    document.documentElement.classList.toggle("light", initialTheme === "light");
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-    localStorage.setItem("letstrip-theme", newTheme);
-    document.documentElement.classList.toggle("light", newTheme === "light");
-  };
 
   useEffect(() => {
     let ticking = false;
@@ -89,11 +73,7 @@ export default function Navbar() {
                 href={link.href}
                 target={link.external ? "_blank" : undefined}
                 rel={link.external ? "noopener noreferrer" : undefined}
-                className={`adventure-link text-sm font-medium tracking-wide ${
-                  scrolled 
-                    ? "text-text-secondary hover:text-text-primary" 
-                    : "text-white/80 hover:text-white"
-                }`}
+                className="adventure-link text-text-secondary hover:text-white text-sm font-medium tracking-wide"
                 style={{ fontFamily: "var(--font-headline)" }}
               >
                 {link.label}
@@ -102,18 +82,7 @@ export default function Navbar() {
           </div>
 
           {/* CTA — flowing text link, not a button */}
-          <div className="hidden md:flex items-center gap-6">
-            <button
-              onClick={toggleTheme}
-              className={`p-2.5 rounded-full glass border transition-all flex items-center justify-center cursor-pointer ${
-                scrolled 
-                  ? "border-glass-border text-cyan hover:border-cyan/40" 
-                  : "border-white/10 text-white hover:border-white/30"
-              }`}
-              aria-label="Toggle theme"
-            >
-              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} className="text-violet" />}
-            </button>
+          <div className="hidden md:block">
             <MagneticButton>
               <a
                 href="https://wa.me/918867767171"
@@ -133,40 +102,24 @@ export default function Navbar() {
             </MagneticButton>
           </div>
 
-          {/* Mobile Actions */}
-          <div className="flex md:hidden items-center gap-2">
-            <button
-              onClick={toggleTheme}
-              className={`p-2 rounded-full glass border flex items-center justify-center cursor-pointer ${
-                scrolled || mobileOpen
-                  ? "border-glass-border text-cyan" 
-                  : "border-white/10 text-white"
-              }`}
-              aria-label="Toggle theme"
-            >
-              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} className="text-violet" />}
-            </button>
-            {/* Mobile Toggle */}
-            <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              className={`p-2 z-[60] relative cursor-pointer ${
-                scrolled || mobileOpen ? "text-text-primary" : "text-white"
-              }`}
-              aria-label="Toggle menu"
-            >
-              <AnimatePresence mode="wait">
-                {mobileOpen ? (
-                  <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                    <X size={24} />
-                  </motion.div>
-                ) : (
-                  <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                    <Menu size={24} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </button>
-          </div>
+          {/* Mobile Toggle */}
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="md:hidden text-text-primary p-2 z-[60] relative cursor-pointer"
+            aria-label="Toggle menu"
+          >
+            <AnimatePresence mode="wait">
+              {mobileOpen ? (
+                <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <X size={24} />
+                </motion.div>
+              ) : (
+                <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <Menu size={24} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </button>
         </div>
       </motion.nav>
 

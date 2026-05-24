@@ -21,15 +21,15 @@ export default async function DestinationDetailsPage({
   const destPackages = packages.filter((pkg) => pkg.destinationId === id);
 
   return (
-    <main className="relative min-h-screen overflow-hidden text-text-primary bg-gradient-to-b from-abyss to-deep-space">
+    <main className="relative min-h-screen overflow-hidden text-white" style={{ background: "linear-gradient(180deg, #050B1F 0%, #0A1628 100%)" }}>
       <Navbar />
 
       {/* Hero Banner */}
       <section className="relative h-[50vh] flex items-end">
         <div className="absolute inset-0 z-0">
           <Image src={destination.image} alt={destination.name} fill unoptimized={true} className="object-cover" priority quality={90} />
-          <div className="absolute inset-0 bg-gradient-to-t from-abyss via-abyss/45 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-abyss/60 via-transparent to-abyss/60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050B1F] via-[#050B1F]/45 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#050B1F]/60 via-transparent to-[#050B1F]/60" />
         </div>
 
         <div className="relative z-10 max-w-[1440px] mx-auto w-full px-4 sm:px-6 md:px-16 pb-12">
@@ -66,7 +66,7 @@ export default async function DestinationDetailsPage({
                   <div key={pkg.id} className="glass rounded-3xl overflow-hidden group hover:border-cyan/20 transition-all duration-500 flex flex-col h-full cursor-pointer border border-white/10">
                     <div className="relative h-48 overflow-hidden">
                       <Image src={pkg.image} alt={pkg.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-abyss/90 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#050B1F]/90 via-transparent to-transparent" />
                       {pkg.durationNights && (
                         <div className="absolute top-4 right-4 z-10 px-3 py-1 rounded-full bg-black/60 backdrop-blur text-xs font-semibold text-white">
                           {pkg.durationNights} Nights
@@ -112,7 +112,7 @@ export default async function DestinationDetailsPage({
 
           {/* Right Column: Destination Info Panel */}
           <div className="lg:col-span-1">
-            <div className="glass rounded-3xl border border-glass-border p-8 sticky top-28 bg-surface/60 backdrop-blur-xl">
+            <div className="glass rounded-3xl border border-white/10 p-8 sticky top-28 bg-[#192122]/60 backdrop-blur-xl">
               <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: "var(--font-headline)" }}>
                 About the Trip
               </h2>
@@ -127,7 +127,7 @@ export default async function DestinationDetailsPage({
                   </div>
                   <div>
                     <h4 className="text-xs text-text-muted uppercase tracking-widest font-semibold mb-0.5">Location</h4>
-                    <p className="font-bold text-text-primary text-base">{destination.name}</p>
+                    <p className="font-bold text-white text-base">{destination.name}</p>
                   </div>
                 </div>
  
@@ -138,7 +138,7 @@ export default async function DestinationDetailsPage({
                     </div>
                     <div>
                       <h4 className="text-xs text-text-muted uppercase tracking-widest font-semibold mb-0.5">Best Time to Visit</h4>
-                      <p className="font-bold text-text-primary text-sm leading-snug">{destination.bestTimeToVisit}</p>
+                      <p className="font-bold text-white text-sm leading-snug">{destination.bestTimeToVisit}</p>
                     </div>
                   </div>
                 )}
@@ -149,7 +149,7 @@ export default async function DestinationDetailsPage({
                   </div>
                   <div>
                     <h4 className="text-xs text-text-muted uppercase tracking-widest font-semibold mb-0.5">Estimated Cost</h4>
-                    <p className="font-bold text-text-primary text-base">From {destination.price}</p>
+                    <p className="font-bold text-white text-base">From {destination.price}</p>
                   </div>
                 </div>
               </div>

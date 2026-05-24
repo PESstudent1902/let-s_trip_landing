@@ -146,9 +146,9 @@ export default function DestinationsSection() {
     : destinations.filter(d => ["maldives", "canada", "italy"].includes(d.id));
 
   return (
-    <section id="destinations" className="relative py-20 overflow-hidden bg-abyss">
-      <div className="absolute inset-0 bg-abyss z-0" />
-      <div className="absolute inset-0 bg-gradient-to-b from-abyss via-deep-space to-abyss opacity-80 z-0" />
+    <section id="destinations" className="relative py-20 overflow-hidden bg-[#050B1F]">
+      <div className="absolute inset-0 bg-[#050B1F] z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050B1F] via-[#0A1628] to-[#050B1F] opacity-80 z-0" />
 
       <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 md:px-16 space-y-16 md:space-y-20">
 
@@ -157,7 +157,7 @@ export default function DestinationsSection() {
            ============================================================ */}
         <div>
           <div className="flex items-center gap-3 mb-6 md:mb-8">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
               Expert Picks Itineraries
             </h2>
             <div className="flex-1 h-px bg-gradient-to-r from-cyan to-transparent opacity-20" />
@@ -186,7 +186,7 @@ export default function DestinationsSection() {
            ============================================================ */}
         <div>
           <div className="flex items-center gap-3 mb-6 md:mb-8">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
               Adventures for you
             </h2>
             <div className="flex-1 h-px bg-gradient-to-r from-orange to-transparent opacity-20" />
@@ -202,8 +202,8 @@ export default function DestinationsSection() {
                 <Image src={pkg.image} alt={pkg.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 
-                {/* Theme-compatible bottom banner overlapping the bottom of the card - rectangular corners */}
-                <div className="absolute bottom-5 left-4 right-4 bg-surface text-text-primary border border-glass-border p-3.5 rounded-none flex items-center gap-3 shadow-2xl transition-all duration-300 group-hover:bg-cyan group-hover:text-white">
+                {/* White bottom banner overlapping the bottom of the card - rectangular corners */}
+                <div className="absolute bottom-5 left-4 right-4 bg-white text-black p-3.5 rounded-none flex items-center gap-3 shadow-2xl transition-all duration-300 group-hover:bg-cyan group-hover:text-white">
                   <div className="p-2 rounded-xl bg-black/5 transition-colors group-hover:bg-white/20">
                     {getAdventureIcon(pkg.id)}
                   </div>
@@ -222,7 +222,7 @@ export default function DestinationsSection() {
         {honeymoonPkgs.length > 0 && (
           <div>
             <div className="flex items-center gap-3 mb-6 md:mb-8">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
                 Honeymoon
               </h2>
               <div className="flex-1 h-px bg-gradient-to-r from-pink-400 to-transparent opacity-20" />
@@ -270,7 +270,7 @@ export default function DestinationsSection() {
            ============================================================ */}
         <div>
           <div className="flex items-center gap-3 mb-6 md:mb-8">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
               Domestic Tours
             </h2>
             <div className="flex-1 h-px bg-gradient-to-r from-amber-400 to-transparent opacity-20" />
@@ -300,7 +300,7 @@ export default function DestinationsSection() {
            ============================================================ */}
         <div>
           <div className="flex items-center gap-3 mb-6 md:mb-8">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
               Explore Destinations
             </h2>
             <div className="flex-1 h-px bg-gradient-to-r from-violet to-transparent opacity-20" />
@@ -344,7 +344,7 @@ export default function DestinationsSection() {
            ============================================================ */}
         <div>
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
               Our Services
             </h2>
             <p className="text-text-secondary text-sm md:text-base mt-2" style={{ fontFamily: "var(--font-body)" }}>
@@ -358,7 +358,7 @@ export default function DestinationsSection() {
               <div className="p-4 rounded-2xl bg-cyan-subtle border border-cyan/20 text-cyan mb-6">
                 <FileText size={28} />
               </div>
-              <h3 className="text-xl font-bold text-text-primary mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+              <h3 className="text-xl font-bold text-white mb-3" style={{ fontFamily: "var(--font-headline)" }}>
                 Visa Support
               </h3>
               <p className="text-text-secondary text-sm leading-relaxed">
@@ -371,7 +371,7 @@ export default function DestinationsSection() {
               <div className="p-4 rounded-2xl bg-orange-glow/10 border border-orange/20 text-orange mb-6">
                 <Globe size={28} />
               </div>
-              <h3 className="text-xl font-bold text-text-primary mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+              <h3 className="text-xl font-bold text-white mb-3" style={{ fontFamily: "var(--font-headline)" }}>
                 Passport Support
               </h3>
               <p className="text-text-secondary text-sm leading-relaxed">
@@ -384,7 +384,7 @@ export default function DestinationsSection() {
               <div className="p-4 rounded-2xl bg-violet-glow/10 border border-violet/20 text-violet mb-6">
                 <Headphones size={28} />
               </div>
-              <h3 className="text-xl font-bold text-text-primary mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+              <h3 className="text-xl font-bold text-white mb-3" style={{ fontFamily: "var(--font-headline)" }}>
                 Travel Support
               </h3>
               <p className="text-text-secondary text-sm leading-relaxed">
@@ -399,7 +399,7 @@ export default function DestinationsSection() {
            ============================================================ */}
         <div>
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-text-primary" style={{ fontFamily: "var(--font-headline)" }}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white" style={{ fontFamily: "var(--font-headline)" }}>
               Why Choose Us
             </h2>
             <p className="text-text-secondary text-sm md:text-base mt-2" style={{ fontFamily: "var(--font-body)" }}>
@@ -413,7 +413,7 @@ export default function DestinationsSection() {
               <div className="p-4 rounded-2xl bg-cyan-subtle border border-cyan/20 text-cyan mb-6">
                 <Award size={28} />
               </div>
-              <h3 className="text-xl font-bold text-text-primary mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+              <h3 className="text-xl font-bold text-white mb-3" style={{ fontFamily: "var(--font-headline)" }}>
                 500+ Destinations
               </h3>
               <p className="text-text-secondary text-sm leading-relaxed">
@@ -426,7 +426,7 @@ export default function DestinationsSection() {
               <div className="p-4 rounded-2xl bg-orange-glow/10 border border-orange/20 text-orange mb-6">
                 <DollarSign size={28} />
               </div>
-              <h3 className="text-xl font-bold text-text-primary mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+              <h3 className="text-xl font-bold text-white mb-3" style={{ fontFamily: "var(--font-headline)" }}>
                 Best Price Guarantee
               </h3>
               <p className="text-text-secondary text-sm leading-relaxed">
@@ -439,7 +439,7 @@ export default function DestinationsSection() {
               <div className="p-4 rounded-2xl bg-violet-glow/10 border border-violet/20 text-violet mb-6">
                 <MessageSquare size={28} />
               </div>
-              <h3 className="text-xl font-bold text-text-primary mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+              <h3 className="text-xl font-bold text-white mb-3" style={{ fontFamily: "var(--font-headline)" }}>
                 Top Notch Support
               </h3>
               <p className="text-text-secondary text-sm leading-relaxed">
