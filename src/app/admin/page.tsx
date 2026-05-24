@@ -23,7 +23,7 @@ import {
   updatePackage,
   deletePackageAction,
 } from "@/app/actions";
-import { LogOut, Plus, Pencil, Trash2, X, MapPin, Briefcase, Lock, Eye, EyeOff, Check, AlertTriangle } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, X, MapPin, Briefcase, Lock, Eye, EyeOff, Check, AlertTriangle, ChevronUp, ChevronDown } from "lucide-react";
 
 type Tab = "destinations" | "packages";
 type ModalMode = "add" | "edit";
@@ -121,6 +121,7 @@ function DestinationModal({ mode, initial, onSave, onClose }: { mode: ModalMode;
   const [description, setDescription] = useState(initial?.description || "");
   const [bestTimeToVisit, setBestTimeToVisit] = useState(initial?.bestTimeToVisit || "");
   const [selectedSections, setSelectedSections] = useState<string[]>(initial?.sections || []);
+  const [order, setOrder] = useState<string>(typeof initial?.order === "number" ? String(initial.order) : "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,7 +133,8 @@ function DestinationModal({ mode, initial, onSave, onClose }: { mode: ModalMode;
       tags: tags.split(",").map((t) => t.trim()).filter(Boolean), 
       description, 
       bestTimeToVisit,
-      sections: selectedSections
+      sections: selectedSections,
+      order: order.trim() === "" ? undefined : Number(order)
     });
   };
 
@@ -151,8 +153,11 @@ function DestinationModal({ mode, initial, onSave, onClose }: { mode: ModalMode;
             <Field label="Duration" value={duration} onChange={setDuration} placeholder="e.g. 7N" required />
             <Field label="Price" value={price} onChange={setPrice} placeholder="e.g. ₹62,000" required />
           </div>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Order / Position (optional)" value={order} onChange={setOrder} placeholder="e.g. 1" />
+            <Field label="Best Time to Visit" value={bestTimeToVisit} onChange={setBestTimeToVisit} placeholder="e.g. Nov - Feb" />
+          </div>
           <Field label="Tags (comma-separated)" value={tags} onChange={setTags} placeholder="e.g. Adventure, Culture" />
-          <Field label="Best Time to Visit" value={bestTimeToVisit} onChange={setBestTimeToVisit} placeholder="e.g. Nov - Feb" />
           
           {/* Section Assignment */}
           <div>
@@ -206,6 +211,7 @@ function PackageModal({ mode, initial, destinations, onSave, onClose }: { mode: 
   const [durationNights, setDurationNights] = useState<string>(typeof initial?.durationNights === "number" ? String(initial.durationNights) : "");
   const [tags, setTags] = useState(initial?.tags?.join(", ") || "");
   const [selectedSections, setSelectedSections] = useState<string[]>(initial?.sections || []);
+  const [order, setOrder] = useState<string>(typeof initial?.order === "number" ? String(initial.order) : "");
   const [itinerary, setItinerary] = useState<Package["itinerary"]>(
     initial?.itinerary?.length
       ? initial.itinerary
@@ -270,6 +276,7 @@ function PackageModal({ mode, initial, destinations, onSave, onClose }: { mode: 
       tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
       sections: selectedSections,
       itinerary,
+      order: order.trim() === "" ? undefined : Number(order),
     });
   };
 
@@ -289,8 +296,9 @@ function PackageModal({ mode, initial, destinations, onSave, onClose }: { mode: 
               {destinations.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
             </select>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <Field label="Nights (optional)" value={durationNights} onChange={setDurationNights} placeholder="e.g. 5" />
+            <Field label="Order (optional)" value={order} onChange={setOrder} placeholder="e.g. 1" />
             <Field label="Tags (optional, comma-separated)" value={tags} onChange={setTags} placeholder="e.g. Family, Luxury" />
           </div>
 
@@ -543,7 +551,12 @@ export default function AdminPage() {
     if (destSectionFilter !== "all") {
       result = result.filter((d) => d.sections?.includes(destSectionFilter));
     }
-    return result;
+    return [...result].sort((a, b) => {
+      const aOrd = a.order ?? 9999;
+      const bOrd = b.order ?? 9999;
+      if (aOrd !== bOrd) return aOrd - bOrd;
+      return a.name.localeCompare(b.name);
+    });
   }, [destinations, destSectionFilter]);
 
   const filteredPackages = useMemo(() => {
@@ -554,12 +567,116 @@ export default function AdminPage() {
     if (packageSectionFilter !== "all") {
       result = result.filter((pkg) => pkg.sections?.includes(packageSectionFilter));
     }
-    return result;
+    return [...result].sort((a, b) => {
+      const aOrd = a.order ?? 9999;
+      const bOrd = b.order ?? 9999;
+      if (aOrd !== bOrd) return aOrd - bOrd;
+      return a.name.localeCompare(b.name);
+    });
   }, [packages, packageDestinationFilter, packageSectionFilter]);
+
+  const moveDestination = async (id: string, direction: "up" | "down") => {
+    const index = filteredDestinations.findIndex((d) => d.id === id);
+    if (index === -1) return;
+
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= filteredDestinations.length) return;
+
+    const currentItem = filteredDestinations[index];
+    const targetItem = filteredDestinations[targetIndex];
+
+    // 1. Sort the entire destinations list by order
+    const sortedDestinations = [...destinations].sort((a, b) => {
+      const aOrd = a.order ?? 9999;
+      const bOrd = b.order ?? 9999;
+      if (aOrd !== bOrd) return aOrd - bOrd;
+      return a.name.localeCompare(b.name);
+    });
+
+    // 2. Normalize orders to be 1, 2, 3...
+    const normalized = sortedDestinations.map((d, idx) => ({
+      ...d,
+      order: idx + 1,
+    }));
+
+    // 3. Find the items in normalized list
+    const normCurrent = normalized.find((d) => d.id === currentItem.id);
+    const normTarget = normalized.find((d) => d.id === targetItem.id);
+
+    if (!normCurrent || !normTarget) return;
+
+    // 4. Swap their order values
+    const tempOrder = normCurrent.order;
+    normCurrent.order = normTarget.order;
+    normTarget.order = tempOrder;
+
+    // 5. Save changes
+    const [res1, res2] = await Promise.all([
+      updateDestination(normCurrent),
+      updateDestination(normTarget),
+    ]);
+
+    if (res1.success && res2.success) {
+      showToast("Destination position updated", "success");
+    } else {
+      showToast(res1.error || res2.error || "Failed to update position", "error");
+    }
+    refreshData();
+  };
+
+  const movePackage = async (id: string, direction: "up" | "down") => {
+    const index = filteredPackages.findIndex((p) => p.id === id);
+    if (index === -1) return;
+
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= filteredPackages.length) return;
+
+    const currentItem = filteredPackages[index];
+    const targetItem = filteredPackages[targetIndex];
+
+    // 1. Sort the entire packages list by order
+    const sortedPackages = [...packages].sort((a, b) => {
+      const aOrd = a.order ?? 9999;
+      const bOrd = b.order ?? 9999;
+      if (aOrd !== bOrd) return aOrd - bOrd;
+      return a.name.localeCompare(b.name);
+    });
+
+    // 2. Normalize orders
+    const normalized = sortedPackages.map((p, idx) => ({
+      ...p,
+      order: idx + 1,
+    }));
+
+    // 3. Find items in normalized list
+    const normCurrent = normalized.find((p) => p.id === currentItem.id);
+    const normTarget = normalized.find((p) => p.id === targetItem.id);
+
+    if (!normCurrent || !normTarget) return;
+
+    // 4. Swap orders
+    const tempOrder = normCurrent.order;
+    normCurrent.order = normTarget.order;
+    normTarget.order = tempOrder;
+
+    // 5. Save changes
+    const [res1, res2] = await Promise.all([
+      updatePackage(normCurrent),
+      updatePackage(normTarget),
+    ]);
+
+    if (res1.success && res2.success) {
+      showToast("Package position updated", "success");
+    } else {
+      showToast(res1.error || res2.error || "Failed to update position", "error");
+    }
+    refreshData();
+  };
 
   const handleSaveDest = async (data: Omit<Destination, "id">) => {
     if (destModal?.mode === "edit" && destModal.item) {
-      const res = await updateDestination({ ...data, id: destModal.item.id });
+      const updatedOrder = data.order ?? destModal.item.order ?? (Math.max(...destinations.map((d) => d.order || 0), 0) + 1);
+      const res = await updateDestination({ ...data, id: destModal.item.id, order: updatedOrder });
       if (res.success) showToast(`"${data.name}" updated successfully!`, "success");
       else showToast(res.error || "Failed", "error");
     } else {
@@ -572,7 +689,8 @@ export default function AdminPage() {
         showToast("A destination with this name already exists.", "error");
         return;
       }
-      const res = await saveDestination({ ...data, id });
+      const defaultOrder = Math.max(...destinations.map((d) => d.order || 0), 0) + 1;
+      const res = await saveDestination({ ...data, id, order: data.order ?? defaultOrder });
       if (res.success) showToast(`"${data.name}" added successfully!`, "success");
       else showToast(res.error || "Failed", "error");
     }
@@ -592,11 +710,13 @@ export default function AdminPage() {
 
   const handleSavePkg = async (data: Omit<Package, "id">) => {
     if (pkgModal?.mode === "edit" && pkgModal.item) {
-      const res = await updatePackage({ ...data, id: pkgModal.item.id });
+      const updatedOrder = data.order ?? pkgModal.item.order ?? (Math.max(...packages.map((p) => p.order || 0), 0) + 1);
+      const res = await updatePackage({ ...data, id: pkgModal.item.id, order: updatedOrder });
       if (res.success) showToast(`"${data.name}" updated successfully!`, "success");
       else showToast(res.error || "Failed", "error");
     } else {
-      const res = await savePackage({ ...data, id: crypto.randomUUID() });
+      const defaultOrder = Math.max(...packages.map((p) => p.order || 0), 0) + 1;
+      const res = await savePackage({ ...data, id: crypto.randomUUID(), order: data.order ?? defaultOrder });
       if (res.success) showToast(`"${data.name}" added successfully!`, "success");
       else showToast(res.error || "Failed", "error");
     }
@@ -692,16 +812,20 @@ export default function AdminPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredDestinations.map((d) => {
+              {filteredDestinations.map((d, index) => {
                 const linkedPkgs = packages.filter((pkg) => pkg.destinationId === d.id);
+                const isFirst = index === 0;
+                const isLast = index === filteredDestinations.length - 1;
                 return (
                   <div key={d.id} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all group flex flex-col justify-between">
                     <div>
                       <div className="relative h-36 rounded-xl overflow-hidden mb-3 bg-gray-800">
                         <Image src={d.image} alt={d.name} fill unoptimized={true} className="object-cover" />
                         <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button onClick={() => setDestModal({ mode: "edit", item: d })} className="p-2 rounded-lg bg-black/60 backdrop-blur text-white hover:bg-cyan-500/40 transition-colors"><Pencil size={14} /></button>
-                          <button onClick={() => setConfirmDelete({ type: "dest", id: d.id, name: d.name })} className="p-2 rounded-lg bg-black/60 backdrop-blur text-white hover:bg-red-500/40 transition-colors"><Trash2 size={14} /></button>
+                          <button onClick={() => moveDestination(d.id, "up")} disabled={isFirst} className="p-2 rounded-lg bg-black/60 backdrop-blur text-white hover:bg-cyan-500/40 transition-colors disabled:opacity-30 disabled:hover:bg-black/60 disabled:cursor-not-allowed" title="Move Up"><ChevronUp size={14} /></button>
+                          <button onClick={() => moveDestination(d.id, "down")} disabled={isLast} className="p-2 rounded-lg bg-black/60 backdrop-blur text-white hover:bg-cyan-500/40 transition-colors disabled:opacity-30 disabled:hover:bg-black/60 disabled:cursor-not-allowed" title="Move Down"><ChevronDown size={14} /></button>
+                          <button onClick={() => setDestModal({ mode: "edit", item: d })} className="p-2 rounded-lg bg-black/60 backdrop-blur text-white hover:bg-cyan-500/40 transition-colors" title="Edit"><Pencil size={14} /></button>
+                          <button onClick={() => setConfirmDelete({ type: "dest", id: d.id, name: d.name })} className="p-2 rounded-lg bg-black/60 backdrop-blur text-white hover:bg-red-500/40 transition-colors" title="Delete"><Trash2 size={14} /></button>
                         </div>
                       </div>
                       <h3 className="font-bold text-white mb-1" style={{ fontFamily: "var(--font-headline)" }}>{d.name}</h3>
@@ -789,39 +913,45 @@ export default function AdminPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {filteredPackages.map((p) => (
-                <div key={p.id} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all group">
-                  <div className="flex gap-4">
-                    <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-gray-800">
-                      <Image src={p.image} alt={p.name} fill unoptimized={true} className="object-cover" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h3 className="font-bold text-white text-sm" style={{ fontFamily: "var(--font-headline)" }}>{p.name}</h3>
-                          <p className="text-cyan-400 font-bold mt-0.5">{p.price}</p>
-                          <p className="text-gray-500 text-[11px]">{p.destinationId ? destinationMap.get(p.destinationId) : "General"}</p>
-                        </div>
-                        <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button onClick={() => setPkgModal({ mode: "edit", item: p })} className="p-1.5 rounded-lg bg-white/5 text-gray-400 hover:bg-cyan-500/20 hover:text-cyan-400 transition-colors"><Pencil size={14} /></button>
-                          <button onClick={() => setConfirmDelete({ type: "pkg", id: p.id, name: p.name })} className="p-1.5 rounded-lg bg-white/5 text-gray-400 hover:bg-red-500/20 hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
-                        </div>
+              {filteredPackages.map((p, index) => {
+                const isFirst = index === 0;
+                const isLast = index === filteredPackages.length - 1;
+                return (
+                  <div key={p.id} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all group">
+                    <div className="flex gap-4">
+                      <div className="relative w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-gray-800">
+                        <Image src={p.image} alt={p.name} fill unoptimized={true} className="object-cover" />
                       </div>
-                      {p.sections && p.sections.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mt-1.5">
-                          {p.sections.map((sId) => {
-                            const sec = PACKAGE_SECTIONS.find((s) => s.id === sId);
-                            return sec ? <span key={sId} className="px-1.5 py-0.5 rounded bg-violet-500/15 text-violet-300 text-[9px] font-medium">{sec.icon} {sec.label}</span> : null;
-                          })}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h3 className="font-bold text-white text-sm" style={{ fontFamily: "var(--font-headline)" }}>{p.name}</h3>
+                            <p className="text-cyan-400 font-bold mt-0.5">{p.price}</p>
+                            <p className="text-gray-500 text-[11px]">{p.destinationId ? destinationMap.get(p.destinationId) : "General"}</p>
+                          </div>
+                          <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onClick={() => movePackage(p.id, "up")} disabled={isFirst} className="p-1.5 rounded-lg bg-white/5 text-gray-400 hover:bg-cyan-500/20 hover:text-cyan-400 transition-colors disabled:opacity-20 disabled:hover:bg-white/5 disabled:hover:text-gray-400 disabled:cursor-not-allowed" title="Move Up"><ChevronUp size={14} /></button>
+                            <button onClick={() => movePackage(p.id, "down")} disabled={isLast} className="p-1.5 rounded-lg bg-white/5 text-gray-400 hover:bg-cyan-500/20 hover:text-cyan-400 transition-colors disabled:opacity-20 disabled:hover:bg-white/5 disabled:hover:text-gray-400 disabled:cursor-not-allowed" title="Move Down"><ChevronDown size={14} /></button>
+                            <button onClick={() => setPkgModal({ mode: "edit", item: p })} className="p-1.5 rounded-lg bg-white/5 text-gray-400 hover:bg-cyan-500/20 hover:text-cyan-400 transition-colors" title="Edit"><Pencil size={14} /></button>
+                            <button onClick={() => setConfirmDelete({ type: "pkg", id: p.id, name: p.name })} className="p-1.5 rounded-lg bg-white/5 text-gray-400 hover:bg-red-500/20 hover:text-red-400 transition-colors" title="Delete"><Trash2 size={14} /></button>
+                          </div>
                         </div>
-                      )}
-                      <div className="flex flex-wrap gap-1.5 mt-2">
-                        {p.highlights.map((h) => <span key={h} className="px-2 py-0.5 rounded-md bg-white/5 text-gray-400 text-[10px]">{h}</span>)}
+                        {p.sections && p.sections.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-1.5">
+                            {p.sections.map((sId) => {
+                              const sec = PACKAGE_SECTIONS.find((s) => s.id === sId);
+                              return sec ? <span key={sId} className="px-1.5 py-0.5 rounded bg-violet-500/15 text-violet-300 text-[9px] font-medium">{sec.icon} {sec.label}</span> : null;
+                            })}
+                          </div>
+                        )}
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {p.highlights.map((h) => <span key={h} className="px-2 py-0.5 rounded-md bg-white/5 text-gray-400 text-[10px]">{h}</span>)}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </>
         )}

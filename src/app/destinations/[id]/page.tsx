@@ -17,8 +17,15 @@ export default async function DestinationDetailsPage({
   const destination = destinations.find((d) => d.id === id);
   if (!destination) return notFound();
 
-  // Filter packages that belong to this destination
-  const destPackages = packages.filter((pkg) => pkg.destinationId === id);
+  // Filter packages that belong to this destination and sort by order
+  const destPackages = packages
+    .filter((pkg) => pkg.destinationId === id)
+    .sort((a, b) => {
+      const aOrd = a.order ?? 9999;
+      const bOrd = b.order ?? 9999;
+      if (aOrd !== bOrd) return aOrd - bOrd;
+      return a.name.localeCompare(b.name);
+    });
 
   return (
     <main className="relative min-h-screen overflow-hidden text-white" style={{ background: "linear-gradient(180deg, #050B1F 0%, #0A1628 100%)" }}>

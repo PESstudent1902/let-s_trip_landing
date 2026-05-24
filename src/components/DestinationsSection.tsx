@@ -118,32 +118,50 @@ export default function DestinationsSection() {
     return () => clearInterval(interval);
   }, [loadData]);
 
-  // --- Dynamic Section Filtering with Fail-Safe Fallbacks ---
+  // --- Dynamic Section Filtering with Fail-Safe Fallbacks & Sorting ---
+  const sortItems = <T extends { order?: number; name: string }>(items: T[]): T[] => {
+    return [...items].sort((a, b) => {
+      const aOrd = a.order ?? 9999;
+      const bOrd = b.order ?? 9999;
+      if (aOrd !== bOrd) return aOrd - bOrd;
+      return a.name.localeCompare(b.name);
+    });
+  };
 
   // 1. Expert Picks Itineraries (Destinations)
-  const expertPickDests = destinations.filter(d => d.sections?.includes("expert-picks")).length > 0
-    ? destinations.filter(d => d.sections?.includes("expert-picks"))
-    : destinations.filter(d => ["thailand", "france", "egypt", "maldives"].includes(d.id));
+  const expertPickDests = sortItems(
+    destinations.filter(d => d.sections?.includes("expert-picks")).length > 0
+      ? destinations.filter(d => d.sections?.includes("expert-picks"))
+      : destinations.filter(d => ["thailand", "france", "egypt", "maldives"].includes(d.id))
+  );
 
   // 2. Adventures for you (Packages)
-  const adventurePkgs = packages.filter(p => p.sections?.includes("adventures")).length > 0
-    ? packages.filter(p => p.sections?.includes("adventures"))
-    : packages.filter(p => ["pkg-bungee", "pkg-rafting", "pkg-paragliding", "pkg-skiing"].includes(p.id));
+  const adventurePkgs = sortItems(
+    packages.filter(p => p.sections?.includes("adventures")).length > 0
+      ? packages.filter(p => p.sections?.includes("adventures"))
+      : packages.filter(p => ["pkg-bungee", "pkg-rafting", "pkg-paragliding", "pkg-skiing"].includes(p.id))
+  );
 
   // 3. Honeymoon Special (Packages)
-  const honeymoonPkgs = packages.filter(p => p.sections?.includes("honeymoon")).length > 0
-    ? packages.filter(p => p.sections?.includes("honeymoon"))
-    : packages.filter(p => p.id === "pkg-almaty" || p.destinationId === "almaty");
+  const honeymoonPkgs = sortItems(
+    packages.filter(p => p.sections?.includes("honeymoon")).length > 0
+      ? packages.filter(p => p.sections?.includes("honeymoon"))
+      : packages.filter(p => p.id === "pkg-almaty" || p.destinationId === "almaty")
+  );
 
   // 4. Domestic Tours (Destinations)
-  const domesticDests = destinations.filter(d => d.sections?.includes("domestic")).length > 0
-    ? destinations.filter(d => d.sections?.includes("domestic"))
-    : destinations.filter(d => ["ladakh", "kashmir", "kerala", "goa", "rajasthan"].includes(d.id));
+  const domesticDests = sortItems(
+    destinations.filter(d => d.sections?.includes("domestic")).length > 0
+      ? destinations.filter(d => d.sections?.includes("domestic"))
+      : destinations.filter(d => ["ladakh", "kashmir", "kerala", "goa", "rajasthan"].includes(d.id))
+  );
 
   // 5. Explore Destinations (Destinations)
-  const exploreDests = destinations.filter(d => d.sections?.includes("explore")).length > 0
-    ? destinations.filter(d => d.sections?.includes("explore"))
-    : destinations.filter(d => ["maldives", "canada", "italy"].includes(d.id));
+  const exploreDests = sortItems(
+    destinations.filter(d => d.sections?.includes("explore")).length > 0
+      ? destinations.filter(d => d.sections?.includes("explore"))
+      : destinations.filter(d => ["maldives", "canada", "italy"].includes(d.id))
+  );
 
   return (
     <section id="destinations" className="relative py-20 overflow-hidden bg-[#050B1F]">

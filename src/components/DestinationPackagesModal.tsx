@@ -70,7 +70,14 @@ export default function DestinationPackagesModal({ isOpen, onClose, destination,
             <div className="p-6 md:p-8 overflow-y-auto" data-lenis-prevent>
               {packages.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {packages.map((pkg) => (
+                  {[...packages]
+                    .sort((a, b) => {
+                      const aOrd = a.order ?? 9999;
+                      const bOrd = b.order ?? 9999;
+                      if (aOrd !== bOrd) return aOrd - bOrd;
+                      return a.name.localeCompare(b.name);
+                    })
+                    .map((pkg) => (
                     <div 
                       key={pkg.id} 
                       className="group relative glass-strong border border-white/10 rounded-2xl overflow-hidden hover:border-cyan/30 transition-all cursor-pointer flex flex-col sm:flex-row h-full"
