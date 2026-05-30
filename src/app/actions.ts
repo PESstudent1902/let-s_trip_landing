@@ -78,7 +78,7 @@ function findLocalImage(name: string): string {
 // ── CRM API Helper ──────────────────────────────────────────────────────────
 async function callCrmApi<T>(
   endpoint: string,
-  body: Record<string, string>
+  body: Record<string, any>
 ): Promise<T | null> {
   try {
     const res = await fetch(`${CRM_BASE}/${endpoint}`, {
@@ -374,15 +374,15 @@ export async function submitInquiryAction(leadData: {
     const result = await callCrmApi<{ status?: string; error_code?: string }>(
       "addquery.php",
       {
-        clientname: leadData.name,
-        clientemail: leadData.email,
-        clientphone: leadData.contact,
+        name: leadData.name,
+        email: leadData.email,
+        contact: leadData.contact,
         destination: leadData.destination,
-        fromdates: leadData.fromDate,
-        todates: leadData.toDate,
-        adult: leadData.adults,
-        child: leadData.children,
-        infant: leadData.infants,
+        startDate: leadData.fromDate,
+        endDate: leadData.toDate,
+        adult: parseInt(leadData.adults, 10) || 0,
+        child: parseInt(leadData.children, 10) || 0,
+        infant: parseInt(leadData.infants, 10) || 0,
       }
     );
 
