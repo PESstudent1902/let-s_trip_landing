@@ -48,6 +48,7 @@ export interface Package {
   itinerary?: ItineraryDay[];
   sections?: string[]; // which website sections this package appears in (multi-select)
   order?: number;
+  type?: "domestic" | "international"; // CRM package classification
 }
 
 export const DEFAULT_DESTINATIONS: Destination[] = [

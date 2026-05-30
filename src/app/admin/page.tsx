@@ -16,12 +16,6 @@ import {
 import {
   fetchDestinations,
   fetchPackages,
-  saveDestination,
-  updateDestination,
-  deleteDestinationAction,
-  savePackage,
-  updatePackage,
-  deletePackageAction,
 } from "@/app/actions";
 import { LogOut, Plus, Pencil, Trash2, X, MapPin, Briefcase, Lock, Eye, EyeOff, Check, AlertTriangle, ChevronUp, ChevronDown } from "lucide-react";
 
@@ -575,163 +569,32 @@ export default function AdminPage() {
     });
   }, [packages, packageDestinationFilter, packageSectionFilter]);
 
-  const moveDestination = async (id: string, direction: "up" | "down") => {
-    const index = filteredDestinations.findIndex((d) => d.id === id);
-    if (index === -1) return;
-
-    const targetIndex = direction === "up" ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= filteredDestinations.length) return;
-
-    const currentItem = filteredDestinations[index];
-    const targetItem = filteredDestinations[targetIndex];
-
-    // 1. Sort the entire destinations list by order
-    const sortedDestinations = [...destinations].sort((a, b) => {
-      const aOrd = a.order ?? 9999;
-      const bOrd = b.order ?? 9999;
-      if (aOrd !== bOrd) return aOrd - bOrd;
-      return a.name.localeCompare(b.name);
-    });
-
-    // 2. Normalize orders to be 1, 2, 3...
-    const normalized = sortedDestinations.map((d, idx) => ({
-      ...d,
-      order: idx + 1,
-    }));
-
-    // 3. Find the items in normalized list
-    const normCurrent = normalized.find((d) => d.id === currentItem.id);
-    const normTarget = normalized.find((d) => d.id === targetItem.id);
-
-    if (!normCurrent || !normTarget) return;
-
-    // 4. Swap their order values
-    const tempOrder = normCurrent.order;
-    normCurrent.order = normTarget.order;
-    normTarget.order = tempOrder;
-
-    // 5. Save changes
-    const [res1, res2] = await Promise.all([
-      updateDestination(normCurrent),
-      updateDestination(normTarget),
-    ]);
-
-    if (res1.success && res2.success) {
-      showToast("Destination position updated", "success");
-    } else {
-      showToast(res1.error || res2.error || "Failed to update position", "error");
-    }
-    refreshData();
+  const moveDestination = async (_id: string, _direction: "up" | "down") => {
+    showToast("Data is managed via TravBizz CRM. Ordering changes are not supported.", "error");
   };
 
-  const movePackage = async (id: string, direction: "up" | "down") => {
-    const index = filteredPackages.findIndex((p) => p.id === id);
-    if (index === -1) return;
-
-    const targetIndex = direction === "up" ? index - 1 : index + 1;
-    if (targetIndex < 0 || targetIndex >= filteredPackages.length) return;
-
-    const currentItem = filteredPackages[index];
-    const targetItem = filteredPackages[targetIndex];
-
-    // 1. Sort the entire packages list by order
-    const sortedPackages = [...packages].sort((a, b) => {
-      const aOrd = a.order ?? 9999;
-      const bOrd = b.order ?? 9999;
-      if (aOrd !== bOrd) return aOrd - bOrd;
-      return a.name.localeCompare(b.name);
-    });
-
-    // 2. Normalize orders
-    const normalized = sortedPackages.map((p, idx) => ({
-      ...p,
-      order: idx + 1,
-    }));
-
-    // 3. Find items in normalized list
-    const normCurrent = normalized.find((p) => p.id === currentItem.id);
-    const normTarget = normalized.find((p) => p.id === targetItem.id);
-
-    if (!normCurrent || !normTarget) return;
-
-    // 4. Swap orders
-    const tempOrder = normCurrent.order;
-    normCurrent.order = normTarget.order;
-    normTarget.order = tempOrder;
-
-    // 5. Save changes
-    const [res1, res2] = await Promise.all([
-      updatePackage(normCurrent),
-      updatePackage(normTarget),
-    ]);
-
-    if (res1.success && res2.success) {
-      showToast("Package position updated", "success");
-    } else {
-      showToast(res1.error || res2.error || "Failed to update position", "error");
-    }
-    refreshData();
+  const movePackage = async (_id: string, _direction: "up" | "down") => {
+    showToast("Data is managed via TravBizz CRM. Ordering changes are not supported.", "error");
   };
 
-  const handleSaveDest = async (data: Omit<Destination, "id">) => {
-    if (destModal?.mode === "edit" && destModal.item) {
-      const updatedOrder = data.order ?? destModal.item.order ?? (Math.max(...destinations.map((d) => d.order || 0), 0) + 1);
-      const res = await updateDestination({ ...data, id: destModal.item.id, order: updatedOrder });
-      if (res.success) showToast(`"${data.name}" updated successfully!`, "success");
-      else showToast(res.error || "Failed", "error");
-    } else {
-      const id = slugifyDestinationName(data.name);
-      if (!id) {
-        showToast("Destination name must contain letters or numbers.", "error");
-        return;
-      }
-      if (destinations.some((destination) => destination.id === id)) {
-        showToast("A destination with this name already exists.", "error");
-        return;
-      }
-      const defaultOrder = Math.max(...destinations.map((d) => d.order || 0), 0) + 1;
-      const res = await saveDestination({ ...data, id, order: data.order ?? defaultOrder });
-      if (res.success) showToast(`"${data.name}" added successfully!`, "success");
-      else showToast(res.error || "Failed", "error");
-    }
-
+  const handleSaveDest = async (_data: Omit<Destination, "id">) => {
+    showToast("Destinations are managed via TravBizz CRM. Use the CRM dashboard to add/edit.", "error");
     setDestModal(null);
-    refreshData();
   };
 
   const handleDeleteDest = async () => {
-    if (!confirmDelete || confirmDelete.type !== "dest") return;
-    const res = await deleteDestinationAction(confirmDelete.id);
-    if (res.success) showToast(`"${confirmDelete.name}" deleted.`, "success");
-    else showToast(res.error || "Failed", "error");
+    showToast("Destinations are managed via TravBizz CRM. Use the CRM dashboard to delete.", "error");
     setConfirmDelete(null);
-    refreshData();
   };
 
-  const handleSavePkg = async (data: Omit<Package, "id">) => {
-    if (pkgModal?.mode === "edit" && pkgModal.item) {
-      const updatedOrder = data.order ?? pkgModal.item.order ?? (Math.max(...packages.map((p) => p.order || 0), 0) + 1);
-      const res = await updatePackage({ ...data, id: pkgModal.item.id, order: updatedOrder });
-      if (res.success) showToast(`"${data.name}" updated successfully!`, "success");
-      else showToast(res.error || "Failed", "error");
-    } else {
-      const defaultOrder = Math.max(...packages.map((p) => p.order || 0), 0) + 1;
-      const res = await savePackage({ ...data, id: crypto.randomUUID(), order: data.order ?? defaultOrder });
-      if (res.success) showToast(`"${data.name}" added successfully!`, "success");
-      else showToast(res.error || "Failed", "error");
-    }
-
+  const handleSavePkg = async (_data: Omit<Package, "id">) => {
+    showToast("Packages are managed via TravBizz CRM. Use the CRM dashboard to add/edit.", "error");
     setPkgModal(null);
-    refreshData();
   };
 
   const handleDeletePkg = async () => {
-    if (!confirmDelete || confirmDelete.type !== "pkg") return;
-    const res = await deletePackageAction(confirmDelete.id);
-    if (res.success) showToast(`"${confirmDelete.name}" deleted.`, "success");
-    else showToast(res.error || "Failed", "error");
+    showToast("Packages are managed via TravBizz CRM. Use the CRM dashboard to delete.", "error");
     setConfirmDelete(null);
-    refreshData();
   };
 
   const handleLogout = () => {

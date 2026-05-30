@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { fetchDestinations, fetchPackages } from "@/app/actions";
+import { fetchDestinations, fetchPackages, fetchPackageDetail } from "@/app/actions";
+import PackageBookButton from "@/components/PackageBookButton";
 
 export default async function PackageDetailsPage({
   params,
@@ -15,6 +16,20 @@ export default async function PackageDetailsPage({
   if (!pkg) return notFound();
 
   const destination = pkg.destinationId ? destinations.find((d) => d.id === pkg.destinationId) : undefined;
+
+  // Fetch detailed itinerary from CRM if this is a CRM package
+  let itinerary = pkg.itinerary || [];
+  let terms = "";
+
+  if (id.startsWith("crm-")) {
+    const detail = await fetchPackageDetail(id);
+    if (detail?.itinerary && detail.itinerary.length > 0) {
+      itinerary = detail.itinerary;
+    }
+    if (detail?.terms) {
+      terms = detail.terms;
+    }
+  }
 
   return (
     <main className="relative min-h-screen overflow-hidden">
@@ -83,8 +98,8 @@ export default async function PackageDetailsPage({
         </div>
 
         <div className="space-y-4">
-          {(pkg.itinerary || []).length ? (
-            pkg.itinerary!.map((day) => (
+          {itinerary.length ? (
+            itinerary.map((day) => (
               <div key={day.day} className="glass rounded-2xl border border-white/10 overflow-hidden">
                 <div className="flex items-center justify-between gap-4 p-5 sm:p-6 bg-white/5 border-b border-white/5">
                   <div className="flex items-center gap-3">
@@ -114,21 +129,27 @@ export default async function PackageDetailsPage({
             ))
           ) : (
             <div className="glass rounded-2xl border border-white/10 p-8 text-center text-text-secondary">
-              No itinerary details yet. Message us on WhatsApp and we’ll tailor it for you.
+              No itinerary details yet. Message us on WhatsApp and we&apos;ll tailor it for you.
             </div>
           )}
         </div>
 
+        {terms && (
+          <div className="mt-8 glass rounded-2xl border border-white/10 p-6">
+            <h3 className="text-lg text-white font-bold mb-3" style={{ fontFamily: "var(--font-headline)" }}>
+              Terms & Conditions
+            </h3>
+            <p className="text-text-secondary text-sm leading-relaxed whitespace-pre-line">
+              {terms}
+            </p>
+          </div>
+        )}
+
         <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
-          <a
-            href="https://wa.me/918867767171"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-3 rounded-2xl bg-green-600 text-white font-bold text-sm text-center hover:opacity-90 transition-opacity"
-            style={{ fontFamily: "var(--font-headline)" }}
-          >
-            Chat on WhatsApp
-          </a>
+          <PackageBookButton
+            packageName={pkg.name}
+            destination={destination?.name}
+          />
           <Link
             href="/#destinations"
             className="px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-white font-bold text-sm text-center hover:bg-white/10 transition-colors"
@@ -141,4 +162,3 @@ export default async function PackageDetailsPage({
     </main>
   );
 }
-
