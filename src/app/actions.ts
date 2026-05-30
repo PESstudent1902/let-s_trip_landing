@@ -148,38 +148,53 @@ function slugify(name: string): string {
 
 // ── CRM Type Definitions ────────────────────────────────────────────────────
 interface CrmDestination {
-  destination_name?: string;
-  destination_id?: string;
+  name?: string;
   photo?: string;
 }
 
 interface CrmPackage {
-  package_id?: string;
-  package_name?: string;
+  packageId?: string;
+  name?: string;
   destination?: string;
-  night?: string;
+  nights?: string;
+  days?: string;
   price?: string;
-  theme_name?: string;
-  banner_image?: string;
-  inclusions?: string;
+  themeName?: string;
+  banner?: string;
+  inclusion?: string;
   type?: string;
 }
 
-interface CrmDayDetail {
-  day_title?: string;
-  day_desc?: string;
+interface CrmPackageDetails {
+  themeId?: string;
+  theme?: string;
+  packageId?: string;
+  name?: string;
+  nights?: string;
+  days?: string;
+  price?: string;
+  destination?: string;
+  destinationId?: string;
+  description?: string;
+  includeServices?: string;
 }
 
-interface CrmPackageDetail {
-  package_name?: string;
-  destination?: string;
-  night?: string;
-  price?: string;
-  banner_image?: string;
-  inclusions?: string;
-  theme_name?: string;
+interface CrmDayDetail {
+  day?: string | number;
+  name?: string;
+  description?: string;
+}
+
+interface CrmTerm {
+  name?: string;
+  description?: string;
+}
+
+interface CrmPackageDetailResponse {
+  PackageDetails?: CrmPackageDetails;
   DayDetails?: CrmDayDetail[];
-  Terms?: string;
+  Terms?: CrmTerm[];
+  ImageGallery?: { image?: string }[];
 }
 
 // ── Public API: Destinations ────────────────────────────────────────────────
@@ -189,18 +204,18 @@ export async function fetchDestinations(): Promise<Destination[]> {
 
   try {
     const [domestic, international] = await Promise.all([
-      callCrmApi<{ data?: CrmDestination[] }>("destinationlist.php", { type: "domestic" }),
-      callCrmApi<{ data?: CrmDestination[] }>("destinationlist.php", { type: "international" }),
+      callCrmApi<{ Destination?: CrmDestination[] }>("destinationlist.php", { type: "domestic" }),
+      callCrmApi<{ Destination?: CrmDestination[] }>("destinationlist.php", { type: "international" }),
     ]);
 
-    const rawDomestic = domestic?.data || [];
-    const rawInternational = international?.data || [];
+    const rawDomestic = domestic?.Destination || [];
+    const rawInternational = international?.Destination || [];
 
     const destMap = new Map<string, Destination>();
 
     const processDestinations = (items: CrmDestination[], sections: string[]) => {
       items.forEach((d, i) => {
-        const name = d.destination_name || "Unknown";
+        const name = d.name || "Unknown";
         const id = slugify(name);
         if (destMap.has(id)) return;
 
@@ -242,17 +257,39 @@ export async function fetchDestinations(): Promise<Destination[]> {
   }
 }
 
+function inferPackageType(dest: string, name: string, themeName: string): "domestic" | "international" {
+  const text = `${dest} ${name} ${themeName}`.toLowerCase();
+  
+  const intlKeywords = [
+    "thailand", "phuket", "krabi", "bangkok", "pattaya",
+    "dubai", "abu dhabi", "singapore", "bali", "maldives",
+    "vietnam", "hanoi", "ho chi minh", "halong", "europe",
+    "paris", "france", "egypt", "cairo", "giza", "almaty",
+    "kazakhstan", "sri lanka", "colombo", "switzerland",
+    "australia", "sydney", "melbourne", "turkey", "istanbul",
+    "greece", "athens", "mauritius", "canada", "toronto",
+    "italy", "rome", "venice", "florence", "london", "uk",
+    "international"
+  ];
+
+  for (const kw of intlKeywords) {
+    if (text.includes(kw)) return "international";
+  }
+
+  return "domestic";
+}
+
 // ── Public API: Packages ────────────────────────────────────────────────────
 export async function fetchPackages(): Promise<Package[]> {
   const cached = getCached<Package[]>("packages");
   if (cached) return cached;
 
   try {
-    const result = await callCrmApi<{ data?: CrmPackage[] }>("packagelist.php", {
+    const result = await callCrmApi<{ Package?: CrmPackage[] }>("packagelist.php", {
       searchdestination: "",
     });
 
-    const rawPackages = result?.data || [];
+    const rawPackages = result?.Package || [];
 
     if (rawPackages.length < 2) {
       setCache("packages", DEFAULT_PACKAGES);
@@ -260,37 +297,37 @@ export async function fetchPackages(): Promise<Package[]> {
     }
 
     const packages: Package[] = rawPackages.map((p, i) => {
-      const name = p.package_name || "Travel Package";
+      const name = p.name || "Travel Package";
       const dest = p.destination || "";
-      const nights = parseInt(p.night || "0", 10);
-      const price = p.price ? `₹${parseInt(p.price).toLocaleString("en-IN")}` : "Custom";
-      const inclusions = (p.inclusions || "")
+      const nights = parseInt(p.nights || p.days || "0", 10) - (p.nights ? 0 : 1);
+      const actualNights = nights > 0 ? nights : undefined;
+      const priceVal = p.price ? parseInt(p.price, 10) : 0;
+      const price = priceVal > 0 ? `₹${priceVal.toLocaleString("en-IN")}` : "Custom";
+      const inclusions = (p.inclusion || "")
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean);
-      const themeName = p.theme_name || "";
-      const pkgType = (p.type || "").toLowerCase().includes("domestic")
-        ? "domestic"
-        : "international";
+      const themeName = p.themeName || "";
+      const pkgType = inferPackageType(dest, name, themeName);
 
-      const crmBanner = p.banner_image || "";
+      const crmBanner = p.banner || "";
       const image =
         crmBanner && !crmBanner.includes("placeholder") && crmBanner.startsWith("http")
           ? crmBanner
           : findLocalImage(dest || name);
 
       return {
-        id: `crm-${p.package_id || i}`,
+        id: `crm-${p.packageId || i}`,
         name,
         price,
         highlights: inclusions.length > 0 ? inclusions : ["Transfers", "Hotel Stay", "Sightseeing"],
         image,
-        destinationId: slugify(dest),
-        durationNights: nights || undefined,
+        destinationId: slugify(dest || name.split(" ")[0] || ""),
+        durationNights: actualNights,
         tags: themeName ? [themeName] : [],
         sections: inferSectionsFromTheme(themeName, pkgType),
         order: i + 1,
-        type: pkgType as "domestic" | "international",
+        type: pkgType,
       };
     });
 
@@ -308,18 +345,18 @@ export async function fetchPackageDetail(
 ): Promise<{
   itinerary: ItineraryDay[];
   terms: string;
-  pkg: CrmPackageDetail | null;
+  pkg: any;
 } | null> {
   // Extract numeric ID from our "crm-XXXX" format
   const numericId = packageId.replace("crm-", "");
 
   const cacheKey = `pkg_detail_${numericId}`;
-  const cached = getCached<{ itinerary: ItineraryDay[]; terms: string; pkg: CrmPackageDetail | null }>(cacheKey);
+  const cached = getCached<{ itinerary: ItineraryDay[]; terms: string; pkg: any }>(cacheKey);
   if (cached) return cached;
 
   try {
-    const result = await callCrmApi<CrmPackageDetail>("packagedetails.php", {
-      packageid: numericId,
+    const result = await callCrmApi<CrmPackageDetailResponse>("packagedetails.php", {
+      packageId: numericId,
       type: "domestic",
     });
 
@@ -327,8 +364,8 @@ export async function fetchPackageDetail(
 
     const dayDetails = result.DayDetails || [];
     const itinerary: ItineraryDay[] = dayDetails.map((d, i) => {
-      const title = d.day_title || `Day ${i + 1}`;
-      const desc = (d.day_desc || "")
+      const title = d.name || `Day ${d.day || i + 1}`;
+      const desc = (d.description || "")
         .replace(/<[^>]*>/g, "")
         .replace(/&nbsp;/g, " ")
         .trim();
@@ -338,16 +375,24 @@ export async function fetchPackageDetail(
         .filter((s) => s.length > 5);
 
       return {
-        day: i + 1,
+        day: typeof d.day === "number" ? d.day : parseInt(d.day || "1", 10) || (i + 1),
         title,
         details: details.length > 0 ? details : ["Details will be shared upon booking"],
       };
     });
 
-    const terms = (result.Terms || "")
-      .replace(/<[^>]*>/g, "")
-      .replace(/&nbsp;/g, " ")
-      .trim();
+    const termsArray = result.Terms || [];
+    const terms = termsArray
+      .map((t) => {
+        const name = t.name || "";
+        const desc = (t.description || "")
+          .replace(/<[^>]*>/g, "")
+          .replace(/&nbsp;/g, " ")
+          .trim();
+        return name ? `**${name}**\n${desc}` : desc;
+      })
+      .filter(Boolean)
+      .join("\n\n");
 
     const data = { itinerary, terms, pkg: result };
     setCache(cacheKey, data);
