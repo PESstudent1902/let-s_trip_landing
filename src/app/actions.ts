@@ -155,6 +155,129 @@ interface CrmPackageDetailResponse {
   ImageGallery?: { image?: string }[];
 }
 
+// ── Image Validation Helper ─────────────────────────────────────────────────
+function isValidCrmImage(url: string | undefined): boolean {
+  if (!url) return false;
+  const cleaned = url.trim();
+  return (
+    cleaned.startsWith("http") &&
+    !cleaned.includes("placeholder") &&
+    cleaned !== "https://travbizz.online/crm/package_image/" &&
+    cleaned !== "https://travbizz.online/crm/package_image"
+  );
+}
+
+// ── Package Destination Matching Helper ─────────────────────────────────────
+function matchDestinationId(
+  destField: string,
+  packageName: string,
+  allDestinations: Destination[]
+): string {
+  const cleanDestField = (destField || "").trim().toLowerCase();
+  const cleanName = (packageName || "").trim().toLowerCase();
+
+  // 1. Try matching using the destField (split by commas)
+  if (cleanDestField) {
+    const parts = cleanDestField.split(",").map(s => s.trim()).filter(Boolean);
+    for (const part of parts) {
+      const idMatch = allDestinations.find(d => d.id === part);
+      if (idMatch) return idMatch.id;
+
+      const exactMatch = allDestinations.find(d => d.name.toLowerCase() === part);
+      if (exactMatch) return exactMatch.id;
+    }
+  }
+
+  // 2. Keyword mapping for cities/regions to main destination IDs
+  const keywordToDestId: Record<string, string> = {
+    phuket: "phuket-krabi",
+    krabi: "phuket-krabi",
+    pattaya: "thailand",
+    bangkok: "thailand",
+    thailand: "thailand",
+    srinagar: "kashmir",
+    pahalgam: "kashmir",
+    gulmarg: "kashmir",
+    sonmarg: "kashmir",
+    kashmir: "kashmir",
+    munnar: "kerala",
+    thekkady: "kerala",
+    alleppey: "kerala",
+    kochi: "kerala",
+    kovalam: "kerala",
+    trivandrum: "kerala",
+    kerala: "kerala",
+    goa: "goa",
+    jaipur: "rajasthan",
+    udaipur: "rajasthan",
+    jodhpur: "rajasthan",
+    jaisalmer: "rajasthan",
+    rajasthan: "rajasthan",
+    portblair: "andaman-delight",
+    "port blair": "andaman-delight",
+    havelock: "andaman-delight",
+    andaman: "andaman-delight",
+    darjeeling: "sikkim-darjeeling",
+    gangtok: "sikkim-darjeeling",
+    sikkim: "sikkim-darjeeling",
+    shillong: "meghalaya-jungle-to-clouds",
+    meghalaya: "meghalaya-jungle-to-clouds",
+    cherrapunji: "meghalaya-jungle-to-clouds",
+    tawang: "tawang",
+    dirang: "tawang",
+    bomdila: "tawang",
+    manali: "himachal",
+    shimla: "himachal",
+    sissu: "himachal",
+    kasol: "himachal",
+    dharamshala: "himachal",
+    himachal: "himachal",
+    rishikesh: "rishikesh",
+    haridwar: "haridwar",
+    corbett: "jim-corbett",
+    dubai: "dubai",
+    singapore: "singapore",
+    bali: "bali",
+    vietnam: "vietnam",
+    hanoi: "hanoi-danang",
+    danang: "hanoi-danang",
+    almaty: "almaty",
+    egypt: "egypt",
+    france: "france",
+    kenya: "kenya",
+  };
+
+  // Check in dest field
+  if (cleanDestField) {
+    for (const [kw, destId] of Object.entries(keywordToDestId)) {
+      if (cleanDestField.includes(kw)) {
+        if (allDestinations.some(d => d.id === destId)) {
+          return destId;
+        }
+      }
+    }
+  }
+
+  // Check in package name
+  for (const [kw, destId] of Object.entries(keywordToDestId)) {
+    if (cleanName.includes(kw)) {
+      if (allDestinations.some(d => d.id === destId)) {
+        return destId;
+      }
+    }
+  }
+
+  // 3. Try partial name match
+  const matchByName = allDestinations.find(d => 
+    cleanName.includes(d.name.toLowerCase()) || d.name.toLowerCase().includes(cleanName)
+  );
+  if (matchByName) return matchByName.id;
+
+  // 4. Default fallback: slugified first word
+  const fallbackSource = (cleanDestField.split(",")[0] || cleanName.split(" ")[0] || "").trim();
+  return slugify(fallbackSource) || "general";
+}
+
 // ── Public API: Destinations ────────────────────────────────────────────────
 export async function fetchDestinations(): Promise<Destination[]> {
   const cached = getCached<Destination[]>("destinations");
@@ -171,45 +294,51 @@ export async function fetchDestinations(): Promise<Destination[]> {
 
     const destMap = new Map<string, Destination>();
 
+    // Initialize with all local DEFAULT_DESTINATIONS from db.json to keep rich details
+    DEFAULT_DESTINATIONS.forEach((d) => {
+      destMap.set(d.id, { ...d });
+    });
+
     const processDestinations = (items: CrmDestination[], sections: string[]) => {
       items.forEach((d, i) => {
-        const name = d.name || "Unknown";
+        const name = (d.name || "").trim();
+        if (!name) return;
         const id = slugify(name);
-        if (destMap.has(id)) return;
-
-        const localFallback = findLocalImage(name);
+        
         const crmPhoto = d.photo || "";
-        const image =
-          localFallback !== "/hero-bg.png"
-            ? localFallback
-            : crmPhoto && !crmPhoto.includes("placeholder") && crmPhoto.startsWith("http")
-            ? crmPhoto
-            : "/hero-bg.png";
+        const hasValidCrmPhoto = isValidCrmImage(crmPhoto);
+        const localFallback = findLocalImage(name);
 
-        destMap.set(id, {
-          id,
-          name,
-          image,
-          duration: "5N",
-          price: "Custom",
-          tags: [],
-          description: `Explore the beauty of ${name}`,
-          sections,
-          order: i + 1,
-        });
+        const existing = destMap.get(id);
+        if (existing) {
+          // Merge CRM data with existing default destination details
+          destMap.set(id, {
+            ...existing,
+            name,
+            image: hasValidCrmPhoto ? crmPhoto : existing.image,
+            sections: [...new Set([...(existing.sections || []), ...sections])],
+          });
+        } else {
+          // Add new CRM destination
+          destMap.set(id, {
+            id,
+            name,
+            image: hasValidCrmPhoto ? crmPhoto : (localFallback !== "/hero-bg.png" ? localFallback : "/hero-bg.png"),
+            duration: "5N",
+            price: "Custom",
+            tags: [],
+            description: `Explore the beauty of ${name}`,
+            sections,
+            order: 100 + i,
+          });
+        }
       });
     };
 
     processDestinations(rawDomestic, ["domestic"]);
     processDestinations(rawInternational, ["explore"]);
 
-    let destinations = Array.from(destMap.values());
-
-    // If CRM returned nothing useful, fall back to defaults
-    if (destinations.length < 3) {
-      destinations = DEFAULT_DESTINATIONS;
-    }
-
+    const destinations = Array.from(destMap.values());
     setCache("destinations", destinations);
     return destinations;
   } catch (err) {
@@ -242,13 +371,17 @@ function inferPackageType(dest: string, name: string, themeName: string): "domes
 
 // ── Public API: Packages ────────────────────────────────────────────────────
 export async function fetchPackages(): Promise<Package[]> {
+
   const cached = getCached<Package[]>("packages");
   if (cached) return cached;
 
   try {
-    const result = await callCrmApi<{ Package?: CrmPackage[] }>("packagelist.php", {
-      searchdestination: "",
-    });
+    const [result, destinations] = await Promise.all([
+      callCrmApi<{ Package?: CrmPackage[] }>("packagelist.php", {
+        searchdestination: "",
+      }),
+      fetchDestinations(),
+    ]);
 
     const rawPackages = result?.Package || [];
 
@@ -271,14 +404,15 @@ export async function fetchPackages(): Promise<Package[]> {
       const themeName = p.themeName || "";
       const pkgType = inferPackageType(dest, name, themeName);
 
-      const localFallback = findLocalImage(dest || name);
       const crmBanner = p.banner || "";
-      const image =
-        localFallback !== "/hero-bg.png"
-          ? localFallback
-          : crmBanner && !crmBanner.includes("placeholder") && crmBanner.startsWith("http") && crmBanner !== "https://travbizz.online/crm/package_image/"
-          ? crmBanner
-          : "/hero-bg.png";
+      const hasValidCrmBanner = isValidCrmImage(crmBanner);
+      const localFallback = findLocalImage(dest || name);
+      
+      const image = hasValidCrmBanner
+        ? crmBanner
+        : (localFallback !== "/hero-bg.png" ? localFallback : "/hero-bg.png");
+
+      const destinationId = matchDestinationId(dest, name, destinations);
 
       return {
         id: `crm-${p.packageId || i}`,
@@ -286,7 +420,7 @@ export async function fetchPackages(): Promise<Package[]> {
         price,
         highlights: inclusions.length > 0 ? inclusions : ["Transfers", "Hotel Stay", "Sightseeing"],
         image,
-        destinationId: slugify(dest || name.split(" ")[0] || ""),
+        destinationId,
         durationNights: actualNights,
         tags: themeName ? [themeName] : [],
         sections: inferSectionsFromTheme(themeName, pkgType),

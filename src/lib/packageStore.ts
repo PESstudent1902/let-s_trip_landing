@@ -1,6 +1,7 @@
 /**
  * Shared travel data models and defaults.
  */
+import dbData from "./db.json";
 
 export interface Destination {
   id: string;
@@ -51,160 +52,10 @@ export interface Package {
   type?: "domestic" | "international"; // CRM package classification
 }
 
-export const DEFAULT_DESTINATIONS: Destination[] = [
-  { id: "thailand", name: "Thailand", image: "/thailand.png", duration: "7N", price: "₹62,000", tags: ["Adventure", "Culture"], description: "Ancient temples, tropical beaches, and vibrant street food", bestTimeToVisit: "November to April", sections: ["expert-picks"], order: 1 },
-  { id: "france", name: "France", image: "/france.png", duration: "6N", price: "₹1,25,000", tags: ["Romance", "History"], description: "Paris skyline, historical châteaux, and world-renowned art and fashion", bestTimeToVisit: "April to October", sections: ["expert-picks"], order: 2 },
-  { id: "egypt", name: "Egypt", image: "/egypt.png", duration: "5N", price: "₹75,000", tags: ["History", "Mystery"], description: "Giza Pyramids, Nile cruises, and mysterious ancient ruins", bestTimeToVisit: "October to April", sections: ["expert-picks"], order: 3 },
-  { id: "maldives", name: "Maldives", image: "/maldives.png", duration: "4N", price: "₹92,000", tags: ["Luxury", "Relaxation"], description: "Overwater villas, turquoise lagoons, and private island calm", bestTimeToVisit: "November to April", sections: ["expert-picks", "explore"], order: 4 },
-  { id: "dubai", name: "Dubai", image: "/dubai.png", duration: "5N", price: "₹81,500", tags: ["Luxury", "Adventure"], description: "Futuristic skyline, golden deserts, and world-class dining", sections: ["explore"], order: 5 },
-  { id: "singapore", name: "Singapore", image: "/singapore.png", duration: "7N", price: "₹1,15,000", tags: ["Culture", "Luxury"], description: "Garden city wonders, hawker centers, and stunning architecture", sections: ["explore"], order: 6 },
-  { id: "bali", name: "Bali", image: "/bali.png", duration: "5N", price: "₹45,000", tags: ["Relaxation", "Culture"], description: "Sacred temples, rice terraces, and serene spa retreats", sections: ["explore"], order: 7 },
-  { id: "vietnam", name: "Vietnam", image: "/vietnam.png", duration: "6N", price: "₹58,000", tags: ["Culture", "Adventure"], description: "Limestone bays, old quarters, and unforgettable local cuisine", sections: ["explore"], order: 8 },
-  { id: "japan", name: "Japan", image: "/japan.png", duration: "6N", price: "₹1,45,000", tags: ["Culture", "Luxury"], description: "Neon cities, mountain shrines, and iconic seasonal beauty", sections: ["explore"], order: 9 },
-  { id: "europe", name: "Europe", image: "/interlaken.png", duration: "8N", price: "₹1,68,000", tags: ["Luxury", "Culture"], description: "Multi-city classics with guided tours and premium stays", sections: ["explore"], order: 10 },
-  { id: "spiti", name: "Spiti Valley", image: "/zermatt.png", duration: "9N", price: "₹18,000", tags: ["Adventure", "Backpacking"], description: "The middle land between Tibet and India, a cold desert mountain valley", bestTimeToVisit: "May to October (Circuit), February (Winter)", sections: ["domestic"], order: 11 },
-  { id: "himachal", name: "Himachal Pradesh", image: "/paragliding.png", duration: "6N", price: "₹13,500", tags: ["Backpacking", "Nature"], description: "Mist-covered mountains, lush valleys, and serene pine forests", bestTimeToVisit: "March to June, September to December", sections: ["domestic"], order: 12 },
-  { id: "ladakh", name: "Ladakh", image: "/ladakh.png", duration: "6N", price: "₹28,500", tags: ["Adventure", "Mountains"], description: "Turquoise lakes, ancient monasteries, and high-altitude mountain passes", bestTimeToVisit: "May to September", sections: ["domestic"], order: 13 },
-  { id: "kashmir", name: "Kashmir", image: "/kashmir.png", duration: "5N", price: "₹24,500", tags: ["Nature", "Romance"], description: "Shikara rides on Dal Lake, blooming tulip gardens, and snow-capped peaks", bestTimeToVisit: "March to August", sections: ["domestic"], order: 14 },
-  { id: "kerala", name: "Kerala", image: "/kerala.png", duration: "6N", price: "₹22,000", tags: ["Relaxation", "Backwaters"], description: "Tranquil backwaters, palm-fringed canals, and Ayurvedic spa retreats", bestTimeToVisit: "September to March", sections: ["domestic"], order: 15 },
-  { id: "goa", name: "Goa", image: "/goa.png", duration: "4N", price: "₹16,500", tags: ["Beaches", "Nightlife"], description: "Golden sand beaches, historic churches, and vibrant coastal cuisine", bestTimeToVisit: "November to February", sections: ["domestic"], order: 16 },
-  { id: "rajasthan", name: "Rajasthan", image: "/rajasthan.png", duration: "6N", price: "₹19,500", tags: ["Heritage", "Culture"], description: "Majestic forts, desert safaris, and luxurious royal palace stays", bestTimeToVisit: "October to March", sections: ["domestic"], order: 17 },
-  { id: "canada", name: "Canada", image: "/canada.png", duration: "8N", price: "₹1,85,000", tags: ["Nature", "Adventure"], description: "Lakes, soaring mountain peaks, and deep forest trails in the Rockies", bestTimeToVisit: "June to September", sections: ["explore"], order: 18 },
-  { id: "italy", name: "Italy", image: "/italy.png", duration: "7N", price: "₹1,55,000", tags: ["Culture", "Romance"], description: "Venice gondolas, ancient Roman ruins, and Tuscan culinary heritage", bestTimeToVisit: "April to June, September to October", sections: ["explore"], order: 19 },
-  { id: "almaty", name: "Almaty", image: "/almaty.png", duration: "5N", price: "₹72,990", tags: ["Nature", "Honeymoon"], description: "Snowy peak backdrops, turquoise alpine lakes, and modern hospitality in Kazakhstan", bestTimeToVisit: "September to May", sections: [], order: 20 },
-];
+export const DEFAULT_DESTINATIONS: Destination[] = dbData.destinations as Destination[];
 
-export const DEFAULT_PACKAGES: Package[] = [
-  {
-    id: "pkg-bungee",
-    name: "Bungee Jumping Adventure",
-    price: "₹4,500",
-    durationNights: 1,
-    highlights: ["Safety Briefing", "Full Gear", "Jump Video", "Certification"],
-    image: "/bungee.png",
-    destinationId: "himachal",
-    sections: ["adventures"],
-    itinerary: [
-      { day: 1, title: "Adventure Briefing & Jump", details: ["Report to jump zone", "Gear check and briefing", "The ultimate free-fall experience", "Certificate handover"] },
-    ],
-    order: 1,
-  },
-  {
-    id: "pkg-rafting",
-    name: "Rafting in River Rapids",
-    price: "₹3,200",
-    durationNights: 1,
-    highlights: ["Grade III Rapids", "Professional Guides", "Safety Kayak", "Hot Lunch"],
-    image: "/rafting.png",
-    destinationId: "himachal",
-    sections: ["adventures"],
-    itinerary: [
-      { day: 1, title: "Rapid Run", details: ["Arrival at launch point", "Safety briefing and paddling practice", "16km rapid run through Grade II & III rapids", "Hot riverside lunch"] },
-    ],
-    order: 2,
-  },
-  {
-    id: "pkg-paragliding",
-    name: "Sunset Paragliding Tandem Flight",
-    price: "₹5,000",
-    durationNights: 1,
-    highlights: ["15 Mins Flight", "Tandem Pilot", "GoPro Video", "Takeoff Transfer"],
-    image: "/paragliding.png",
-    destinationId: "himachal",
-    sections: ["adventures"],
-    itinerary: [
-      { day: 1, title: "Fly like a Bird", details: ["Transfer to Billing takeoff site", "Pre-flight checks and harness fitting", "15-20 minutes glider flight", "Landing at Bir and video transfer"] },
-    ],
-    order: 3,
-  },
-  {
-    id: "pkg-skiing",
-    name: "Ski Touring Experience",
-    price: "₹8,500",
-    durationNights: 2,
-    highlights: ["Ski Equipment", "Local Instructor", "Lift Passes", "Mountain Lodge Stays"],
-    image: "/skiing.png",
-    destinationId: "laax",
-    sections: ["adventures"],
-    itinerary: [
-      { day: 1, title: "Basics & First Run", details: ["Fittings at lodge", "Snow training and balancing", "Beginner slope practice"] },
-      { day: 2, title: "Ski Tour", details: ["Guided trail ride", "Scenic stops", "Evening cozy campfire"] },
-    ],
-    order: 4,
-  },
-  {
-    id: "pkg-almaty",
-    name: "5N Almaty Special",
-    price: "₹72,990",
-    durationNights: 5,
-    highlights: ["Mountain Lodge", "Big Almaty Lake Tour", "Charyn Canyon", "Flights Included", "All Meals"],
-    image: "/almaty.png",
-    destinationId: "almaty",
-    sections: ["honeymoon"],
-    itinerary: [
-      { day: 1, title: "Arrival in Almaty", details: ["Airport pickup", "Check-in at luxury hotel", "Welcome dinner"] },
-      { day: 2, title: "Almaty City Highlights", details: ["Panfilov Park", "Zenkov Cathedral", "Medeu Gorge cable car"] },
-      { day: 3, title: "Big Almaty Lake", details: ["Scenic drive to alpine lake", "Photowalk around turquoise water", "Traditional Kazakh lunch"] },
-      { day: 4, title: "Charyn Canyon Excursion", details: ["Explore Valley of Castles", "Grand landscapes", "Riverside picnic"] },
-      { day: 5, title: "Leisure & Departure", details: ["Shopping at Green Bazaar", "Hotel checkout", "Transfer to airport"] },
-    ],
-    order: 5,
-  },
-  {
-    id: "pkg-1",
-    name: "4N Thailand",
-    price: "₹45,000",
-    durationNights: 4,
-    highlights: ["4-Star Hotel", "Sightseeing", "Transfers", "Breakfast", "Activities"],
-    image: "/thailand.png",
-    destinationId: "thailand",
-    sections: ["expert-picks"],
-    itinerary: [
-      { day: 1, title: "Arrival & Check-in", details: ["Airport pickup", "Hotel check-in", "Evening at leisure"] },
-      { day: 2, title: "City Highlights", details: ["Guided sightseeing", "Local markets", "Optional activities"] },
-      { day: 3, title: "Island/Day Trip", details: ["Full-day excursion", "Transfers included"] },
-      { day: 4, title: "Departure", details: ["Breakfast", "Checkout", "Drop to airport"] },
-    ],
-    order: 6,
-  },
-  {
-    id: "pkg-3",
-    name: "5N Dubai",
-    price: "₹81,500",
-    durationNights: 5,
-    highlights: ["5-Star Hotel", "Return Flights", "Desert Safari", "City Tour", "All Meals"],
-    image: "/dubai.png",
-    destinationId: "dubai",
-    sections: ["expert-picks", "explore-more"],
-    itinerary: [
-      { day: 1, title: "Arrival & Marina Evening", details: ["Airport pickup", "Check-in", "Dhow cruise (optional)"] },
-      { day: 2, title: "Dubai City Tour", details: ["Landmarks & souks", "Photo stops", "Evening free"] },
-      { day: 3, title: "Desert Safari", details: ["Dune bashing", "BBQ dinner", "Cultural shows"] },
-      { day: 4, title: "Leisure Day", details: ["Shopping / theme parks (optional)"] },
-      { day: 5, title: "Departure", details: ["Checkout", "Airport transfer"] },
-    ],
-    order: 7,
-  },
-  {
-    id: "pkg-4",
-    name: "6N Bali",
-    price: "₹55,000",
-    durationNights: 6,
-    highlights: ["Private Villa", "Spa Package", "Rice Terrace", "Breakfast", "Transfers"],
-    image: "/bali.png",
-    destinationId: "bali",
-    sections: ["explore-more"],
-    itinerary: [
-      { day: 1, title: "Arrival & Villa Check-in", details: ["Pickup", "Settle in", "Leisure"] },
-      { day: 2, title: "Ubud & Rice Terraces", details: ["Scenic stops", "Local experiences"] },
-      { day: 3, title: "Spa & Relaxation", details: ["Spa session", "Free time"] },
-      { day: 4, title: "Beach Day", details: ["Coastline exploration", "Optional water sports"] },
-      { day: 5, title: "Temple Visit", details: ["Iconic temples", "Sunset viewpoint"] },
-      { day: 6, title: "Flight Back", details: ["Travel home"] },
-    ],
-    order: 8,
-  },
-];
+export const DEFAULT_PACKAGES: Package[] = dbData.packages as Package[];
+
 
 export const GENERAL_DESTINATION_ID = "general";
 
