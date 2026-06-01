@@ -3,6 +3,7 @@
 import {
   DEFAULT_DESTINATIONS,
   DEFAULT_PACKAGES,
+  findLocalImage,
   type Destination,
   type Package,
   type ItineraryDay,
@@ -30,50 +31,7 @@ function setCache<T>(key: string, data: T): void {
   cache[key] = { data, timestamp: Date.now() };
 }
 
-// ── High-quality local image fallbacks ──────────────────────────────────────
-// CRM often returns blank or generic banner images. We map known destination
-// names to premium local assets so the website always looks beautiful.
-const LOCAL_IMAGE_MAP: Record<string, string> = {
-  thailand: "/thailand.png",
-  france: "/france.png",
-  egypt: "/egypt.png",
-  maldives: "/maldives.png",
-  dubai: "/dubai.png",
-  singapore: "/singapore.png",
-  bali: "/bali.png",
-  vietnam: "/vietnam.png",
-  japan: "/japan.png",
-  europe: "/interlaken.png",
-  spiti: "/zermatt.png",
-  "spiti valley": "/zermatt.png",
-  himachal: "/paragliding.png",
-  "himachal pradesh": "/paragliding.png",
-  ladakh: "/ladakh.png",
-  kashmir: "/kashmir.png",
-  kerala: "/kerala.png",
-  goa: "/goa.png",
-  rajasthan: "/rajasthan.png",
-  canada: "/canada.png",
-  italy: "/italy.png",
-  almaty: "/almaty.png",
-  manali: "/paragliding.png",
-  shimla: "/paragliding.png",
-  andaman: "/bali.png",
-  "sri lanka": "/bali.png",
-  switzerland: "/interlaken.png",
-  australia: "/singapore.png",
-  turkey: "/egypt.png",
-  greece: "/italy.png",
-  mauritius: "/maldives.png",
-};
 
-function findLocalImage(name: string): string {
-  const lower = name.toLowerCase();
-  for (const [key, val] of Object.entries(LOCAL_IMAGE_MAP)) {
-    if (lower.includes(key)) return val;
-  }
-  return "/hero-bg.png";
-}
 
 // ── CRM API Helper ──────────────────────────────────────────────────────────
 async function callCrmApi<T>(
@@ -219,11 +177,14 @@ export async function fetchDestinations(): Promise<Destination[]> {
         const id = slugify(name);
         if (destMap.has(id)) return;
 
+        const localFallback = findLocalImage(name);
         const crmPhoto = d.photo || "";
         const image =
-          crmPhoto && !crmPhoto.includes("placeholder") && crmPhoto.startsWith("http")
+          localFallback !== "/hero-bg.png"
+            ? localFallback
+            : crmPhoto && !crmPhoto.includes("placeholder") && crmPhoto.startsWith("http")
             ? crmPhoto
-            : findLocalImage(name);
+            : "/hero-bg.png";
 
         destMap.set(id, {
           id,
@@ -310,11 +271,14 @@ export async function fetchPackages(): Promise<Package[]> {
       const themeName = p.themeName || "";
       const pkgType = inferPackageType(dest, name, themeName);
 
+      const localFallback = findLocalImage(dest || name);
       const crmBanner = p.banner || "";
       const image =
-        crmBanner && !crmBanner.includes("placeholder") && crmBanner.startsWith("http")
+        localFallback !== "/hero-bg.png"
+          ? localFallback
+          : crmBanner && !crmBanner.includes("placeholder") && crmBanner.startsWith("http") && crmBanner !== "https://travbizz.online/crm/package_image/"
           ? crmBanner
-          : findLocalImage(dest || name);
+          : "/hero-bg.png";
 
       return {
         id: `crm-${p.packageId || i}`,
@@ -385,10 +349,27 @@ export async function fetchPackageDetail(
     const terms = termsArray
       .map((t) => {
         const name = t.name || "";
-        const desc = (t.description || "")
+        let desc = (t.description || "")
           .replace(/<[^>]*>/g, "")
           .replace(/&nbsp;/g, " ")
           .trim();
+
+        // Clean placeholders and entity formatting
+        desc = desc
+          .replace(/\[percentage\]/g, "25")
+          .replace(/\[number\] days prior/g, "15 days prior")
+          .replace(/\[currency\]/g, "INR")
+          .replace(/\[45\]/g, "45")
+          .replace(/\[x\]/g, "25")
+          .replace(/30&ndash44/g, "30 to 44")
+          .replace(/30&ndash;44/g, "30 to 44")
+          .replace(/\[y\]/g, "50")
+          .replace(/\[30\]/g, "30")
+          .replace(/processed within \[number\]/g, "processed within 10-14")
+          .replace(/&ldquo/g, "“")
+          .replace(/&rdquo/g, "”")
+          .replace(/&ndash/g, " to ");
+
         return name ? `**${name}**\n${desc}` : desc;
       })
       .filter(Boolean)

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, MapPin } from "lucide-react";
-import Image from "next/image";
+import FallbackImage from "./FallbackImage";
 import { Package, Destination } from "@/lib/packageStore";
 import { openItinerary } from "./ItineraryManager";
 
@@ -87,9 +87,10 @@ export default function DestinationPackagesModal({ isOpen, onClose, destination,
                       }}
                     >
                       <div className="relative h-40 sm:h-auto sm:w-2/5 shrink-0 overflow-hidden">
-                        <Image 
+                        <FallbackImage 
                           src={pkg.image} 
                           alt={pkg.name} 
+                          fallbackName={pkg.name}
                           fill 
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />

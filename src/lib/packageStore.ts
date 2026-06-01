@@ -286,3 +286,74 @@ export const AVAILABLE_IMAGES = [
   { value: "/bali.png", label: "Bali" },
   { value: "/hero-bg.png", label: "Generic Travel" },
 ];
+
+export const LOCAL_IMAGE_MAP: Record<string, string> = {
+  thailand: "/thailand.png",
+  phuket: "/thailand.png",
+  krabi: "/thailand.png",
+  pattaya: "/thailand.png",
+  bangkok: "/thailand.png",
+  france: "/france.png",
+  egypt: "/egypt.png",
+  casablanca: "/egypt.png",
+  maldives: "/maldives.png",
+  dubai: "/dubai.png",
+  singapore: "/singapore.png",
+  bali: "/bali.png",
+  vietnam: "/vietnam.png",
+  japan: "/japan.png",
+  europe: "/interlaken.png",
+  spiti: "/zermatt.png",
+  "spiti valley": "/zermatt.png",
+  himachal: "/paragliding.png",
+  "himachal pradesh": "/paragliding.png",
+  manali: "/paragliding.png",
+  shimla: "/paragliding.png",
+  sissu: "/paragliding.png",
+  kasol: "/paragliding.png",
+  manikaran: "/paragliding.png",
+  ladakh: "/ladakh.png",
+  kashmir: "/kashmir.png",
+  srinagar: "/kashmir.png",
+  pahalgam: "/kashmir.png",
+  gulmarg: "/kashmir.png",
+  sonmarg: "/kashmir.png",
+  kerala: "/kerala.png",
+  munnar: "/kerala.png",
+  thekkady: "/kerala.png",
+  alleppey: "/kerala.png",
+  kochi: "/kerala.png",
+  kovalam: "/kerala.png",
+  trivandrum: "/kerala.png",
+  goa: "/goa.png",
+  rajasthan: "/rajasthan.png",
+  jaipur: "/rajasthan.png",
+  udaipur: "/rajasthan.png",
+  jodhpur: "/rajasthan.png",
+  jaisalmer: "/rajasthan.png",
+  canada: "/canada.png",
+  italy: "/italy.png",
+  almaty: "/almaty.png",
+  andaman: "/bali.png",
+  portblair: "/bali.png",
+  havelock: "/bali.png",
+  sikkim: "/interlaken.png",
+  darjeeling: "/interlaken.png",
+  bhutan: "/interlaken.png",
+  "sri lanka": "/bali.png",
+  switzerland: "/interlaken.png",
+  australia: "/singapore.png",
+  turkey: "/egypt.png",
+  greece: "/italy.png",
+  mauritius: "/maldives.png",
+};
+
+export function findLocalImage(name: string): string {
+  if (!name) return "/hero-bg.png";
+  const lower = name.toLowerCase();
+  for (const [key, val] of Object.entries(LOCAL_IMAGE_MAP)) {
+    if (lower.includes(key)) return val;
+  }
+  return "/hero-bg.png";
+}
+

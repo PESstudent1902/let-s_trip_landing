@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import FallbackImage from "@/components/FallbackImage";
 import { notFound } from "next/navigation";
 import { fetchDestinations, fetchPackages } from "@/app/actions";
 import Navbar from "@/components/Navbar";
@@ -34,7 +34,7 @@ export default async function DestinationDetailsPage({
       {/* Hero Banner */}
       <section className="relative h-[50vh] flex items-end">
         <div className="absolute inset-0 z-0">
-          <Image src={destination.image} alt={destination.name} fill unoptimized={true} className="object-cover" priority quality={90} />
+          <FallbackImage src={destination.image} alt={destination.name} fallbackName={destination.name} fill unoptimized={true} className="object-cover" priority quality={90} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#050B1F] via-[#050B1F]/45 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#050B1F]/60 via-transparent to-[#050B1F]/60" />
         </div>
@@ -72,7 +72,7 @@ export default async function DestinationDetailsPage({
                 {destPackages.map((pkg) => (
                   <div key={pkg.id} className="glass rounded-3xl overflow-hidden group hover:border-cyan/20 transition-all duration-500 flex flex-col h-full cursor-pointer border border-white/10">
                     <div className="relative h-48 overflow-hidden">
-                      <Image src={pkg.image} alt={pkg.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <FallbackImage src={pkg.image} alt={pkg.name} fallbackName={pkg.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#050B1F]/90 via-transparent to-transparent" />
                       {pkg.durationNights && (
                         <div className="absolute top-4 right-4 z-10 px-3 py-1 rounded-full bg-black/60 backdrop-blur text-xs font-semibold text-white">

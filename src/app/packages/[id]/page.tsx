@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import FallbackImage from "@/components/FallbackImage";
 import { notFound } from "next/navigation";
 import { fetchDestinations, fetchPackages, fetchPackageDetail } from "@/app/actions";
 import PackageBookButton from "@/components/PackageBookButton";
@@ -42,7 +42,7 @@ export default async function PackageDetailsPage({
 
         <div className="mt-6 glass rounded-3xl overflow-hidden border border-white/10">
           <div className="relative h-56 sm:h-72">
-            <Image src={pkg.image} alt={pkg.name} fill unoptimized={true} className="object-cover" priority />
+            <FallbackImage src={pkg.image} alt={pkg.name} fallbackName={pkg.name} fill unoptimized={true} className="object-cover" priority />
             <div className="absolute inset-0 bg-gradient-to-t from-abyss via-abyss/40 to-transparent" />
           </div>
 

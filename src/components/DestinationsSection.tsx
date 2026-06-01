@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import FallbackImage from "./FallbackImage";
 import { 
   MapPin, Compass, Ship, Wind, Snowflake, 
   Award, DollarSign, MessageSquare, ChevronLeft, ChevronRight,
@@ -183,7 +184,7 @@ function HoneymoonCarousel({ packages }: { packages: Package[] }) {
               className="w-full flex-shrink-0 snap-start"
             >
               <div className="relative w-full rounded-3xl overflow-hidden border border-white/15 shadow-2xl min-h-[340px] md:min-h-[400px] flex items-center p-8 md:p-16">
-                <Image src={pkg.image} alt={pkg.name} fill unoptimized={true} className="object-cover" />
+                <FallbackImage src={pkg.image} alt={pkg.name} fallbackName={pkg.name} fill unoptimized={true} className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent z-0" />
                 
                 <div className="relative z-10 max-w-2xl text-left">
@@ -301,7 +302,7 @@ export default function DestinationsSection() {
                 key={dest.id} 
                 className="relative aspect-[4/3] w-[280px] sm:w-[320px] rounded-3xl overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
               >
-                <Image src={dest.image} alt={dest.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                <FallbackImage src={dest.image} alt={dest.name} fallbackName={dest.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute bottom-5 left-5 flex items-center gap-2 text-white font-bold text-lg md:text-xl">
                   <MapPin size={18} className="text-cyan animate-pulse" />
@@ -330,7 +331,7 @@ export default function DestinationsSection() {
                 key={pkg.id} 
                 className="relative aspect-[3/4] w-[240px] sm:w-[280px] rounded-none overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
               >
-                <Image src={pkg.image} alt={pkg.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                <FallbackImage src={pkg.image} alt={pkg.name} fallbackName={pkg.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 
                 {/* White bottom banner overlapping the bottom of the card - rectangular corners */}
@@ -381,7 +382,7 @@ export default function DestinationsSection() {
                 key={dest.id} 
                 className="relative aspect-[3/5] w-[185px] sm:w-[220px] rounded-none overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-black/10 dark:border-white/10 shadow-lg flex-shrink-0 snap-start"
               >
-                <Image src={dest.image} alt={dest.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                <FallbackImage src={dest.image} alt={dest.name} fallbackName={dest.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/10 to-transparent" />
                 <div className="absolute bottom-6 left-0 right-0 text-center px-4">
                   <span className="text-white font-bold text-base md:text-lg block transition-colors group-hover:text-cyan" style={{ fontFamily: "var(--font-headline)" }}>
@@ -413,7 +414,7 @@ export default function DestinationsSection() {
                   key={dest.id} 
                   className="relative aspect-[3/4] w-full sm:w-[calc((100%-24px)/2)] md:w-[calc((100%-48px)/3)] rounded-none overflow-hidden group hover:scale-[1.02] transition-all duration-500 border border-white/10 shadow-lg flex-shrink-0 snap-start"
                 >
-                  <Image src={dest.image} alt={dest.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <FallbackImage src={dest.image} alt={dest.name} fallbackName={dest.name} fill unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   
                   <div className="absolute bottom-6 left-6 right-6">
