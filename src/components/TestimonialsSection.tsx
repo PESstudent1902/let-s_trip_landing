@@ -113,7 +113,7 @@ export default function TestimonialsSection() {
                 <Quote className="text-cyan mb-6 md:mb-8" size={40} strokeWidth={1} />
 
                 <p className="text-text-primary text-base md:text-lg leading-relaxed mb-8 md:mb-12 flex-1 italic font-light" style={{ fontFamily: "var(--font-handwritten)" }}>
-                  "{t.text}"
+                  &ldquo;{t.text}&rdquo;
                 </p>
 
                 <div className="flex items-center justify-between mt-auto">

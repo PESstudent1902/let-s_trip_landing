@@ -16,6 +16,12 @@ import {
 import {
   fetchDestinations,
   fetchPackages,
+  saveDestinationAction,
+  deleteDestinationAction,
+  savePackageAction,
+  deletePackageAction,
+  reorderDestinationsAction,
+  reorderPackagesAction,
 } from "@/app/actions";
 import { LogOut, Plus, Pencil, Trash2, X, MapPin, Briefcase, Lock, Eye, EyeOff, Check, AlertTriangle, ChevronUp, ChevronDown } from "lucide-react";
 
@@ -569,31 +575,93 @@ export default function AdminPage() {
     });
   }, [packages, packageDestinationFilter, packageSectionFilter]);
 
-  const moveDestination = async (_id: string, _direction: "up" | "down") => {
-    showToast("Data is managed via TravBizz CRM. Ordering changes are not supported.", "error");
+  const moveDestination = async (id: string, direction: "up" | "down") => {
+    const currentIndex = filteredDestinations.findIndex(d => d.id === id);
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= filteredDestinations.length) return;
+
+    const reordered = [...filteredDestinations];
+    const temp = reordered[currentIndex];
+    reordered[currentIndex] = reordered[targetIndex];
+    reordered[targetIndex] = temp;
+
+    const res = await reorderDestinationsAction(reordered.map(d => d.id));
+    if (res.success) {
+      showToast(res.message, "success");
+      await refreshData();
+    } else {
+      showToast(res.message, "error");
+    }
   };
 
-  const movePackage = async (_id: string, _direction: "up" | "down") => {
-    showToast("Data is managed via TravBizz CRM. Ordering changes are not supported.", "error");
+  const movePackage = async (id: string, direction: "up" | "down") => {
+    const currentIndex = filteredPackages.findIndex(p => p.id === id);
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= filteredPackages.length) return;
+
+    const reordered = [...filteredPackages];
+    const temp = reordered[currentIndex];
+    reordered[currentIndex] = reordered[targetIndex];
+    reordered[targetIndex] = temp;
+
+    const res = await reorderPackagesAction(reordered.map(p => p.id));
+    if (res.success) {
+      showToast(res.message, "success");
+      await refreshData();
+    } else {
+      showToast(res.message, "error");
+    }
   };
 
-  const handleSaveDest = async (_data: Omit<Destination, "id">) => {
-    showToast("Destinations are managed via TravBizz CRM. Use the CRM dashboard to add/edit.", "error");
+  const handleSaveDest = async (data: Omit<Destination, "id">) => {
+    const id = destModal?.item?.id || slugifyDestinationName(data.name);
+    const res = await saveDestinationAction({ ...data, id });
+    if (res.success) {
+      showToast(res.message, "success");
+      await refreshData();
+    } else {
+      showToast(res.message, "error");
+    }
     setDestModal(null);
   };
 
   const handleDeleteDest = async () => {
-    showToast("Destinations are managed via TravBizz CRM. Use the CRM dashboard to delete.", "error");
+    if (!confirmDelete) return;
+    const res = await deleteDestinationAction(confirmDelete.id);
+    if (res.success) {
+      showToast(res.message, "success");
+      await refreshData();
+    } else {
+      showToast(res.message, "error");
+    }
     setConfirmDelete(null);
   };
 
-  const handleSavePkg = async (_data: Omit<Package, "id">) => {
-    showToast("Packages are managed via TravBizz CRM. Use the CRM dashboard to add/edit.", "error");
+  const handleSavePkg = async (data: Omit<Package, "id">) => {
+    const id = pkgModal?.item?.id || `pkg-${Date.now()}`;
+    const res = await savePackageAction({ ...data, id });
+    if (res.success) {
+      showToast(res.message, "success");
+      await refreshData();
+    } else {
+      showToast(res.message, "error");
+    }
     setPkgModal(null);
   };
 
   const handleDeletePkg = async () => {
-    showToast("Packages are managed via TravBizz CRM. Use the CRM dashboard to delete.", "error");
+    if (!confirmDelete) return;
+    const res = await deletePackageAction(confirmDelete.id);
+    if (res.success) {
+      showToast(res.message, "success");
+      await refreshData();
+    } else {
+      showToast(res.message, "error");
+    }
     setConfirmDelete(null);
   };
 

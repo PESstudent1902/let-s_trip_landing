@@ -8,6 +8,68 @@ import {
   type Package,
   type ItineraryDay,
 } from "@/lib/packageStore";
+import fs from "fs/promises";
+import path from "path";
+import { revalidatePath } from "next/cache";
+
+// Upstash Redis credentials
+const KV_REST_API_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || "https://game-husky-119092.upstash.io";
+const KV_REST_API_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || "gQAAAAAAAdE0AAIgcDI4NjA3NTk5MTJjMGQ0NWU5OWQ0ZDEyMDZkZWMxYWM0NA";
+
+const DESTINATIONS_KEY = "letstrip_destinations";
+const PACKAGES_KEY = "letstrip_packages";
+
+async function redisGet<T>(key: string): Promise<T | null> {
+  try {
+    const res = await fetch(`${KV_REST_API_URL}/get/${key}`, {
+      headers: { Authorization: `Bearer ${KV_REST_API_TOKEN}` },
+      next: { revalidate: 0 },
+    });
+    const data = await res.json();
+    if (data && data.result) {
+      return typeof data.result === "string" ? JSON.parse(data.result) : data.result;
+    }
+    return null;
+  } catch (err) {
+    console.error(`Redis GET error for key ${key}:`, err);
+    return null;
+  }
+}
+
+async function redisSet<T>(key: string, value: T): Promise<void> {
+  try {
+    await fetch(`${KV_REST_API_URL}/set/${key}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${KV_REST_API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(value),
+    });
+  } catch (err) {
+    console.error(`Redis SET error for key ${key}:`, err);
+  }
+}
+
+async function getLocalDb(): Promise<{ destinations: Destination[]; packages: Package[] }> {
+  try {
+    const filepath = path.join(process.cwd(), "src/lib/db.json");
+    const content = await fs.readFile(filepath, "utf-8");
+    return JSON.parse(content);
+  } catch (err) {
+    console.error("Failed to read local db.json, returning defaults", err);
+    return { destinations: DEFAULT_DESTINATIONS, packages: DEFAULT_PACKAGES };
+  }
+}
+
+async function saveLocalDb(data: { destinations: Destination[]; packages: Package[] }): Promise<void> {
+  try {
+    const filepath = path.join(process.cwd(), "src/lib/db.json");
+    await fs.writeFile(filepath, JSON.stringify(data, null, 2), "utf-8");
+  } catch (err) {
+    console.error("Failed to write to local db.json", err);
+  }
+}
 
 // ── CRM Configuration ──────────────────────────────────────────────────────
 const CRM_BASE = "https://travbizz.online/crm/API";
@@ -36,7 +98,7 @@ function setCache<T>(key: string, data: T): void {
 // ── CRM API Helper ──────────────────────────────────────────────────────────
 async function callCrmApi<T>(
   endpoint: string,
-  body: Record<string, any>
+  body: Record<string, unknown>
 ): Promise<T | null> {
   try {
     const res = await fetch(`${CRM_BASE}/${endpoint}`, {
@@ -284,63 +346,16 @@ export async function fetchDestinations(): Promise<Destination[]> {
   if (cached) return cached;
 
   try {
-    const [domestic, international] = await Promise.all([
-      callCrmApi<{ Destination?: CrmDestination[] }>("destinationlist.php", { type: "domestic" }),
-      callCrmApi<{ Destination?: CrmDestination[] }>("destinationlist.php", { type: "international" }),
-    ]);
-
-    const rawDomestic = domestic?.Destination || [];
-    const rawInternational = international?.Destination || [];
-
-    const destMap = new Map<string, Destination>();
-
-    // Initialize with all local DEFAULT_DESTINATIONS from db.json to keep rich details
-    DEFAULT_DESTINATIONS.forEach((d) => {
-      destMap.set(d.id, { ...d });
-    });
-
-    const processDestinations = (items: CrmDestination[], sections: string[]) => {
-      items.forEach((d, i) => {
-        const name = (d.name || "").trim();
-        if (!name) return;
-        const id = slugify(name);
-        
-        const crmPhoto = d.photo || "";
-        const hasValidCrmPhoto = isValidCrmImage(crmPhoto);
-        const localFallback = findLocalImage(name);
-
-        const existing = destMap.get(id);
-        if (existing) {
-          // Merge CRM data with existing default destination details
-          destMap.set(id, {
-            ...existing,
-            name,
-            image: hasValidCrmPhoto ? crmPhoto : existing.image,
-            sections: [...new Set([...(existing.sections || []), ...sections])],
-          });
-        } else {
-          // Add new CRM destination
-          destMap.set(id, {
-            id,
-            name,
-            image: hasValidCrmPhoto ? crmPhoto : (localFallback !== "/hero-bg.png" ? localFallback : "/hero-bg.png"),
-            duration: "5N",
-            price: "Custom",
-            tags: [],
-            description: `Explore the beauty of ${name}`,
-            sections,
-            order: 100 + i,
-          });
-        }
-      });
-    };
-
-    processDestinations(rawDomestic, ["domestic"]);
-    processDestinations(rawInternational, ["explore"]);
-
-    const destinations = Array.from(destMap.values());
-    setCache("destinations", destinations);
-    return destinations;
+    let dests = await redisGet<Destination[]>(DESTINATIONS_KEY);
+    if (!dests || dests.length === 0) {
+      const local = await getLocalDb();
+      dests = local.destinations;
+      if (dests && dests.length > 0) {
+        await redisSet(DESTINATIONS_KEY, dests);
+      }
+    }
+    setCache("destinations", dests);
+    return dests;
   } catch (err) {
     console.error("fetchDestinations error:", err);
     return DEFAULT_DESTINATIONS;
@@ -376,61 +391,16 @@ export async function fetchPackages(): Promise<Package[]> {
   if (cached) return cached;
 
   try {
-    const [result, destinations] = await Promise.all([
-      callCrmApi<{ Package?: CrmPackage[] }>("packagelist.php", {
-        searchdestination: "",
-      }),
-      fetchDestinations(),
-    ]);
-
-    const rawPackages = result?.Package || [];
-
-    if (rawPackages.length < 2) {
-      setCache("packages", DEFAULT_PACKAGES);
-      return DEFAULT_PACKAGES;
+    let pkgs = await redisGet<Package[]>(PACKAGES_KEY);
+    if (!pkgs || pkgs.length === 0) {
+      const local = await getLocalDb();
+      pkgs = local.packages;
+      if (pkgs && pkgs.length > 0) {
+        await redisSet(PACKAGES_KEY, pkgs);
+      }
     }
-
-    const packages: Package[] = rawPackages.map((p, i) => {
-      const name = p.name || "Travel Package";
-      const dest = p.destination || "";
-      const nights = parseInt(p.nights || p.days || "0", 10) - (p.nights ? 0 : 1);
-      const actualNights = nights > 0 ? nights : undefined;
-      const priceVal = p.price ? parseInt(p.price, 10) : 0;
-      const price = priceVal > 0 ? `₹${priceVal.toLocaleString("en-IN")}` : "Custom";
-      const inclusions = (p.inclusion || "")
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean);
-      const themeName = p.themeName || "";
-      const pkgType = inferPackageType(dest, name, themeName);
-
-      const crmBanner = p.banner || "";
-      const hasValidCrmBanner = isValidCrmImage(crmBanner);
-      const localFallback = findLocalImage(dest || name);
-      
-      const image = hasValidCrmBanner
-        ? crmBanner
-        : (localFallback !== "/hero-bg.png" ? localFallback : "/hero-bg.png");
-
-      const destinationId = matchDestinationId(dest, name, destinations);
-
-      return {
-        id: `crm-${p.packageId || i}`,
-        name,
-        price,
-        highlights: inclusions.length > 0 ? inclusions : ["Transfers", "Hotel Stay", "Sightseeing"],
-        image,
-        destinationId,
-        durationNights: actualNights,
-        tags: themeName ? [themeName] : [],
-        sections: inferSectionsFromTheme(themeName, pkgType),
-        order: i + 1,
-        type: pkgType,
-      };
-    });
-
-    setCache("packages", packages);
-    return packages;
+    setCache("packages", pkgs);
+    return pkgs;
   } catch (err) {
     console.error("fetchPackages error:", err);
     return DEFAULT_PACKAGES;
@@ -443,13 +413,13 @@ export async function fetchPackageDetail(
 ): Promise<{
   itinerary: ItineraryDay[];
   terms: string;
-  pkg: any;
+  pkg: unknown;
 } | null> {
   // Extract numeric ID from our "crm-XXXX" format
   const numericId = packageId.replace("crm-", "");
 
   const cacheKey = `pkg_detail_${numericId}`;
-  const cached = getCached<{ itinerary: ItineraryDay[]; terms: string; pkg: any }>(cacheKey);
+  const cached = getCached<{ itinerary: ItineraryDay[]; terms: string; pkg: unknown }>(cacheKey);
   if (cached) return cached;
 
   try {
@@ -553,5 +523,168 @@ export async function submitInquiryAction(leadData: {
   } catch (err) {
     console.error("submitInquiryAction error:", err);
     return { success: false, message: "Network error. Please try WhatsApp." };
+  }
+}
+
+// ── Server Action: Save Destination ──────────────────────────────────────────
+export async function saveDestinationAction(data: Destination): Promise<{ success: boolean; message: string }> {
+  try {
+    const local = await getLocalDb();
+    const existingIdx = local.destinations.findIndex(d => d.id === data.id);
+
+    if (existingIdx > -1) {
+      local.destinations[existingIdx] = data;
+    } else {
+      local.destinations.push(data);
+    }
+
+    await saveLocalDb(local);
+    await redisSet(DESTINATIONS_KEY, local.destinations);
+
+    // Clear cache
+    delete cache["destinations"];
+
+    revalidatePath("/admin");
+    revalidatePath("/");
+    return { success: true, message: "Destination saved successfully!" };
+  } catch (err) {
+    console.error("saveDestinationAction error:", err);
+    return { success: false, message: "Failed to save destination." };
+  }
+}
+
+// ── Server Action: Delete Destination ────────────────────────────────────────
+export async function deleteDestinationAction(id: string): Promise<{ success: boolean; message: string }> {
+  try {
+    const local = await getLocalDb();
+    
+    // Deleting a destination removes its linked packages
+    local.destinations = local.destinations.filter(d => d.id !== id);
+    local.packages = local.packages.filter(p => p.destinationId !== id);
+
+    await saveLocalDb(local);
+    await redisSet(DESTINATIONS_KEY, local.destinations);
+    await redisSet(PACKAGES_KEY, local.packages);
+
+    // Clear cache
+    delete cache["destinations"];
+    delete cache["packages"];
+
+    revalidatePath("/admin");
+    revalidatePath("/");
+    return { success: true, message: "Destination and linked packages deleted successfully!" };
+  } catch (err) {
+    console.error("deleteDestinationAction error:", err);
+    return { success: false, message: "Failed to delete destination." };
+  }
+}
+
+// ── Server Action: Save Package ─────────────────────────────────────────────
+export async function savePackageAction(data: Package): Promise<{ success: boolean; message: string }> {
+  try {
+    const local = await getLocalDb();
+    const existingIdx = local.packages.findIndex(p => p.id === data.id);
+
+    if (existingIdx > -1) {
+      local.packages[existingIdx] = data;
+    } else {
+      local.packages.push(data);
+    }
+
+    await saveLocalDb(local);
+    await redisSet(PACKAGES_KEY, local.packages);
+
+    // Clear cache
+    delete cache["packages"];
+
+    revalidatePath("/admin");
+    revalidatePath("/");
+    return { success: true, message: "Package saved successfully!" };
+  } catch (err) {
+    console.error("savePackageAction error:", err);
+    return { success: false, message: "Failed to save package." };
+  }
+}
+
+// ── Server Action: Delete Package ───────────────────────────────────────────
+export async function deletePackageAction(id: string): Promise<{ success: boolean; message: string }> {
+  try {
+    const local = await getLocalDb();
+    local.packages = local.packages.filter(p => p.id !== id);
+
+    await saveLocalDb(local);
+    await redisSet(PACKAGES_KEY, local.packages);
+
+    // Clear cache
+    delete cache["packages"];
+
+    revalidatePath("/admin");
+    revalidatePath("/");
+    return { success: true, message: "Package deleted successfully!" };
+  } catch (err) {
+    console.error("deletePackageAction error:", err);
+    return { success: false, message: "Failed to delete package." };
+  }
+}
+
+// ── Server Action: Reorder Destinations ──────────────────────────────────────
+export async function reorderDestinationsAction(orderedIds: string[]): Promise<{ success: boolean; message: string }> {
+  try {
+    const local = await getLocalDb();
+    
+    // Set order property based on the index in orderedIds
+    local.destinations.forEach(d => {
+      const idx = orderedIds.indexOf(d.id);
+      if (idx > -1) {
+        d.order = idx + 1;
+      }
+    });
+
+    // Sort the destinations array locally
+    local.destinations.sort((a, b) => (a.order ?? 9999) - (b.order ?? 9999));
+
+    await saveLocalDb(local);
+    await redisSet(DESTINATIONS_KEY, local.destinations);
+
+    // Clear cache
+    delete cache["destinations"];
+
+    revalidatePath("/admin");
+    revalidatePath("/");
+    return { success: true, message: "Destinations reordered successfully!" };
+  } catch (err) {
+    console.error("reorderDestinationsAction error:", err);
+    return { success: false, message: "Failed to reorder destinations." };
+  }
+}
+
+// ── Server Action: Reorder Packages ──────────────────────────────────────────
+export async function reorderPackagesAction(orderedIds: string[]): Promise<{ success: boolean; message: string }> {
+  try {
+    const local = await getLocalDb();
+
+    // Set order property based on the index in orderedIds
+    local.packages.forEach(p => {
+      const idx = orderedIds.indexOf(p.id);
+      if (idx > -1) {
+        p.order = idx + 1;
+      }
+    });
+
+    // Sort the packages array locally
+    local.packages.sort((a, b) => (a.order ?? 9999) - (b.order ?? 9999));
+
+    await saveLocalDb(local);
+    await redisSet(PACKAGES_KEY, local.packages);
+
+    // Clear cache
+    delete cache["packages"];
+
+    revalidatePath("/admin");
+    revalidatePath("/");
+    return { success: true, message: "Packages reordered successfully!" };
+  } catch (err) {
+    console.error("reorderPackagesAction error:", err);
+    return { success: false, message: "Failed to reorder packages." };
   }
 }

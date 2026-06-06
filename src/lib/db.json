@@ -16,36 +16,6 @@
       "order": 1
     },
     {
-      "id": "france",
-      "name": "France",
-      "image": "/france.png",
-      "duration": "6N",
-      "price": "₹1,25,000",
-      "tags": [
-        "Romance",
-        "History"
-      ],
-      "description": "Paris skyline, historical châteaux, and world-renowned art and fashion",
-      "bestTimeToVisit": "April to October",
-      "sections": [],
-      "order": 2
-    },
-    {
-      "id": "egypt",
-      "name": "Egypt",
-      "image": "/egypt.png",
-      "duration": "5N",
-      "price": "₹75,000",
-      "tags": [
-        "History",
-        "Mystery"
-      ],
-      "description": "Giza Pyramids, Nile cruises, and mysterious ancient ruins",
-      "bestTimeToVisit": "October to April",
-      "sections": [],
-      "order": 3
-    },
-    {
       "id": "maldives",
       "name": "Maldives",
       "image": "/maldives.png",
@@ -105,20 +75,6 @@
       "order": 7
     },
     {
-      "id": "vietnam",
-      "name": "Vietnam",
-      "image": "/vietnam.png",
-      "duration": "6N",
-      "price": "₹58,000",
-      "tags": [
-        "Culture",
-        "Adventure"
-      ],
-      "description": "Limestone bays, old quarters, and unforgettable local cuisine",
-      "sections": [],
-      "order": 8
-    },
-    {
       "id": "japan",
       "name": "Japan",
       "image": "/japan.png",
@@ -135,23 +91,9 @@
       "order": 9
     },
     {
-      "id": "europe",
-      "name": "Europe",
-      "image": "/interlaken.png",
-      "duration": "8N",
-      "price": "₹1,68,000",
-      "tags": [
-        "Luxury",
-        "Culture"
-      ],
-      "description": "Multi-city classics with guided tours and premium stays",
-      "sections": [],
-      "order": 10
-    },
-    {
       "id": "spiti",
       "name": "Spiti Valley",
-      "image": "/zermatt.png",
+      "image": "/spiti.png",
       "duration": "9N",
       "price": "₹18,000",
       "tags": [
@@ -234,21 +176,6 @@
       "order": 15
     },
     {
-      "id": "goa",
-      "name": "Goa",
-      "image": "/goa.png",
-      "duration": "4N",
-      "price": "₹16,500",
-      "tags": [
-        "Beaches",
-        "Nightlife"
-      ],
-      "description": "Golden sand beaches, historic churches, and vibrant coastal cuisine",
-      "bestTimeToVisit": "November to February",
-      "sections": [],
-      "order": 16
-    },
-    {
       "id": "rajasthan",
       "name": "Rajasthan",
       "image": "/rajasthan.png",
@@ -264,36 +191,6 @@
         "domestic"
       ],
       "order": 17
-    },
-    {
-      "id": "canada",
-      "name": "Canada",
-      "image": "/canada.png",
-      "duration": "8N",
-      "price": "₹1,85,000",
-      "tags": [
-        "Nature",
-        "Adventure"
-      ],
-      "description": "Lakes, soaring mountain peaks, and deep forest trails in the Rockies",
-      "bestTimeToVisit": "June to September",
-      "sections": [],
-      "order": 18
-    },
-    {
-      "id": "italy",
-      "name": "Italy",
-      "image": "/italy.png",
-      "duration": "7N",
-      "price": "₹1,55,000",
-      "tags": [
-        "Culture",
-        "Romance"
-      ],
-      "description": "Venice gondolas, ancient Roman ruins, and Tuscan culinary heritage",
-      "bestTimeToVisit": "April to June, September to October",
-      "sections": [],
-      "order": 19
     },
     {
       "id": "almaty",
@@ -313,7 +210,7 @@
     {
       "id": "phuket-krabi",
       "name": "Phuket & Krabi Twin Paradise",
-      "image": "/thailand.png",
+      "image": "/phuket-krabi.png",
       "duration": "3N",
       "price": "₹29,990",
       "tags": [
@@ -331,7 +228,7 @@
     {
       "id": "hanoi-danang",
       "name": "Hanoi Danang package",
-      "image": "/vietnam.png",
+      "image": "/hanoi-danang.png",
       "duration": "4N",
       "price": "₹34,990",
       "tags": [
@@ -349,7 +246,7 @@
     {
       "id": "bali-romantic",
       "name": "Bali Romantic Getaway",
-      "image": "/bali.png",
+      "image": "/bali-romantic.png",
       "duration": "5N",
       "price": "₹42,500",
       "tags": [
@@ -367,7 +264,7 @@
     {
       "id": "andaman-delight",
       "name": "Andaman Delight",
-      "image": "/maldives.png",
+      "image": "/andaman-delight.png",
       "duration": "5N",
       "price": "₹26,990",
       "tags": [
@@ -386,7 +283,7 @@
     {
       "id": "meghalaya",
       "name": "Meghalaya: Jungle to Clouds",
-      "image": "/kerala.png",
+      "image": "/meghalaya.png",
       "duration": "6N",
       "price": "₹28,500",
       "tags": [
@@ -405,7 +302,7 @@
     {
       "id": "rishikesh",
       "name": "Rishikesh",
-      "image": "/rafting.png",
+      "image": "/rishikesh.png",
       "duration": "1N",
       "price": "₹2,499",
       "tags": [
@@ -419,7 +316,7 @@
     {
       "id": "jim-corbett",
       "name": "Jim Corbett",
-      "image": "/kerala.png",
+      "image": "/jim-corbett.png",
       "duration": "2N",
       "price": "₹8,500",
       "tags": [
@@ -433,7 +330,7 @@
     {
       "id": "sikkim",
       "name": "Sikkim & Darjeeling",
-      "image": "/interlaken.png",
+      "image": "/sikkim.png",
       "duration": "4N",
       "price": "₹24,500",
       "tags": [
@@ -449,7 +346,7 @@
     {
       "id": "tawang",
       "name": "Tawang",
-      "image": "/zermatt.png",
+      "image": "/tawang.png",
       "duration": "6N",
       "price": "₹29,500",
       "tags": [
@@ -465,7 +362,7 @@
     {
       "id": "kenya",
       "name": "Kenya",
-      "image": "/egypt.png",
+      "image": "/kenya.png",
       "duration": "5N",
       "price": "₹1,45,000",
       "tags": [
@@ -563,42 +460,6 @@
         }
       ],
       "order": 3
-    },
-    {
-      "id": "pkg-skiing",
-      "name": "Ski Touring Experience",
-      "price": "₹8,500",
-      "durationNights": 2,
-      "highlights": [
-        "Ski Equipment",
-        "Local Instructor",
-        "Lift Passes",
-        "Mountain Lodge Stays"
-      ],
-      "image": "/skiing.png",
-      "destinationId": "laax",
-      "sections": [],
-      "itinerary": [
-        {
-          "day": 1,
-          "title": "Basics & First Run",
-          "details": [
-            "Fittings at lodge",
-            "Snow training and balancing",
-            "Beginner slope practice"
-          ]
-        },
-        {
-          "day": 2,
-          "title": "Ski Tour",
-          "details": [
-            "Guided trail ride",
-            "Scenic stops",
-            "Evening cozy campfire"
-          ]
-        }
-      ],
-      "order": 4
     },
     {
       "id": "pkg-almaty",
@@ -1227,7 +1088,7 @@
         "Chandratal Lake (Moon Lake) visit",
         "Camping under the stars"
       ],
-      "image": "/skiing.png",
+      "image": "/hampta-pass.png",
       "destinationId": "himachal",
       "sections": [
         "adventures"
@@ -1292,7 +1153,7 @@
         "Elephant Beach Excursion",
         "Optional Scuba Diving Session"
       ],
-      "image": "/maldives.png",
+      "image": "/dreamy-andaman.png",
       "destinationId": "andaman-delight",
       "sections": [
         "adventures"
@@ -1348,7 +1209,7 @@
         "Neer Garh Waterfall Hike",
         "Bonfire & Campsite Music"
       ],
-      "image": "/rafting.png",
+      "image": "/rishikesh-rafting.png",
       "destinationId": "rishikesh",
       "sections": [
         "adventures"
@@ -2299,7 +2160,7 @@
         "Boutique safari lodges and camps",
         "All transfers and game drives"
       ],
-      "image": "/egypt.png",
+      "image": "/kenya.png",
       "destinationId": "kenya",
       "sections": [],
       "itinerary": [
@@ -2352,6 +2213,157 @@
         }
       ],
       "order": 25
+    },
+    {
+      "id": "pkg-singapore-getaway",
+      "name": "Singapore City Getaway",
+      "price": "₹1,15,000",
+      "durationNights": 7,
+      "highlights": [
+        "Marina Bay Sands",
+        "Universal Studios",
+        "Gardens by the Bay",
+        "Night Safari"
+      ],
+      "image": "/singapore-getaway.png",
+      "destinationId": "singapore",
+      "sections": [
+        "explore"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival in Singapore",
+          "details": [
+            "Airport pickup and hotel check-in.",
+            "Leisure evening."
+          ]
+        },
+        {
+          "day": 2,
+          "title": "City Sightseeing & Gardens by the Bay",
+          "details": [
+            "Visit Merlion Park.",
+            "Explore Gardens by the Bay and Supertree Grove."
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Sentosa Island Fun",
+          "details": [
+            "Cable car ride to Sentosa.",
+            "Visit Madame Tussauds and Wings of Time show."
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Universal Studios Singapore",
+          "details": [
+            "Full-day pass to movie theme park.",
+            "Thrills and attractions."
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Night Safari Experience",
+          "details": [
+            "Guided tram ride through wildlife habitats.",
+            "See nocturnal animals."
+          ]
+        },
+        {
+          "day": 6,
+          "title": "Leisure & Shopping",
+          "details": [
+            "Shopping at Orchard Road or Jewel Changi.",
+            "Self-guided walk."
+          ]
+        },
+        {
+          "day": 7,
+          "title": "Departure",
+          "details": [
+            "Hotel checkout.",
+            "Transfer to airport for return flight."
+          ]
+        }
+      ],
+      "order": 31
+    },
+    {
+      "id": "pkg-japan-discovery",
+      "name": "Japan Cultural Discovery",
+      "price": "₹1,45,000",
+      "durationNights": 6,
+      "highlights": [
+        "Tokyo Tour",
+        "Kyoto Temples",
+        "Bullet Train",
+        "Mt. Fuji View"
+      ],
+      "image": "/japan-discovery.png",
+      "destinationId": "japan",
+      "sections": [
+        "explore"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival in Tokyo",
+          "details": [
+            "Airport transfer and hotel check-in.",
+            "Settle in."
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Tokyo Landmarks",
+          "details": [
+            "Visit Sensoji Temple in Asakusa.",
+            "Explore Shibuya Crossing and Harajuku."
+          ]
+        },
+        {
+          "day": 3,
+          "title": "Mt. Fuji Excursion",
+          "details": [
+            "Full-day trip to Mt. Fuji 5th Station.",
+            "Scenic walk around Lake Kawaguchi."
+          ]
+        },
+        {
+          "day": 4,
+          "title": "Bullet Train to Kyoto",
+          "details": [
+            "Ride the Shinkansen to Kyoto.",
+            "Visit Fushimi Inari Shrine (thousand torii gates)."
+          ]
+        },
+        {
+          "day": 5,
+          "title": "Kyoto Cultural Tour",
+          "details": [
+            "Kinkaku-ji (Golden Pavilion).",
+            "Arashiyama Bamboo Grove walk."
+          ]
+        },
+        {
+          "day": 6,
+          "title": "Kyoto to Tokyo",
+          "details": [
+            "Return bullet train to Tokyo.",
+            "Free shopping evening in Ginza."
+          ]
+        },
+        {
+          "day": 7,
+          "title": "Departure",
+          "details": [
+            "Transfer to Narita/Haneda airport for flight home."
+          ]
+        }
+      ],
+      "order": 32
     }
   ]
 }
