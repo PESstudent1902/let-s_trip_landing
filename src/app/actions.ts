@@ -71,6 +71,44 @@ async function saveLocalDb(data: { destinations: Destination[]; packages: Packag
   }
 }
 
+async function getCurrentDb(): Promise<{ destinations: Destination[]; packages: Package[] }> {
+  try {
+    const dests = await redisGet<Destination[]>(DESTINATIONS_KEY);
+    const pkgs = await redisGet<Package[]>(PACKAGES_KEY);
+
+    if (dests && dests.length > 0 && pkgs && pkgs.length > 0) {
+      return { destinations: dests, packages: pkgs };
+    }
+
+    // Fallback/Seed from local DB
+    const local = await getLocalDb();
+    
+    const finalDests = dests && dests.length > 0 ? dests : local.destinations;
+    const finalPkgs = pkgs && pkgs.length > 0 ? pkgs : local.packages;
+
+    if (!dests || dests.length === 0) {
+      if (finalDests && finalDests.length > 0) {
+        await redisSet(DESTINATIONS_KEY, finalDests);
+      }
+    }
+    if (!pkgs || pkgs.length === 0) {
+      if (finalPkgs && finalPkgs.length > 0) {
+        await redisSet(PACKAGES_KEY, finalPkgs);
+      }
+    }
+
+    return { 
+      destinations: finalDests, 
+      packages: finalPkgs 
+    };
+  } catch (err) {
+    console.error("getCurrentDb error, returning local DB fallback:", err);
+    return getLocalDb();
+  }
+}
+
+
+
 // ── CRM Configuration ──────────────────────────────────────────────────────
 const CRM_BASE = "https://travbizz.online/crm/API";
 const TOKEN_ID = "1";
@@ -529,7 +567,7 @@ export async function submitInquiryAction(leadData: {
 // ── Server Action: Save Destination ──────────────────────────────────────────
 export async function saveDestinationAction(data: Destination): Promise<{ success: boolean; message: string }> {
   try {
-    const local = await getLocalDb();
+    const local = await getCurrentDb();
     const existingIdx = local.destinations.findIndex(d => d.id === data.id);
 
     if (existingIdx > -1) {
@@ -556,7 +594,7 @@ export async function saveDestinationAction(data: Destination): Promise<{ succes
 // ── Server Action: Delete Destination ────────────────────────────────────────
 export async function deleteDestinationAction(id: string): Promise<{ success: boolean; message: string }> {
   try {
-    const local = await getLocalDb();
+    const local = await getCurrentDb();
     
     // Deleting a destination removes its linked packages
     local.destinations = local.destinations.filter(d => d.id !== id);
@@ -582,7 +620,7 @@ export async function deleteDestinationAction(id: string): Promise<{ success: bo
 // ── Server Action: Save Package ─────────────────────────────────────────────
 export async function savePackageAction(data: Package): Promise<{ success: boolean; message: string }> {
   try {
-    const local = await getLocalDb();
+    const local = await getCurrentDb();
     const existingIdx = local.packages.findIndex(p => p.id === data.id);
 
     if (existingIdx > -1) {
@@ -609,7 +647,7 @@ export async function savePackageAction(data: Package): Promise<{ success: boole
 // ── Server Action: Delete Package ───────────────────────────────────────────
 export async function deletePackageAction(id: string): Promise<{ success: boolean; message: string }> {
   try {
-    const local = await getLocalDb();
+    const local = await getCurrentDb();
     local.packages = local.packages.filter(p => p.id !== id);
 
     await saveLocalDb(local);
@@ -630,7 +668,7 @@ export async function deletePackageAction(id: string): Promise<{ success: boolea
 // ── Server Action: Reorder Destinations ──────────────────────────────────────
 export async function reorderDestinationsAction(orderedIds: string[]): Promise<{ success: boolean; message: string }> {
   try {
-    const local = await getLocalDb();
+    const local = await getCurrentDb();
     
     // Set order property based on the index in orderedIds
     local.destinations.forEach(d => {
@@ -661,7 +699,7 @@ export async function reorderDestinationsAction(orderedIds: string[]): Promise<{
 // ── Server Action: Reorder Packages ──────────────────────────────────────────
 export async function reorderPackagesAction(orderedIds: string[]): Promise<{ success: boolean; message: string }> {
   try {
-    const local = await getLocalDb();
+    const local = await getCurrentDb();
 
     // Set order property based on the index in orderedIds
     local.packages.forEach(p => {
