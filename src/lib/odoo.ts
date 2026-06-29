@@ -56,6 +56,9 @@ export async function submitToOdooWebhook(
   };
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
     const response = await fetch(WEBHOOK_URL, {
       method: "POST",
       headers: {
@@ -64,9 +67,10 @@ export async function submitToOdooWebhook(
         "X-API-Key": API_KEY,
       },
       body: JSON.stringify(payload),
-      // Set an 8-second timeout using AbortSignal.timeout if supported, or standard timeout race
-      signal: AbortSignal.timeout(8000),
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     console.log(`[Odoo Webhook] Response status: ${response.status} ${response.statusText}`);
 
