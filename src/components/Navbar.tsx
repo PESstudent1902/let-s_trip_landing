@@ -6,7 +6,7 @@ import { Menu, X, Sun, Moon } from "lucide-react";
 import Link from "next/link";
 import InquiryFormModal from "./InquiryFormModal";
 
-const navLinks = [
+const navLinks: { label: string; href: string; external?: boolean }[] = [
   { label: "Destinations", href: "#destinations" },
   { label: "Services", href: "#services" },
   { label: "Contact Us", href: "#contact" },
