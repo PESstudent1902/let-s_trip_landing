@@ -117,10 +117,9 @@ export default function Navbar() {
               {theme === "dark" ? <Sun size={18} /> : <Moon size={18} className="text-violet" />}
             </button>
             <MagneticButton>
-              <a
-                href="https://wa.me/918867767171"
-                target="_blank" rel="noopener noreferrer"
-                className="group/cta flex items-center gap-2 text-orange hover:text-warm transition-colors cursor-pointer"
+              <button
+                onClick={() => setShowInquiry(true)}
+                className="group/cta flex items-center gap-2 text-orange hover:text-warm transition-colors cursor-pointer bg-transparent border-none p-0 focus:outline-none"
                 style={{ fontFamily: "var(--font-brush)" }}
               >
                 <span className="text-lg">Book Your Adventure</span>
@@ -131,7 +130,7 @@ export default function Navbar() {
                 >
                   →
                 </motion.span>
-              </a>
+              </button>
             </MagneticButton>
           </div>
 

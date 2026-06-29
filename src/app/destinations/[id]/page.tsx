@@ -5,6 +5,7 @@ import { fetchDestinations, fetchPackages } from "@/app/actions";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { MapPin, Calendar, Compass, ArrowRight, Tag } from "lucide-react";
+import BookAdventureButton from "@/components/BookAdventureButton";
 
 export default async function DestinationDetailsPage({
   params,
@@ -162,15 +163,7 @@ export default async function DestinationDetailsPage({
               </div>
 
               <div className="mt-10 flex flex-col gap-4">
-                <a
-                  href={`https://wa.me/918867767171?text=Hi!+I'm+interested+in+traveling+to+${destination.name}.`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-cyan to-violet text-white font-bold text-sm text-center hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-lg"
-                  style={{ fontFamily: "var(--font-headline)" }}
-                >
-                  Book My Adventure
-                </a>
+                <BookAdventureButton destinationName={destination.name} />
               </div>
             </div>
           </div>
