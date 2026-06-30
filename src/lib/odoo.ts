@@ -55,8 +55,9 @@ async function callOdooRpc(
 
     const data = await res.json();
     if (data.error) {
-      console.error("[Odoo RPC Error Response]", data.error);
-      throw new Error(data.error.message || "Odoo returned an RPC error.");
+      console.error("[Odoo RPC Error Response]", JSON.stringify(data.error, null, 2));
+      const detailedMessage = data.error.data?.message || data.error.message || "Odoo returned an RPC error.";
+      throw new Error(detailedMessage);
     }
 
     return data.result;
