@@ -5,7 +5,7 @@
  */
 
 const ODOO_URL = process.env.ODOO_URL || "https://letstrip.odoo.com";
-const API_KEY = process.env.ODOO_API_KEY || "443b4f6618a03fbc28bdafa8279da68c587a2ad5";
+const API_KEY = process.env.ODOO_API_KEY || "1a5651bd445fa3a1f51888c153f88066926147d4";
 const ODOO_DB = process.env.ODOO_DB;
 const ODOO_USERNAME = process.env.ODOO_USERNAME;
 
