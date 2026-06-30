@@ -77,6 +77,12 @@ export async function submitToOdooWebhook(
   leadData: OdooLeadData
 ): Promise<{ success: boolean; error?: string }> {
   console.log("[Odoo Direct] Preparing lead submission handshake...");
+  console.log("[Odoo Direct] Connection Details (Masked):", {
+    ODOO_URL,
+    ODOO_DB,
+    ODOO_USERNAME,
+    ODOO_API_KEY: API_KEY ? `${API_KEY.slice(0, 4)}...${API_KEY.slice(-4)}` : "not_set",
+  });
 
   // Basic validation before handshake
   if (!leadData.name || !leadData.email || !leadData.contact) {
