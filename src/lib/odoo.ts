@@ -161,7 +161,7 @@ export async function submitToOdooWebhook(
             email_from: leadData.email,
             phone: leadData.contact,
             description: descriptionText,
-            type: "lead",
+            type: "opportunity",
           },
         ],
       ],
