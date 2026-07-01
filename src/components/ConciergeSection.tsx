@@ -25,6 +25,20 @@ export default function ConciergeSection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (
+      !formData.name.trim() ||
+      !formData.email.trim() ||
+      !formData.contact.trim() ||
+      !formData.destination.trim() ||
+      !formData.fromDate ||
+      !formData.toDate
+    ) {
+      setStatus("error");
+      setMessage("Please fill out all fields.");
+      return;
+    }
+
     setStatus("loading");
     const result = await submitInquiryAction(formData);
     if (result.success) {
@@ -103,18 +117,18 @@ export default function ConciergeSection() {
                 {/* Destination */}
                 <div className="relative">
                   <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
-                  <input type="text" placeholder="Where do you want to go?" value={formData.destination} onChange={(e) => setFormData({ ...formData, destination: e.target.value })} className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:border-green-400/50 focus:outline-none transition-colors text-sm" />
+                  <input type="text" placeholder="Where do you want to go?" required value={formData.destination} onChange={(e) => setFormData({ ...formData, destination: e.target.value })} className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:border-green-400/50 focus:outline-none transition-colors text-sm" />
                 </div>
 
                 {/* Dates */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="relative">
                     <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
-                    <input type="date" value={formData.fromDate} onChange={(e) => setFormData({ ...formData, fromDate: e.target.value })} className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:border-green-400/50 focus:outline-none transition-colors text-sm [color-scheme:dark]" />
+                    <input type="date" required value={formData.fromDate} onChange={(e) => setFormData({ ...formData, fromDate: e.target.value })} className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:border-green-400/50 focus:outline-none transition-colors text-sm [color-scheme:dark]" />
                   </div>
                   <div className="relative">
                     <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
-                    <input type="date" value={formData.toDate} onChange={(e) => setFormData({ ...formData, toDate: e.target.value })} className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:border-green-400/50 focus:outline-none transition-colors text-sm [color-scheme:dark]" />
+                    <input type="date" required value={formData.toDate} onChange={(e) => setFormData({ ...formData, toDate: e.target.value })} className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-text-muted focus:border-green-400/50 focus:outline-none transition-colors text-sm [color-scheme:dark]" />
                   </div>
                 </div>
 

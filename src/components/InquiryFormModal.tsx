@@ -34,6 +34,20 @@ export default function InquiryFormModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (
+      !formData.name.trim() ||
+      !formData.email.trim() ||
+      !formData.contact.trim() ||
+      !formData.destination.trim() ||
+      !formData.fromDate ||
+      !formData.toDate
+    ) {
+      setStatus("error");
+      setMessage("Please fill out all fields.");
+      return;
+    }
+
     setStatus("loading");
 
     const result = await submitInquiryAction(formData);
@@ -190,6 +204,7 @@ export default function InquiryFormModal({
                       <input
                         type="text"
                         placeholder="Destination"
+                        required
                         value={formData.destination}
                         onChange={(e) =>
                           setFormData({ ...formData, destination: e.target.value })
@@ -208,6 +223,7 @@ export default function InquiryFormModal({
                         <input
                           type="date"
                           placeholder="From Date"
+                          required
                           value={formData.fromDate}
                           onChange={(e) =>
                             setFormData({ ...formData, fromDate: e.target.value })
@@ -223,6 +239,7 @@ export default function InquiryFormModal({
                         <input
                           type="date"
                           placeholder="To Date"
+                          required
                           value={formData.toDate}
                           onChange={(e) =>
                             setFormData({ ...formData, toDate: e.target.value })
