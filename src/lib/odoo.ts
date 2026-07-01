@@ -98,9 +98,11 @@ export async function submitToOdooWebhook(
     console.error(
       "[Odoo Direct] ODOO_DB or ODOO_USERNAME environment variables are missing. Please define them in your environment settings."
     );
+    const presentKeys = Object.keys(process.env).filter(k => k.startsWith("ODOO"));
+    console.log("[Odoo Direct] Present ODOO env keys:", presentKeys);
     return {
       success: false,
-      error: "CRM configuration is missing (ODOO_DB or ODOO_USERNAME are not set in environment settings).",
+      error: `CRM configuration is missing (ODOO_DB or ODOO_USERNAME are not set in environment settings). Available ODOO env keys: ${JSON.stringify(presentKeys)}`,
     };
   }
 
