@@ -95,15 +95,12 @@ export async function submitToOdooWebhook(
 
   // Check if DB and Username are configured. If not, log warning and run mock fallback.
   if (!ODOO_DB || !ODOO_USERNAME) {
-    console.warn(
-      "[Odoo Direct] ODOO_DB or ODOO_USERNAME environment variables are missing.",
-      "Falling back to Developer Mock Mode to prevent runtime errors.",
-      "Please define ODOO_DB (e.g. 'letstrip') and ODOO_USERNAME (your Odoo email) in Vercel settings."
+    console.error(
+      "[Odoo Direct] ODOO_DB or ODOO_USERNAME environment variables are missing. Please define them in your environment settings."
     );
-    
-    // Simulate successful handshake response in mock mode
     return {
-      success: true,
+      success: false,
+      error: "CRM configuration is missing (ODOO_DB or ODOO_USERNAME are not set in environment settings).",
     };
   }
 
